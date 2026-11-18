@@ -1,0 +1,134 @@
+name: iPhone - Subir a TestFlight
+
+# Crea el proyecto de iPhone con Capacitor (la misma app de www/), añade el complemento
+# Navegador (ios-native/), lo firma y lo sube a App Store Connect para probarlo con TestFlight.
+# Se lanza a mano (Run workflow). Firma con la clave de la API de App Store Connect
+# (secretos ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8, los mismos que OpoAlert). Nada de eso va en el repo.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mibolsa-testflight
+  cancel-in-progress: false
+
+jobs:
+  subir:
+    runs-on: macos-15
+    timeout-minutes: 45
+    env:
+      TEAM_ID: 6QLP74LVPC
+      BUNDLE_ID: es.mjtbapps.mibolsa
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Comprobar secretos
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          for name in ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8; do
+            if [ -z "${!name}" ]; then echo "::error::Falta el secreto $name (los mismos que OpoAlert y La Meua Lliga)"; exit 1; fi
+          done
+          case "$ASC_KEY_P8" in
+            *"BEGIN PRIVATE KEY"*"END PRIVATE KEY"*) ;;
+            *) echo "::error::ASC_KEY_P8 no parece un archivo .p8 completo"; exit 1;;
+          esac
+
+      - name: Elegir el Xcode más reciente
+        run: |
+          XCODE="$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Crear el proyecto de iPhone (Capacitor)
+        run: |
+          npm install --no-audit --no-fund
+          npm install --no-save --no-audit --no-fund @capacitor/ios@8.5.3
+          npx cap add ios
+          npx cap sync ios
+
+      - name: Icono, nombre y permisos
+        run: |
+          pip3 install --quiet --break-system-packages pillow || pip3 install --quiet pillow
+          python3 - <<'EOF'
+          from PIL import Image
+          fg = Image.open('android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png').convert('RGBA').resize((1024, 1024), Image.LANCZOS)
+          bg = Image.new('RGBA', (1024, 1024), (0x0F, 0x17, 0x2A, 255))
+          bg.alpha_composite(fg)
+          import glob, json, os
+          d = 'ios/App/App/Assets.xcassets/AppIcon.appiconset'
+          for f in glob.glob(d + '/*.png'): os.remove(f)
+          bg.convert('RGB').save(d + '/AppIcon-1024.png')
+          json.dump({"images": [{"filename": "AppIcon-1024.png", "idiom": "universal", "platform": "ios", "size": "1024x1024"}],
+                     "info": {"author": "xcode", "version": 1}}, open(d + '/Contents.json', 'w'), indent=2)
+          EOF
+          P=ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName Mi Bolsa" $P || /usr/libexec/PlistBuddy -c "Add :CFBundleDisplayName string Mi Bolsa" $P
+          /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" $P || true
+
+      - name: Complemento Navegador (BolsaNative)
+        run: python3 ios-native/prepare.py ios/App
+
+      - name: Guardar la clave de la API (solo en este ejecutor)
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/asc"
+          printf '%s\n' "$ASC_KEY_P8" > "$RUNNER_TEMP/asc/AuthKey_$ASC_KEY_ID.p8"
+          chmod 600 "$RUNNER_TEMP/asc/AuthKey_$ASC_KEY_ID.p8"
+
+      - name: Archivar
+        working-directory: ios/App
+        run: |
+          set -o pipefail
+          # Sin firmar aquí (pediría un iPhone registrado); la firma la hace la exportación.
+          xcodebuild -resolvePackageDependencies -project App.xcodeproj -scheme App | tail -n 20
+          xcodebuild -project App.xcodeproj -scheme App -configuration Release \
+            -destination 'generic/platform=iOS' -archivePath build/App.xcarchive \
+            DEVELOPMENT_TEAM="$TEAM_ID" PRODUCT_BUNDLE_IDENTIFIER="$BUNDLE_ID" \
+            CODE_SIGN_STYLE=Automatic CODE_SIGNING_ALLOWED=NO \
+            MARKETING_VERSION=0.1 CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
+            archive | tail -n 60
+
+      - name: Firmar y subir a App Store Connect
+        working-directory: ios/App
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          set -o pipefail
+          for fw in build/App.xcarchive/Products/Applications/App.app/Frameworks/*.framework; do
+            [ -d "$fw" ] || continue
+            codesign --remove-signature "$fw" || true; rm -rf "$fw/_CodeSignature"
+          done
+          cat > build/ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>$TEAM_ID</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict></plist>
+          EOF
+          xcodebuild -exportArchive -archivePath build/App.xcarchive \
+            -exportOptionsPlist build/ExportOptions.plist -exportPath build/export \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$RUNNER_TEMP/asc/AuthKey_$ASC_KEY_ID.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            | tail -n 60
+          echo "Subida la compilación ${{ github.run_number }}. App Store Connect tarda unos minutos en procesarla."
+
+      - name: Borrar la clave
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/asc"

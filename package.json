@@ -1,0 +1,16 @@
+{
+  "name": "mi-bolsa",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Mi Bolsa: tu situación en las listas de empleo temporal de Sanidad (Comunitat Valenciana), incluido el SES. App no oficial.",
+  "scripts": {
+    "sync": "cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.3",
+    "@capacitor/core": "8.5.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.3"
+  }
+}

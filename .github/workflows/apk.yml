@@ -1,0 +1,39 @@
+name: Generar APK
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "android/**"
+      - "www/**"
+      - ".github/workflows/apk.yml"
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Comprobar que las dos copias de la app son iguales
+        run: cmp www/index.html android/app/src/main/assets/public/index.html
+      - name: Firma fija (opcional)
+        env:
+          MIBOLSA_KEYSTORE_B64: ${{ secrets.MIBOLSA_KEYSTORE_B64 }}
+        run: |
+          if [ -n "$MIBOLSA_KEYSTORE_B64" ]; then
+            printf '%s' "$MIBOLSA_KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/mibolsa.keystore"
+            echo "MIBOLSA_KEYSTORE=$RUNNER_TEMP/mibolsa.keystore" >> "$GITHUB_ENV"
+          else
+            echo "::warning::Sin el secreto MIBOLSA_KEYSTORE_B64: esta APK no se instala encima de la anterior"
+          fi
+      - name: Compilar
+        env:
+          MIBOLSA_KEYSTORE_PASSWORD: ${{ secrets.MIBOLSA_KEYSTORE_PASSWORD }}
+        run: chmod +x android/gradlew && cd android && ./gradlew --no-daemon assembleDebug
+      - uses: actions/upload-artifact@v5
+        with:
+          name: mi-bolsa-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk

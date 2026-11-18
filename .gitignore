@@ -1,0 +1,17 @@
+node_modules/*
+!node_modules/@capacitor/
+node_modules/@capacitor/*
+!node_modules/@capacitor/android/
+node_modules/@capacitor/*/android/build/
+node_modules/@capacitor/android/capacitor/build/
+
+.DS_Store
+android/.kotlin/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+.claude/
+ios/
+*.p8
+*.keystore
