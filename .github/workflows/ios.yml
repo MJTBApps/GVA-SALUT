@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   subir:
-    runs-on: macos-15-intel  # los Mac ARM de GitHub van saturados
+    runs-on: macos-26  # el Mac más nuevo de GitHub (Xcode 26)
     timeout-minutes: 45
     env:
       TEAM_ID: 6QLP74LVPC
