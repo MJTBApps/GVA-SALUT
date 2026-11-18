@@ -18,7 +18,8 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 
 - `www/index.html` → toda la app (HTML/JS/CSS). **Copia idéntica** en `android/app/src/main/assets/public/index.html` (el workflow de APK lo comprueba con `cmp`).
   - `paginaGVA()` se inyecta en la página de la GVA y define `window.__mb` (lista, listo, elegir, escribir, verificado, enviar, leer).
-  - `actualizar()` recorre los departamentos del perfil; `resumir()` calcula los recuentos; `demo()` da datos de ejemplo en la vista previa del ordenador.
+  - `actualizar()` recorre los departamentos del perfil; `resumir()` calcula los recuentos (por nombre, por número de puesto o, sin identificar, resumen de la lista); `demo()` da datos de ejemplo en la vista previa del ordenador.
+  - Cada búsqueda guarda un registro de pasos con segundos (`paso()`, «Detalles de la última búsqueda» en la app). La opción «Ver la web de la GVA mientras busca» deja el navegador visible para pruebas.
 - `android/app/src/main/java/es/mjtbapps/mibolsa/NavegadorPlugin.java` → complemento Android (WebView detrás de la app). Métodos: `abrir`, `ejecutar` (devuelve el resultado como texto JSON), `mostrar`, `ocultar`, `cerrar`; evento `cerrado`. Solo abre URLs de `https://svsiscv.san.gva.es/`.
 - `ios-native/BolsaNative/…/NavegadorPlugin.swift` → el mismo complemento en iPhone (WKWebView). `ios-native/prepare.py` lo añade al proyecto que genera Capacitor en GitHub.
 
@@ -32,5 +33,5 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 ## Pendiente
 
 - Probar en un móvil real la consulta oculta (no se ha podido validar la tabla de resultados ni el comportamiento de Turnstile dentro del WebView).
-- Icono propio (ahora usa el de La Meua Lliga como provisional).
+- Icono definitivo (el actual es provisional: lista numerada turquesa sobre azul marino, generado con SF Symbols).
 - Si la persona no está en el primer tramo (1-200), los recuentos «delante» solo cubren su tramo.

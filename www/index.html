@@ -51,6 +51,8 @@ button.sec{border:1px solid var(--line);border-radius:10px;padding:9px 12px;back
 @keyframes g{to{transform:rotate(360deg)}}
 footer{font-size:12px;color:var(--muted);text-align:center;margin-top:24px}
 a{color:var(--acc)}
+.check{display:flex;gap:8px;align-items:center;font-weight:500;margin-top:16px}.check input{width:auto}
+.reg summary{font-weight:600;cursor:pointer}.reg pre{white-space:pre-wrap;font-size:12px;color:var(--muted);margin:10px 0 0}
 </style>
 </head>
 <body>
@@ -73,7 +75,7 @@ const store = {
   get(k, d) { try { const v = localStorage.getItem('mb.' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem('mb.' + k, JSON.stringify(v)); } catch (e) {} }
 };
-let perfil = store.get('perfil', null);   // {cat, turno, deps[], ap1, ap2, nombre}
+let perfil = store.get('perfil', null);   // {cat, turno, deps[], ap1, ap2, nombre, puesto}
 let datos = store.get('datos', {});       // por departamento: {fecha, pub, puesto, situacion, tramo, delante, hist[]}
 
 // ───────────────────────── Consulta en el navegador real (oculto) ─────────────────────────
@@ -112,10 +114,11 @@ function paginaGVA() {
     enviar() { const b = document.getElementById('filToogle:formDynamicFilters:obtenerListado'); if (!b) return false; b.click(); return true; },
     leer() {
       const zona = document.getElementById('formData') || document;
-      const tabla = [...zona.querySelectorAll('table')].find(t => t.querySelectorAll('tr').length > 1);
-      const err = [...document.querySelectorAll('.ui-messages-error, .ui-message-error, #messageErrorCaptchaOffline')]
-        .filter(e => e.offsetParent !== null).map(e => e.innerText.trim()).filter(Boolean).join(' ');
-      if (!tabla) return { filas: null, error: err };
+      const tabla = [...zona.querySelectorAll('table')].find(t => t.querySelectorAll('tbody tr').length > 0);
+      const visibles = sel => [...document.querySelectorAll(sel)].filter(e => e.offsetParent !== null).map(e => e.innerText.trim()).filter(Boolean).join(' ');
+      const err = visibles('.ui-messages-error, .ui-message-error, .ui-growl-message');
+      const captcha = visibles('#messageErrorCaptchaOffline');
+      if (!tabla) return { filas: null, error: err, captcha };
       const cab = [...tabla.querySelectorAll('thead th, tr:first-child th')].map(th => norm(th.innerText));
       const col = re => cab.findIndex(h => re.test(h));
       const ix = { pos: col(/^(LLOC|PUESTO|ORDEN|N)/), nom: col(/^NOM/), sit: col(/SITUA/), per: col(/PERFIL/), cat: col(/CATEG/), dep: col(/DEPART/) };
@@ -135,7 +138,7 @@ async function ev(expr) {
   const r = await NAV.ejecutar({ js: expr });
   try { return JSON.parse(r.valor); } catch (e) { return null; }
 }
-async function esperar(expr, ms, paso = 400) {
+async function esperar(expr, ms, paso = 300) {
   const fin = Date.now() + ms;
   while (Date.now() < fin) { if (await ev(expr)) return true; await sleep(paso); }
   return false;
@@ -144,47 +147,64 @@ async function prepararPagina() {
   await ev('(' + paginaGVA.toString() + ')()');
 }
 
-// Espera a que Cloudflare dé el visto bueno. Casi siempre se resuelve solo en unos segundos;
-// si necesita a la persona, se le enseña la casilla (nunca se intenta saltar).
+// Registro de la última búsqueda (pasos y segundos), para ver dónde se atasca
+let registro = [], t0 = 0;
+function paso(msg) {
+  const s = ((Date.now() - t0) / 1000).toFixed(1);
+  registro.push(s + ' s · ' + msg);
+  document.getElementById('ovS').textContent = msg;
+}
+
+// Espera a que Cloudflare dé el visto bueno. Si no llega solo en 3 s, se enseña la página de la
+// GVA para que la persona toque la casilla (nunca se intenta saltar ni resolver por ella).
+let verVisible = false;
 async function verificacion(etiqueta) {
-  if (await esperar('window.__mb.verificado()', 8000)) return true;
+  if (await esperar('window.__mb.verificado()', 3000)) { paso('Verificación superada sola'); return true; }
+  paso('Cloudflare pide verificación: se enseña la casilla');
   let cerrado = false;
   const h = await NAV.addListener('cerrado', () => { cerrado = true; });
-  await NAV.ejecutar({ js: '(function(){var t=document.getElementById("turnstileTarget");if(t)t.scrollIntoView({block:"center"});return true})()' });
-  await NAV.mostrar({ titulo: 'Toca la casilla para continuar' });
-  ov('Verificación de seguridad', etiqueta);
+  await ev('(function(){var t=document.getElementById("turnstileTarget");if(t)t.scrollIntoView({block:"center"});return true})()');
+  if (!verVisible) await NAV.mostrar({ titulo: 'Toca la casilla para continuar' });
+  ovOff();
   const fin = Date.now() + 120000;
   let ok = false;
-  while (Date.now() < fin && !cerrado) { if (await ev('window.__mb.verificado()')) { ok = true; break; } await sleep(500); }
-  await NAV.ocultar(); h.remove();
+  while (Date.now() < fin && !cerrado) { if (await ev('window.__mb.verificado()')) { ok = true; break; } await sleep(400); }
+  if (!verVisible) await NAV.ocultar();
+  h.remove();
+  ov('Actualizando tus bolsas…', etiqueta);
+  paso(ok ? 'Verificación superada tocando la casilla' : (cerrado ? 'Verificación cerrada sin completar' : 'Verificación: tiempo agotado'));
   return ok;
 }
 
 async function consultarDep(url, dep, i, total) {
   const etiqueta = depName(dep) + ' (' + (i + 1) + '/' + total + ')';
   ov('Actualizando tus bolsas…', etiqueta);
+  paso(etiqueta + ': abriendo la consulta');
   await NAV.abrir({ url });
   await prepararPagina();
   if (!await esperar('window.__mb.listo()', 20000)) throw new Error('La página de la GVA no ha cargado');
   for (const [n, v] of [[0, perfil.cat], [1, perfil.turno], [2, dep]]) {
     const r = await ev('window.__mb.elegir(' + n + ',' + JSON.stringify(v) + ')');
     if (r !== 'ok') throw new Error('No se pudo elegir ' + ['la categoría', 'el turno', 'el departamento'][n] + ' (' + r + ')');
-    await esperar('window.__mb.listo()', 10000, 250);
+    await esperar('window.__mb.listo()', 10000, 200);
   }
   await ev('window.__mb.escribir(' + [perfil.ap1, perfil.ap2, perfil.nombre].map(x => JSON.stringify(x || '')).join(',') + ')');
-  if (!await verificacion(etiqueta)) throw new Error('Verificación no completada');
-  ov('Actualizando tus bolsas…', etiqueta);
+  paso('Formulario rellenado');
+  if (!await verificacion(etiqueta)) throw new Error('No se completó la verificación de Cloudflare');
   await ev('window.__mb.enviar()');
-  await sleep(800);
+  paso('Consulta enviada a la GVA');
   let res = null;
-  const fin = Date.now() + 30000;
+  const fin = Date.now() + 40000;
+  await sleep(500);
   while (Date.now() < fin) {
-    await sleep(600);
+    await sleep(500);
     if (!await ev('window.__mb.listo()')) continue;
     res = await ev('window.__mb.leer()');
     if (res && (res.filas || res.error)) break;
+    if (res && res.captcha) { paso('La GVA no aceptó la verificación'); break; }
   }
-  if (!res || !res.filas) throw new Error(res && res.error ? res.error : 'La GVA no ha devuelto la lista');
+  if (!res || !res.filas) throw new Error(res && (res.error || res.captcha) ? (res.error || res.captcha) : 'La GVA no ha devuelto la lista');
+  paso('Lista recibida: ' + res.filas.length + ' filas' + (res.tramo ? ' (tramo ' + res.tramo + ')' : '') + ' · columnas: ' + (res.cab || []).join(', '));
   return res;
 }
 
@@ -192,19 +212,24 @@ async function consultarDep(url, dep, i, total) {
 function resumir(res) {
   const yo = [perfil.ap1, perfil.ap2, perfil.nombre].filter(Boolean).join(' ')
     .normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/\s+/g, ' ').trim();
-  const mia = res.filas.find(f => f.nom === yo) || res.filas.find(f => yo && f.nom.startsWith(yo));
-  const delante = { activos: 0, desactivados: 0, noDisp: 0, disponibles: 0, total: 0 };
-  if (mia) for (const f of res.filas) {
-    if (!(f.pos < mia.pos)) continue;
-    delante.total++;
-    if (/DESACTIV/.test(f.sit)) delante.desactivados++;
-    else if (/NO DISPONIBLE/.test(f.sit)) delante.noDisp++;
-    else if (/ACTI/.test(f.sit)) delante.activos++;
-    else if (/DISPONIBLE/.test(f.sit)) delante.disponibles++;
-  }
+  let mia = null;
+  if (perfil.puesto) mia = res.filas.find(f => f.pos === perfil.puesto);
+  if (!mia && yo) mia = res.filas.find(f => f.nom === yo) || res.filas.find(f => f.nom.startsWith(yo));
+  const cuenta = filas => {
+    const c = { activos: 0, desactivados: 0, noDisp: 0, disponibles: 0, total: 0 };
+    for (const f of filas) {
+      c.total++;
+      if (/DESACTIV/.test(f.sit)) c.desactivados++;
+      else if (/NO DISPONIBLE/.test(f.sit)) c.noDisp++;
+      else if (/ACTI/.test(f.sit)) c.activos++;
+      else if (/DISPONIBLE/.test(f.sit)) c.disponibles++;
+    }
+    return c;
+  };
   return {
-    encontrado: !!mia, puesto: mia ? mia.pos : null, situacion: mia ? mia.sit : '', perfil: mia ? mia.per : '',
-    trabaja: mia && mia.dep ? (mia.cat + ' · ' + mia.dep) : '', tramo: res.tramo, delante
+    identificado: !!(perfil.puesto || yo), encontrado: !!mia, puesto: mia ? mia.pos : null, situacion: mia ? mia.sit : '', perfil: mia ? mia.per : '',
+    trabaja: mia && mia.dep ? (mia.cat + ' · ' + mia.dep) : '', tramo: res.tramo,
+    delante: mia ? cuenta(res.filas.filter(f => f.pos < mia.pos)) : cuenta(res.filas)
   };
 }
 
@@ -213,14 +238,18 @@ async function actualizar() {
   if (actualizando || !perfil) return;
   if (!NAV) { demo(); return; }
   actualizando = true;
+  registro = []; t0 = Date.now();
   const errores = [];
   try {
-    ov('Actualizando tus bolsas…', 'Buscando la última publicación');
+    ov('Actualizando tus bolsas…', '');
+    paso('Buscando la última publicación');
     await NAV.abrir({ url: INDEX_URL });
+    if (verVisible) await NAV.mostrar({ titulo: 'Búsqueda en la web de la GVA' });
     await prepararPagina();
-    await esperar('!!document.querySelector("main a")', 15000);
+    await esperar('!!window.__mb.lista()', 15000);
     const lista = await ev('window.__mb.lista()');
     if (!lista) throw new Error('No encuentro la consulta de situación en la web de la GVA');
+    paso('Publicación: ' + lista.texto.replace(/^.*\((\d+\/\d+\/\d+)\).*$/, '$1'));
     for (let i = 0; i < perfil.deps.length; i++) {
       const dep = perfil.deps[i];
       try {
@@ -228,14 +257,16 @@ async function actualizar() {
         const prev = datos[dep];
         const hist = (prev && prev.hist || []).concat([{ f: Date.now(), act: r.delante.activos, des: r.delante.desactivados }]).slice(-24);
         datos[dep] = Object.assign(r, { fecha: Date.now(), pub: lista.texto, hist, prev: prev ? prev.delante : null });
-      } catch (e) { errores.push(depName(dep) + ': ' + e.message); }
+      } catch (e) { errores.push(depName(dep) + ': ' + e.message); paso('ERROR ' + depName(dep) + ': ' + e.message); }
     }
     store.set('datos', datos);
-  } catch (e) { errores.push(e.message); }
+  } catch (e) { errores.push(e.message); paso('ERROR: ' + e.message); }
   finally {
+    paso('Fin');
     try { await NAV.cerrar(); } catch (e) {}
     actualizando = false; ovOff();
     store.set('errores', errores);
+    store.set('registro', registro);
     pintar();
   }
 }
@@ -243,11 +274,13 @@ async function actualizar() {
 function demo() {
   // Vista previa en el ordenador (sin el navegador del móvil): datos inventados
   perfil.deps.forEach((d, i) => {
-    datos[d] = { encontrado: true, puesto: 37 + i * 12, situacion: i ? 'DESACTIVADO' : 'ACTIVO EN PLAZA VACANTE', perfil: '', trabaja: '', tramo: '1 - 200',
+    datos[d] = { identificado: true, encontrado: true, puesto: 37 + i * 12, situacion: i ? 'DESACTIVADO' : 'ACTIVO EN PLAZA VACANTE', perfil: '', trabaja: '', tramo: '1 - 200',
       delante: { activos: 18 - i, desactivados: 12 + i, noDisp: 4, disponibles: 2, total: 36 + i * 12 }, fecha: Date.now(),
       pub: 'DATOS DE EJEMPLO', prev: { activos: 15 - i }, hist: [] };
   });
-  store.set('datos', datos); pintar();
+  store.set('datos', datos);
+  store.set('registro', ['0.0 s · Vista previa en el ordenador: datos de ejemplo']);
+  pintar();
 }
 
 // ───────────────────────── Pantallas ─────────────────────────
@@ -257,7 +290,8 @@ function ov(t, s) { document.getElementById('ovT').textContent = t; document.get
 function ovOff() { document.getElementById('overlay').style.display = 'none'; }
 
 function pantallaPerfil() {
-  const p = perfil || { cat: '0402', turno: 'O', deps: ['SV'], ap1: '', ap2: '', nombre: '' };
+  const p = perfil || { cat: '0402', turno: 'O', deps: [], ap1: '', ap2: '', nombre: '', puesto: null };
+  let deps = p.deps.slice();
   const opt = (v, t, sel) => '<option value="' + v + '"' + (sel ? ' selected' : '') + '>' + esc(t) + '</option>';
   const sesOpts = SES_CATS.map(c => opt(c, catName(c), c === p.cat)).join('');
   const resto = CATS.filter(c => !SES_CATS.includes(c[0])).map(c => opt(c[0], c[1], c[0] === p.cat)).join('');
@@ -270,25 +304,40 @@ function pantallaPerfil() {
     <label>Turno</label>
     <select id="fTurno">${opt('O', 'Ordinario', p.turno === 'O')}${opt('P', 'Promoción interna', p.turno === 'P')}</select>
     <label>Departamentos</label>
-    <div class="chips" id="fDeps">${DEPS.map(d => `<span class="chip ${SES_DEPS.includes(d[0]) ? 'ses' : ''} ${p.deps.includes(d[0]) ? 'on' : ''}" data-d="${d[0]}">${esc(d[1])}</span>`).join('')}</div>
+    <select id="fDepSel"></select>
+    <div class="chips" id="fDeps" style="margin-top:8px"></div>
+    <h2 style="margin-top:20px">¿Quién eres en la lista? <span class="note">(opcional)</span></h2>
+    <div class="note">Para ver tu puesto y cuántas personas tienes delante. Sin esto, la app te enseña el resumen de la lista.</div>
     <label>Primer apellido</label><input id="fAp1" autocomplete="family-name" value="${esc(p.ap1)}">
     <div class="row"><div><label>Segundo apellido</label><input id="fAp2" value="${esc(p.ap2)}"></div>
     <div><label>Nombre</label><input id="fNom" autocomplete="given-name" value="${esc(p.nombre)}"></div></div>
-    <div class="note">Escríbelo como aparece en la lista de la GVA. Tus datos se guardan solo en este móvil.</div>
+    <label>…o tu número de puesto</label><input id="fPuesto" inputmode="numeric" placeholder="Ej.: 37" value="${p.puesto || ''}">
+    <div class="note">Tal y como aparece en la lista de la GVA. Se guarda solo en este móvil.</div>
+    <label class="check"><input type="checkbox" id="fVer" ${store.get('ver', false) ? 'checked' : ''}> Ver la web de la GVA mientras busca (para pruebas)</label>
     <div id="fErr"></div>
     <button class="main" id="fOk">Guardar y consultar</button>
     ${perfil ? '<button class="sec" id="fCancel" style="width:100%;margin-top:10px">Cancelar</button>' : ''}
   </div>${pie()}`;
-  document.getElementById('fDeps').onclick = e => { const c = e.target.closest('.chip'); if (c) c.classList.toggle('on'); };
+  const sel = document.getElementById('fDepSel');
+  const dibujarDeps = () => {
+    const libres = DEPS.filter(d => !deps.includes(d[0]));
+    sel.innerHTML = '<option value="">+ Añadir departamento…</option>' +
+      '<optgroup label="SES · Emergencias">' + libres.filter(d => SES_DEPS.includes(d[0])).map(d => opt(d[0], d[1])).join('') + '</optgroup>' +
+      '<optgroup label="Departamentos">' + libres.filter(d => !SES_DEPS.includes(d[0])).map(d => opt(d[0], d[1])).join('') + '</optgroup>';
+    document.getElementById('fDeps').innerHTML = deps.length
+      ? deps.map(d => `<span class="chip on" data-d="${d}">${esc(depName(d))} ✕</span>`).join('')
+      : '<span class="note">Ninguno elegido todavía.</span>';
+  };
+  dibujarDeps();
+  sel.onchange = () => { if (sel.value) { deps.push(sel.value); dibujarDeps(); } };
+  document.getElementById('fDeps').onclick = e => { const c = e.target.closest('.chip'); if (c) { deps = deps.filter(d => d !== c.dataset.d); dibujarDeps(); } };
   if (perfil) document.getElementById('fCancel').onclick = pintar;
   document.getElementById('fOk').onclick = () => {
-    const deps = [...document.querySelectorAll('#fDeps .chip.on')].map(c => c.dataset.d);
-    const np = { cat: fCat.value, turno: fTurno.value, deps, ap1: fAp1.value.trim(), ap2: fAp2.value.trim(), nombre: fNom.value.trim() };
-    if (!deps.length || !np.ap1 || !np.nombre) {
-      document.getElementById('fErr').innerHTML = '<div class="err">Elige al menos un departamento y escribe tu primer apellido y tu nombre.</div>';
-      return;
-    }
+    const puesto = parseInt(fPuesto.value, 10) || null;
+    const np = { cat: fCat.value, turno: fTurno.value, deps, ap1: fAp1.value.trim(), ap2: fAp2.value.trim(), nombre: fNom.value.trim(), puesto };
+    if (!deps.length) { document.getElementById('fErr').innerHTML = '<div class="err">Elige al menos un departamento.</div>'; return; }
     if (perfil && (perfil.cat !== np.cat || perfil.turno !== np.turno)) datos = {};
+    store.set('ver', fVer.checked); verVisible = fVer.checked;
     perfil = np; store.set('perfil', perfil); store.set('datos', datos);
     pintar(); actualizar();
   };
@@ -300,11 +349,25 @@ function tagSit(s) {
   return '<span class="tag ' + c + '">' + esc(s) + '</span>';
 }
 
+function cifras(dl, txt) {
+  return `<div class="stats">
+      <div class="stat"><b>${dl.activos}</b><span>activos${txt}</span></div>
+      <div class="stat"><b>${dl.desactivados}</b><span>desactivados</span></div>
+      <div class="stat"><b>${dl.noDisp}</b><span>no disponibles</span></div>
+      <div class="stat"><b>${dl.disponibles}</b><span>disponibles</span></div>
+    </div>`;
+}
+
 function tarjeta(dep) {
   const d = datos[dep];
-  if (!d) return `<div class="card bolsa"><div class="dep">${esc(depName(dep))}</div><div class="note">Sin consultar todavía.</div></div>`;
-  if (!d.encontrado) return `<div class="card bolsa"><div class="dep">${esc(depName(dep))}</div>
-    <div class="err">No apareces en esta lista con ese nombre. Revisa cómo está escrito en la GVA (sin abreviaturas) o si estás inscrito/a en este departamento.</div></div>`;
+  const cab = `<div class="cat">${esc(catName(perfil.cat))} · ${perfil.turno === 'P' ? 'Promoción interna' : 'Ordinario'}</div><div class="dep">${esc(depName(dep))}</div>`;
+  if (!d) return `<div class="card bolsa">${cab}<div class="note">Sin consultar todavía.</div></div>`;
+  if (!d.encontrado) {
+    const aviso = d.identificado
+      ? '<div class="err">No te encuentro en esta lista. Revisa cómo está escrito tu nombre en la GVA o tu número de puesto.</div>'
+      : '<div class="note">Resumen de la lista' + (d.tramo ? ' (tramo ' + esc(d.tramo) + ')' : '') + '. Añade tu nombre o tu puesto para ver quién tienes delante.</div>';
+    return `<div class="card bolsa">${cab}${aviso}${cifras(d.delante, '')}</div>`;
+  }
   const dl = d.delante, prev = d.prev;
   let delta = '';
   if (prev && typeof prev.activos === 'number') {
@@ -313,15 +376,9 @@ function tarjeta(dep) {
       : x < 0 ? `<div class="delta">▼ ${-x} persona${-x > 1 ? 's' : ''} de delante han dejado de estar activas</div>` : '<div class="delta">Sin cambios delante de ti desde la última consulta</div>';
   }
   return `<div class="card bolsa">
-    <div class="top"><div><div class="cat">${esc(catName(perfil.cat))} · ${perfil.turno === 'P' ? 'Promoción interna' : 'Ordinario'}</div>
-      <div class="dep">${esc(depName(dep))}</div>${tagSit(d.situacion)}${d.trabaja ? '<div class="note">Trabajando en: ' + esc(d.trabaja) + '</div>' : ''}</div>
+    <div class="top"><div>${cab}${tagSit(d.situacion)}${d.trabaja ? '<div class="note">Trabajando en: ' + esc(d.trabaja) + '</div>' : ''}</div>
       <div class="puesto"><span>Tu puesto</span><b>#${d.puesto}</b></div></div>
-    <div class="stats">
-      <div class="stat"><b>${dl.activos}</b><span>activos delante</span></div>
-      <div class="stat"><b>${dl.desactivados}</b><span>desactivados</span></div>
-      <div class="stat"><b>${dl.noDisp}</b><span>no disponibles</span></div>
-      <div class="stat"><b>${dl.disponibles}</b><span>disponibles</span></div>
-    </div>${delta}
+    ${cifras(dl, ' delante')}${delta}
     ${d.tramo && !/^1\s*-/.test(d.tramo) ? `<div class="note">Recuentos del tramo ${esc(d.tramo)} de la lista.</div>` : ''}
   </div>`;
 }
@@ -336,6 +393,7 @@ function pintar() {
   const fechas = perfil.deps.map(d => datos[d] && datos[d].fecha).filter(Boolean);
   const cuando = fechas.length ? new Date(Math.min(...fechas)).toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'nunca';
   const errores = store.get('errores', []);
+  const reg = store.get('registro', []);
   const pub = (perfil.deps.map(d => datos[d] && datos[d].pub).find(Boolean)) || '';
   $app.innerHTML = `
     <div class="bar"><span class="when">Actualizado: ${esc(cuando)}</span>
@@ -343,11 +401,13 @@ function pintar() {
     ${errores.length ? '<div class="err">' + errores.map(esc).join('<br>') + '</div><br>' : ''}
     ${perfil.deps.map(tarjeta).join('')}
     ${pub ? '<div class="note">' + esc(pub) + '</div>' : ''}
+    ${reg.length ? `<details class="card reg"><summary>Detalles de la última búsqueda</summary><pre>${reg.map(esc).join('\n')}</pre></details>` : ''}
     ${pie()}`;
   document.getElementById('bAct').onclick = actualizar;
   document.getElementById('bEdit').onclick = pantallaPerfil;
 }
 
+verVisible = store.get('ver', false);
 pintar();
 // Al abrir la app (y al volver a ella) se actualiza sola si han pasado más de 6 horas
 const viejo = () => perfil && perfil.deps.some(d => !datos[d] || Date.now() - datos[d].fecha > 6 * 3600e3);
