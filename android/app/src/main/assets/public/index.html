@@ -85,7 +85,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 // Funciones que se ejecutan DENTRO de la página de la GVA (como si las tecleara la persona)
 function paginaGVA() {
-  const norm = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/\s+/g, ' ').trim();
+  const norm = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z0-9Ñ ]+/g, ' ').replace(/\s+/g, ' ').trim();
   const wOf = sel => window.PrimeFaces && PrimeFaces.widgets['widget_' + sel.id.replace(/_input$/, '').replace(/:/g, '_')];
   window.__mb = {
     lista() {
@@ -111,10 +111,11 @@ function paginaGVA() {
       return ins.length;
     },
     verificado() { return !!window.turnstileToken; },
+    marcar() { document.querySelectorAll('table').forEach(t => t.setAttribute('data-mb-viejo', '1')); return true; },
     enviar() { const b = document.getElementById('filToogle:formDynamicFilters:obtenerListado'); if (!b) return false; b.click(); return true; },
     leer() {
       const zona = document.getElementById('formData') || document;
-      const tabla = [...zona.querySelectorAll('table')].find(t => t.querySelectorAll('tbody tr').length > 0);
+      const tabla = [...zona.querySelectorAll('table')].find(t => !t.hasAttribute('data-mb-viejo') && t.querySelectorAll('tbody tr').length > 0);
       const visibles = sel => [...document.querySelectorAll(sel)].filter(e => e.offsetParent !== null).map(e => e.innerText.trim()).filter(Boolean).join(' ');
       const err = visibles('.ui-messages-error, .ui-message-error, .ui-growl-message');
       const captcha = visibles('#messageErrorCaptchaOffline');
@@ -191,6 +192,7 @@ async function consultarDep(url, dep, i, total) {
   await ev('window.__mb.escribir(' + [perfil.ap1, perfil.ap2, perfil.nombre].map(x => JSON.stringify(x || '')).join(',') + ')');
   paso('Formulario rellenado');
   if (!await verificacion(etiqueta)) throw new Error('No se completó la verificación de Cloudflare');
+  await ev('window.__mb.marcar()');
   await ev('window.__mb.enviar()');
   paso('Consulta enviada a la GVA');
   let res = null;
@@ -214,7 +216,10 @@ function resumir(res) {
     .normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/\s+/g, ' ').trim();
   let mia = null;
   if (perfil.puesto) mia = res.filas.find(f => f.pos === perfil.puesto);
-  if (!mia && yo) mia = res.filas.find(f => f.nom === yo) || res.filas.find(f => f.nom.startsWith(yo));
+  // La GVA escribe «APELLIDOS, NOMBRE»: se compara por palabras, sin comas ni tildes
+  const pal = t => (t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z0-9Ñ ]+/g, ' ').split(/\s+/).filter(Boolean);
+  const mias = pal(yo);
+  if (!mia && mias.length) mia = res.filas.find(f => { const p = pal(f.nom); return mias.every(w => p.includes(w)); });
   const cuenta = filas => {
     const c = { activos: 0, desactivados: 0, noDisp: 0, disponibles: 0, total: 0 };
     for (const f of filas) {
