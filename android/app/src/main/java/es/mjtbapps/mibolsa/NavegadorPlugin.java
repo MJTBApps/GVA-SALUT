@@ -211,4 +211,17 @@ public class NavegadorPlugin extends Plugin {
             call.reject("No se pudo compartir: " + e.getMessage());
         }
     }
+
+    /** Avisos programados en el propio móvil (sin servidor): ver AvisoReceiver. */
+    @PluginMethod
+    public void avisos(PluginCall call) {
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= 33 && androidx.core.content.ContextCompat.checkSelfPermission(getContext(),
+                    android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                androidx.core.app.ActivityCompat.requestPermissions(getActivity(), new String[]{ android.Manifest.permission.POST_NOTIFICATIONS }, 7301);
+            }
+            int n = AvisoReceiver.programar(getContext(), call.getArray("avisos").toString());
+            JSObject r = new JSObject(); r.put("programados", n); call.resolve(r);
+        } catch (Exception e) { call.reject("No se pudieron programar los avisos: " + e.getMessage()); }
+    }
 }

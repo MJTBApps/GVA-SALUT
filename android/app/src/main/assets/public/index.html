@@ -113,6 +113,20 @@ a{color:var(--acc-ink)}
 #hoja .op small{display:block;color:var(--muted);font-size:12px}
 #hoja .op.sel{color:var(--acc-ink);font-weight:700}
 #hoja .sub{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:12px 6px 4px}
+/* Hoja de información (qué significa cada situación) */
+#info{position:fixed;inset:0;background:rgba(2,6,23,.45);display:none;z-index:31;align-items:flex-end;justify-content:center}
+#info .h{background:var(--card);width:100%;max-width:640px;max-height:85vh;border-radius:26px 26px 0 0;display:flex;flex-direction:column;padding:14px 18px calc(env(safe-area-inset-bottom) + 18px)}
+#info .tira{width:40px;height:5px;border-radius:5px;background:var(--line);margin:0 auto 10px}
+#info .hc{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+#info .lista{overflow:auto;font-size:16px}#info p{margin:8px 0}#info .note{font-size:13px}
+.tag{cursor:pointer}.tag::after{content:" ⓘ";font-weight:600;opacity:.7}
+/* Plazos */
+.plazo{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.plazo b{display:block;font-size:15px}.plazo span{font-size:13px;color:var(--muted)}
+.plazo.pasado{opacity:.5}
+/* Hueco del anuncio (banner): lo ocupa el anuncio nativo de AdMob cuando esté activado */
+#anuncio{display:none;position:fixed;left:0;right:0;height:56px;z-index:9}
+body.con-anuncio main{padding-bottom:calc(env(safe-area-inset-bottom) + 170px)}
 /* Pantalla de búsqueda */
 #overlay{position:fixed;inset:0;background:rgba(2,6,23,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:20;padding:24px}
 #overlay .box{background:var(--card);border-radius:26px;padding:26px 22px;max-width:360px;width:100%;text-align:center;box-shadow:var(--shadow)}
@@ -130,6 +144,8 @@ a{color:var(--acc-ink)}
 <nav id="tabs"><div class="in"></div></nav>
 <div id="hoja"><div class="h"><div class="tira"></div><div class="hc"><h3 id="hojaT"></h3><button class="sec" id="hojaX">✕</button></div>
   <input id="hojaQ" type="search" autocomplete="off"><div class="lista" id="hojaL"></div></div></div>
+<div id="info"><div class="h"><div class="tira"></div><div class="hc"><h3 id="infoT"></h3><button class="sec" id="infoX">✕</button></div><div class="lista" id="infoL"></div></div></div>
+<div id="anuncio"></div>
 <div id="overlay"><div class="box"><div class="lupa"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></div>
   <b id="ovT"></b><div class="ovs" id="ovS"></div><div class="prog"><i id="ovP"></i></div><button class="sec" id="ovX" style="margin-top:16px">✕ <span id="ovXt"></span></button></div></div>
 
@@ -177,7 +193,18 @@ const T = {
     menosDisp: '{0}: {1} disponible(s) menos delante de ti', masDisp: '{0}: {1} disponible(s) más delante de ti', empiezan: '{0}: {1} de delante empieza(n) a trabajar',
     detalles: 'Detalles de la última búsqueda', pie1: 'App no oficial. Datos de la consulta pública de las Listas de Empleo Temporal de la Conselleria de Sanidad.',
     pie2: 'Tus datos y resultados se guardan solo en este móvil.', pubT: 'Publicación', compTexto: 'Mi situación en la bolsa de Sanidad (app Mi Bolsa, no oficial)',
-    toca: 'Toca la casilla para continuar', cancelar2: 'Cancelar', fallo: 'La GVA no ha devuelto tu fila a tiempo. Puede que no estés inscrito/a en esta bolsa o en este departamento, que tu nombre esté escrito de otra forma, o que la web de la GVA fuera lenta.', reintentar: 'Intentar de nuevo', webGva: 'Búsqueda en la web de la GVA', paso: 'Paso {0} de {1}',
+    toca: 'Toca la casilla para continuar',
+    sitQue: '¿Qué significa?', sitNota: 'Explicación orientativa. Lo que vale es la normativa de la Conselleria y lo que te diga tu departamento.',
+    sitDisp: '<p><b>Disponible</b>: estás en la lista y puedes recibir ofertas de trabajo. Te llamarán por orden de puesto cuando haya un nombramiento para tu categoría y departamento.</p><p>Ten el teléfono y el correo al día en tu inscripción: si no te localizan, pueden pasar a la siguiente persona.</p>',
+    sitAct: '<p><b>Activo/a</b>: estás trabajando con un nombramiento de esta lista. Mientras dure, normalmente no recibes otras ofertas (salvo las de mejora de empleo, si te corresponden).</p><p>Cuando termine el contrato vuelves a quedar disponible en tu mismo puesto de la lista.</p>',
+    sitNo: '<p><b>No disponible</b>: no recibes ofertas durante un tiempo. Suele ser porque lo has pedido tú o por una causa justificada (por ejemplo, enfermedad, maternidad o paternidad, cuidado de familiares o estar trabajando en otro sitio).</p><p>Para volver a recibir ofertas tienes que pedir el paso a disponible como indique la Conselleria. Mientras tanto no pierdes tu puesto.</p>',
+    sitDes: '<p><b>Desactivado/a</b>: ahora no te ofrecen nombramientos en esta lista o departamento. Puede ser porque no tienes marcada esa opción en tu inscripción, por haber rechazado una oferta o no haberte presentado sin causa justificada, o por otro motivo administrativo.</p><p>Revisa tu inscripción y, si no sabes el motivo, pregunta en personal de tu departamento. Mira también la pestaña Bolsa → Penalizaciones.</p>',
+    sitOtra: '<p>Esta es la situación que aparece en la lista pública de la GVA. Si no sabes qué significa, pregunta en personal de tu departamento.</p>',
+    plazT: '📅 Plazos y recordatorios', plazNota: 'Apunta fechas importantes (entregar méritos, cambio de departamentos, una cita…) y te aviso el día antes y el mismo día.',
+    plazQue: '¿Qué tienes que hacer?', plazAdd: '+ Añadir plazo', plazPub: 'Próxima publicación de las listas', plazHoy: 'hoy', plazManana: 'mañana', plazEn: 'dentro de {0} días', plazHace: 'ya pasó', plazFalta: 'Escribe qué es y elige una fecha.',
+    avT: '🔔 Avisos en el móvil', avTxt: 'Avisarme los días de publicación y de mis plazos, aunque la app esté cerrada',
+    avPubT: '📢 Nueva publicación de las listas', avPubTxt: 'Hoy toca publicación de las listas de Sanidad. Abre Mi Bolsa para ver tu puesto.',
+    avPlazT: '📅 Mañana: {0}', avPlazHoyT: '📅 Hoy: {0}', avPlazTxt: 'Recordatorio de Mi Bolsa', borrar: 'Borrar', cancelar2: 'Cancelar', fallo: 'La GVA no ha devuelto tu fila a tiempo. Puede que no estés inscrito/a en esta bolsa o en este departamento, que tu nombre esté escrito de otra forma, o que la web de la GVA fuera lenta.', reintentar: 'Intentar de nuevo', webGva: 'Búsqueda en la web de la GVA', paso: 'Paso {0} de {1}',
     actividad: 'Actividad de la bolsa', penal: 'Penalizaciones', penalNueva: '⚠️ Apareces en la lista de penalizaciones de la GVA',
     actT: '📈 Actividad de la bolsa', actMes: 'Nombramientos en {0}', actDep: '{0} en {1}', largos: 'largos (vacantes, interinidades)', cortos: 'cortos (sustituciones, eventuales…)', otros: 'otros',
     hastaPuesto: 'Llamaron hasta el puesto {0}', parcial: 'Solo se cuenta la primera página de la consulta.', rankT: 'Departamentos que más llaman',
@@ -229,7 +256,18 @@ const T = {
     menosDisp: '{0}: {1} disponible(s) menys davant de tu', masDisp: '{0}: {1} disponible(s) més davant de tu', empiezan: '{0}: {1} de davant comença(en) a treballar',
     detalles: 'Detalls de l\'última busca', pie1: 'App no oficial. Dades de la consulta pública de les Llistes d\'Ocupació Temporal de la Conselleria de Sanitat.',
     pie2: 'Les teues dades i resultats es guarden només en este mòbil.', pubT: 'Publicació', compTexto: 'La meua situació en la borsa de Sanitat (app Mi Bolsa, no oficial)',
-    toca: 'Toca la casella per a continuar', cancelar2: 'Cancel·lar', fallo: 'La GVA no ha tornat la teua fila a temps. Pot ser que no estigues inscrit/a en esta borsa o en este departament, que el teu nom estiga escrit d\'una altra manera, o que la web de la GVA anara lenta.', reintentar: 'Tornar a intentar', webGva: 'Busca en la web de la GVA', paso: 'Pas {0} de {1}',
+    toca: 'Toca la casella per a continuar',
+    sitQue: 'Què vol dir?', sitNota: 'Explicació orientativa. El que val és la normativa de la Conselleria i el que et diga el teu departament.',
+    sitDisp: '<p><b>Disponible</b>: estàs en la llista i pots rebre ofertes de treball. Et cridaran per orde de lloc quan hi haja un nomenament per a la teua categoria i departament.</p><p>Tin el telèfon i el correu al dia en la teua inscripció: si no et localitzen, poden passar a la persona següent.</p>',
+    sitAct: '<p><b>Actiu/va</b>: estàs treballant amb un nomenament d\'esta llista. Mentre dure, normalment no reps altres ofertes (excepte les de millora d\'ocupació, si et corresponen).</p><p>Quan acabe el contracte tornes a quedar disponible en el teu mateix lloc de la llista.</p>',
+    sitNo: '<p><b>No disponible</b>: no reps ofertes durant un temps. Sol ser perquè ho has demanat tu o per una causa justificada (per exemple, malaltia, maternitat o paternitat, cura de familiars o estar treballant en un altre lloc).</p><p>Per a tornar a rebre ofertes has de demanar el pas a disponible com indique la Conselleria. Mentrestant no perds el teu lloc.</p>',
+    sitDes: '<p><b>Desactivat/da</b>: ara no t\'oferixen nomenaments en esta llista o departament. Pot ser perquè no tens marcada eixa opció en la inscripció, per haver rebutjat una oferta o no haver-te presentat sense causa justificada, o per un altre motiu administratiu.</p><p>Revisa la teua inscripció i, si no saps el motiu, pregunta en personal del teu departament. Mira també la pestanya Borsa → Penalitzacions.</p>',
+    sitOtra: '<p>Esta és la situació que apareix en la llista pública de la GVA. Si no saps què vol dir, pregunta en personal del teu departament.</p>',
+    plazT: '📅 Terminis i recordatoris', plazNota: 'Apunta dates importants (entregar mèrits, canvi de departaments, una cita…) i t\'avise el dia abans i el mateix dia.',
+    plazQue: 'Què has de fer?', plazAdd: '+ Afegir termini', plazPub: 'Pròxima publicació de les llistes', plazHoy: 'hui', plazManana: 'demà', plazEn: 'd\'ací a {0} dies', plazHace: 'ja ha passat', plazFalta: 'Escriu què és i tria una data.',
+    avT: '🔔 Avisos en el mòbil', avTxt: 'Avisar-me els dies de publicació i dels meus terminis, encara que l\'app estiga tancada',
+    avPubT: '📢 Nova publicació de les llistes', avPubTxt: 'Hui toca publicació de les llistes de Sanitat. Obri Mi Bolsa per a vore el teu lloc.',
+    avPlazT: '📅 Demà: {0}', avPlazHoyT: '📅 Hui: {0}', avPlazTxt: 'Recordatori de Mi Bolsa', borrar: 'Esborrar', cancelar2: 'Cancel·lar', fallo: 'La GVA no ha tornat la teua fila a temps. Pot ser que no estigues inscrit/a en esta borsa o en este departament, que el teu nom estiga escrit d\'una altra manera, o que la web de la GVA anara lenta.', reintentar: 'Tornar a intentar', webGva: 'Busca en la web de la GVA', paso: 'Pas {0} de {1}',
     actividad: 'Activitat de la borsa', penal: 'Penalitzacions', penalNueva: '⚠️ Apareixes en la llista de penalitzacions de la GVA',
     actT: '📈 Activitat de la borsa', actMes: 'Nomenaments en {0}', actDep: '{0} en {1}', largos: 'llargs (vacants, interinitats)', cortos: 'curts (substitucions, eventuals…)', otros: 'altres',
     hastaPuesto: 'Van cridar fins al lloc {0}', parcial: 'Només es compta la primera pàgina de la consulta.', rankT: 'Departaments que més criden',
@@ -750,6 +788,8 @@ async function actualizar(forzar = false) {
     try { await conTiempo(NAV.cerrar(), 5000, ''); } catch (e) {}
     actualizando = false; ovOff();
     store.set('errores', errores);
+    setTimeout(anuncioCadaTanto, 600);
+    programarAvisos();
     store.set('registro', registro);
     pintar();
     actualizarWidget();
@@ -1043,7 +1083,7 @@ function avisos() {
 function tagSit(s) {
   if (!s) return '';
   const c = /DESACTIV/.test(s) ? 't-des' : /NO DISPONIBLE/.test(s) ? 't-no' : /ACTI/.test(s) ? 't-act' : 't-dis';
-  return '<span class="tag ' + c + '">' + esc(sitCorta(s)) + '</span>';
+  return '<span class="tag ' + c + '" data-sit="' + esc(s) + '">' + esc(sitCorta(s)) + '</span>';
 }
 
 function cifras(dl, conTitulo) {
@@ -1298,6 +1338,99 @@ function barraPestanas(visible) {
   nav.onclick = e => { const b = e.target.closest('button'); if (!b) return; pestana = b.dataset.tab; store.set('tab', pestana); pintar(); window.scrollTo(0, 0); };
 }
 
+// ── Hoja de información: qué significa cada situación ──
+function info(titulo, html) {
+  const I = document.getElementById('info');
+  document.getElementById('infoT').textContent = titulo;
+  document.getElementById('infoL').innerHTML = html;
+  const cerrar = () => { I.style.display = 'none'; };
+  document.getElementById('infoX').onclick = cerrar;
+  I.onclick = e => { if (e.target === I) cerrar(); };
+  I.style.display = 'flex';
+}
+function explicarSit(s) {
+  const k = /DESACTIV/.test(s) ? 'sitDes' : /NO DISPONIBLE/.test(s) ? 'sitNo' : /ACTI/.test(s) ? 'sitAct' : /DISPONIBLE/.test(s) ? 'sitDisp' : 'sitOtra';
+  info(sitCorta(s) || t('sitQue'), t(k) + '<div class="note">' + t('sitNota') + '</div>');
+}
+
+// ── Plazos que apunta la persona + próxima publicación ──
+const diaMs = 86400000;
+const hoy0 = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime(); };
+const fechaLarga = ms => new Date(ms).toLocaleDateString(lang === 'va' ? 'ca-ES' : 'es-ES', { weekday: 'short', day: 'numeric', month: 'long' });
+function cuantoFalta(ms) {
+  const n = Math.round((ms - hoy0()) / diaMs);
+  return n < 0 ? t('plazHace') : n === 0 ? t('plazHoy') : n === 1 ? t('plazManana') : t('plazEn', n);
+}
+function plazosCard() {
+  const pl = store.get('plazos', []).slice().sort((a, b) => a.fecha - b.fecha);
+  const pub = proximaPub().d.getTime();
+  return `<div class="card"><h3>${t('plazT')}</h3><div class="note" style="margin-top:0">${t('plazNota')}</div>
+    <div class="plazo"><div><b>📢 ${t('plazPub')}</b><span>${esc(fechaLarga(pub))} · ${cuantoFalta(pub)}</span></div></div>
+    ${pl.map(p => `<div class="plazo${p.fecha < hoy0() ? ' pasado' : ''}"><div><b>${esc(p.texto)}</b><span>${esc(fechaLarga(p.fecha))} · ${cuantoFalta(p.fecha)}</span></div><button class="sec" data-borrapl="${p.id}">${t('borrar')}</button></div>`).join('')}
+    <label class="l">${t('plazQue')}</label><input id="plTxt" maxlength="80">
+    <div class="row" style="margin-top:10px"><input id="plFec" type="date"><button class="sec" id="plAdd" style="flex:0 0 auto">${t('plazAdd')}</button></div>
+    <div class="err" id="plErr" style="display:none">${t('plazFalta')}</div></div>`;
+}
+function enlazarPlazos() {
+  const add = document.getElementById('plAdd');
+  if (add) add.onclick = () => {
+    const tx = document.getElementById('plTxt').value.trim(), f = document.getElementById('plFec').value;
+    if (!tx || !f) { document.getElementById('plErr').style.display = 'block'; return; }
+    const [y, m, d] = f.split('-').map(Number);
+    const pl = store.get('plazos', []).filter(p => p.fecha >= hoy0() - 30 * diaMs);  // los muy viejos se van solos
+    pl.push({ id: 'p' + Date.now(), texto: tx, fecha: new Date(y, m - 1, d).getTime() });
+    store.set('plazos', pl); programarAvisos(); pintar();
+  };
+  $app.querySelectorAll('[data-borrapl]').forEach(x => { x.onclick = () => {
+    store.set('plazos', store.get('plazos', []).filter(p => p.id !== x.dataset.borrapl)); programarAvisos(); pintar();
+  }; });
+}
+
+// ── Avisos con la app cerrada: se programan en el propio móvil (sin servidor) ──
+// Días de publicación (1 y 15) a las 10:00 durante los próximos meses, y cada plazo el día antes y el mismo día.
+function programarAvisos() {
+  if (!NAV || !NAV.avisos) return;
+  const lista = [];
+  if (store.get('avisosOn', true) && perfil) {
+    const ahora = new Date();
+    for (let i = 0; i < 6; i++) for (const dia of [1, 15]) {
+      const f = new Date(ahora.getFullYear(), ahora.getMonth() + i, dia, 10, 0, 0);
+      if (f > ahora) lista.push({ id: 'pub' + f.getTime(), fecha: f.getTime(), titulo: t('avPubT'), texto: t('avPubTxt') });
+    }
+    for (const p of store.get('plazos', [])) {
+      const antes = p.fecha - diaMs + 10 * 3600e3, mismo = p.fecha + 9 * 3600e3;
+      if (antes > Date.now()) lista.push({ id: p.id + 'a', fecha: antes, titulo: t('avPlazT', p.texto), texto: t('avPlazTxt') });
+      if (mismo > Date.now()) lista.push({ id: p.id + 'b', fecha: mismo, titulo: t('avPlazHoyT', p.texto), texto: t('avPlazTxt') });
+    }
+  }
+  lista.sort((a, b) => a.fecha - b.fecha);
+  NAV.avisos({ avisos: lista.slice(0, 40) }).catch(() => {});
+}
+
+// ── Anuncios (preparado, todavía apagado) ──
+// Cuando se cree la app en AdMob: poner activo:true y los identificadores, y añadir el complemento
+// @capacitor-community/admob. Banner abajo (encima de las pestañas), uno al abrir la app y uno
+// intersticial cada cierto tiempo al acabar una búsqueda. Con «premium» no sale ninguno.
+const ADS = { activo: false, banner: '', inicio: '', inter: '', cadaMin: 4 };
+const ADMOB = () => window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.AdMob;
+const conAnuncios = () => ADS.activo && !store.get('premium', false) && !!ADMOB();
+let ultimoInter = 0;
+async function anunciosIniciar() {
+  if (!conAnuncios()) return;
+  try {
+    await ADMOB().initialize({});
+    document.body.classList.add('con-anuncio');
+    const alto = (document.getElementById('tabs').offsetHeight || 64);
+    await ADMOB().showBanner({ adId: ADS.banner, adSize: 'ADAPTIVE_BANNER', position: 'BOTTOM_CENTER', margin: alto });
+    await anuncioPantalla(ADS.inicio);                       // siempre uno al abrir la app
+  } catch (e) {}
+}
+async function anuncioPantalla(id) {
+  if (!conAnuncios() || !id) return;
+  try { await ADMOB().prepareInterstitial({ adId: id }); await ADMOB().showInterstitial(); ultimoInter = Date.now(); } catch (e) {}
+}
+function anuncioCadaTanto() { if (Date.now() - ultimoInter > ADS.cadaMin * 60000) anuncioPantalla(ADS.inter); }
+
 function pintar() {
   document.getElementById('hSub').textContent = t('sub');
   document.getElementById('bLang').textContent = lang === 'es' ? 'VAL' : 'CAS';
@@ -1314,13 +1447,14 @@ function pintar() {
   } else if (pestana === 'bolsa') {
     const hay = Object.keys(store.get('actividad', {})).length || Object.keys(store.get('penal', {})).length;
     html = `<div class="card"><div class="note" style="margin:0 0 10px">${t(hay ? 'extraNota2' : 'extraNota')}</div><button class="main" style="margin:0" id="bExtra">↻ ${t('extraBtn')}</button></div>`
-      + [...new Set(perfil.bolsas.map(b => b.cat))].map(actividadCard).join('') + penalCard() + oficialCard();
+      + [...new Set(perfil.bolsas.map(b => b.cat))].map(actividadCard).join('') + penalCard() + plazosCard() + oficialCard();
   } else if (pestana === 'ajustes') {
     const reg = store.get('registro', []);
     html = `<div class="card"><h2>${t('ajustesT')}</h2>
         <button class="ajuste" id="aBolsas">📋 ${t('bEdit')}<i>›</i></button>
         <button class="ajuste" id="aBar">${t('bBaremo')}<i>›</i></button>
         <div class="ajuste" style="cursor:default">🌐 ${t('idioma')}<div class="seg" id="aLang" style="width:150px"><button data-v="es" class="${lang === 'es' ? 'on' : ''}">CAS</button><button data-v="va" class="${lang === 'va' ? 'on' : ''}">VAL</button></div></div>
+        <label class="check" style="margin-top:6px"><input type="checkbox" id="aAv" ${store.get('avisosOn', true) ? 'checked' : ''}> ${t('avTxt')}</label>
         <label class="check" style="margin-top:6px"><input type="checkbox" id="aVer" ${store.get('ver', false) ? 'checked' : ''}> ${t('verWebC')}</label></div>
       ${reg.length ? `<details class="card reg"><summary>${t('detalles')}</summary><pre>${reg.map(esc).join('\n')}</pre></details>` : ''}`;
   } else {
@@ -1353,6 +1487,10 @@ function pintar() {
   $app.querySelectorAll('[data-share]').forEach(x => { x.onclick = () => compartir(x.dataset.share); });
   $app.querySelectorAll('[data-revisar]').forEach(x => { x.onclick = pantallaPerfil; });
   $app.querySelectorAll('[data-reintentar]').forEach(x => { x.onclick = () => actualizar(); });
+  $app.querySelectorAll('[data-sit]').forEach(x => { x.onclick = () => explicarSit(x.dataset.sit); });
+  const aa = document.getElementById('aAv');
+  if (aa) aa.onchange = () => { store.set('avisosOn', aa.checked); programarAvisos(); };
+  enlazarPlazos();
 }
 
 document.getElementById('bLang').onclick = () => {
@@ -1367,6 +1505,8 @@ pintar();
 const viejo = () => perfil && perfil.bolsas.some(b => b.deps.some(d => { const x = datos[clave(b, d)]; return !x || Date.now() - x.fecha > 6 * 3600e3; }));
 document.getElementById('ovX').onclick = () => { cancelado = true; paso('Cancelada por ti'); ovOff(); };
 const alAbrir = () => { if (viejo()) actualizar(); else comprobarPublicacion(); };
+programarAvisos();
+anunciosIniciar();
 alAbrir();
 document.addEventListener('visibilitychange', () => { if (!document.hidden) alAbrir(); });
 </script>

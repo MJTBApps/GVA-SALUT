@@ -3,6 +3,7 @@ import Capacitor
 import UIKit
 import WebKit
 import WidgetKit
+import UserNotifications
 
 /// Mismo puente que NavegadorPlugin.java: navegador real del sistema (WKWebView), oculto
 /// detrás de la app, para la consulta pública de la GVA. No se toca el User-Agent.
@@ -18,7 +19,8 @@ public class NavegadorPlugin: CAPPlugin, CAPBridgedPlugin, WKNavigationDelegate 
         CAPPluginMethod(name: "ocultar", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "cerrar", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "widget", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "compartir", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "compartir", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "avisos", returnType: CAPPluginReturnPromise)
     ]
 
     private var capa: UIView?
@@ -172,6 +174,34 @@ public class NavegadorPlugin: CAPPlugin, CAPBridgedPlugin, WKNavigationDelegate 
                 pop.sourceRect = CGRect(x: vc.view.bounds.midX, y: vc.view.bounds.maxY - 40, width: 1, height: 1)
             }
             vc.present(av, animated: true) { call.resolve() }
+        }
+    }
+
+    /// Avisos programados en el propio móvil (sin servidor): borra los anteriores y programa
+    /// la lista que manda la app [{id, fecha (ms), titulo, texto}]. Pide permiso la primera vez.
+    @objc func avisos(_ call: CAPPluginCall) {
+        let lista = call.getArray("avisos", JSObject.self) ?? []
+        let c = UNUserNotificationCenter.current()
+        c.requestAuthorization(options: [.alert, .sound, .badge]) { ok, _ in
+            c.getPendingNotificationRequests { pend in
+                c.removePendingNotificationRequests(withIdentifiers: pend.map { $0.identifier }.filter { $0.hasPrefix("mb-") })
+                guard ok else { call.resolve(["permiso": false]); return }
+                var n = 0
+                for a in lista {
+                    guard let id = a["id"] as? String, let ms = a["fecha"] as? Double else { continue }
+                    let fecha = Date(timeIntervalSince1970: ms / 1000)
+                    if fecha <= Date() { continue }
+                    let ct = UNMutableNotificationContent()
+                    ct.title = (a["titulo"] as? String) ?? "Mi Bolsa"
+                    ct.body = (a["texto"] as? String) ?? ""
+                    ct.sound = .default
+                    let comp = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: fecha)
+                    c.add(UNNotificationRequest(identifier: "mb-" + id, content: ct,
+                        trigger: UNCalendarNotificationTrigger(dateMatching: comp, repeats: false)))
+                    n += 1
+                }
+                call.resolve(["permiso": true, "programados": n])
+            }
         }
     }
 }

@@ -56,6 +56,14 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 - Widget de iPhone: `ios-native/BolsaWidget` + `add_widget.rb` (gema xcodeproj) en `ios.yml` (entrada `widget`, por defecto sí). Grupo de apps `group.es.mjtbapps.mibolsa` y App ID `es.mjtbapps.mibolsa.BolsaWidget` creados en developer.apple.com. El archivado ya no fuerza `PRODUCT_BUNDLE_IDENTIFIER` (lo pone Capacitor) para no pisar el del widget.
 - Pendiente de comprobar en móvil: columnas reales de la tabla de nombramientos y de penalizaciones (salen en «Detalles de la última búsqueda»).
 
+## Versión 4 (19/11/2026)
+
+- Avisos con la app cerrada, sin servidor: método `avisos` del complemento Navegador (iPhone: `UNUserNotificationCenter`; Android: `AvisoReceiver` con AlarmManager, reprograma al reiniciar). `programarAvisos()` manda días 1 y 15 a las 10:00 (6 meses) y cada plazo el día antes y el mismo día. Interruptor en Ajustes (`avisosOn`).
+- Explicación de cada situación: tocar la etiqueta → `explicarSit()` (hoja `#info`).
+- Plazos que apunta la persona (`store 'plazos'`) en la pestaña Bolsa (`plazosCard`).
+- Anuncios preparados y apagados: objeto `ADS` (activo, banner, inicio, inter, cadaMin). Falta crear la app en AdMob, añadir `@capacitor-community/admob` y poner los ids. Banner encima de las pestañas, uno al abrir y un intersticial como mucho cada `cadaMin` minutos al acabar una búsqueda; `store 'premium'` los quita.
+- Búsqueda: 1 minuto por departamento (+2 si sale la casilla de Cloudflare), 4 minutos en total, botón Cancelar; si falla se guarda `fallo` y no se repite sola.
+
 ## Pendiente
 
 - Contar también a la gente de tramos anteriores (puestos > 200): una consulta más por tramo.
