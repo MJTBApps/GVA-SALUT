@@ -204,7 +204,7 @@ const T = {
     plazQue: '¿Qué tienes que hacer?', plazAdd: '+ Añadir plazo', plazPub: 'Próxima publicación de las listas', plazHoy: 'hoy', plazManana: 'mañana', plazEn: 'dentro de {0} días', plazHace: 'ya pasó', plazFalta: 'Escribe qué es y elige una fecha.',
     avT: '🔔 Avisos en el móvil', avTxt: 'Avisarme los días de publicación y de mis plazos, aunque la app esté cerrada',
     avPubT: '📢 Nueva publicación de las listas', avPubTxt: 'Hoy toca publicación de las listas de Sanidad. Abre Mi Bolsa para ver tu puesto.',
-    avPlazT: '📅 Mañana: {0}', avPlazHoyT: '📅 Hoy: {0}', avPlazTxt: 'Recordatorio de Mi Bolsa', borrar: 'Borrar', cancelar2: 'Cancelar', fallo: 'La GVA no ha devuelto tu fila a tiempo. Puede que no estés inscrito/a en esta bolsa o en este departamento, que tu nombre esté escrito de otra forma, o que la web de la GVA fuera lenta.', reintentar: 'Intentar de nuevo', webGva: 'Búsqueda en la web de la GVA', paso: 'Paso {0} de {1}',
+    avPlazT: '📅 Mañana: {0}', avPlazHoyT: '📅 Hoy: {0}', avPlazTxt: 'Recordatorio de Mi Bolsa', borrar: 'Borrar', privAds: 'Privacidad y publicidad', privPol: 'Política de privacidad', cancelar2: 'Cancelar', fallo: 'La GVA no ha devuelto tu fila a tiempo. Puede que no estés inscrito/a en esta bolsa o en este departamento, que tu nombre esté escrito de otra forma, o que la web de la GVA fuera lenta.', reintentar: 'Intentar de nuevo', webGva: 'Búsqueda en la web de la GVA', paso: 'Paso {0} de {1}',
     actividad: 'Actividad de la bolsa', penal: 'Penalizaciones', penalNueva: '⚠️ Apareces en la lista de penalizaciones de la GVA',
     actT: '📈 Actividad de la bolsa', actMes: 'Nombramientos en {0}', actDep: '{0} en {1}', largos: 'largos (vacantes, interinidades)', cortos: 'cortos (sustituciones, eventuales…)', otros: 'otros',
     hastaPuesto: 'Llamaron hasta el puesto {0}', parcial: 'Solo se cuenta la primera página de la consulta.', rankT: 'Departamentos que más llaman',
@@ -267,7 +267,7 @@ const T = {
     plazQue: 'Què has de fer?', plazAdd: '+ Afegir termini', plazPub: 'Pròxima publicació de les llistes', plazHoy: 'hui', plazManana: 'demà', plazEn: 'd\'ací a {0} dies', plazHace: 'ja ha passat', plazFalta: 'Escriu què és i tria una data.',
     avT: '🔔 Avisos en el mòbil', avTxt: 'Avisar-me els dies de publicació i dels meus terminis, encara que l\'app estiga tancada',
     avPubT: '📢 Nova publicació de les llistes', avPubTxt: 'Hui toca publicació de les llistes de Sanitat. Obri Mi Bolsa per a vore el teu lloc.',
-    avPlazT: '📅 Demà: {0}', avPlazHoyT: '📅 Hui: {0}', avPlazTxt: 'Recordatori de Mi Bolsa', borrar: 'Esborrar', cancelar2: 'Cancel·lar', fallo: 'La GVA no ha tornat la teua fila a temps. Pot ser que no estigues inscrit/a en esta borsa o en este departament, que el teu nom estiga escrit d\'una altra manera, o que la web de la GVA anara lenta.', reintentar: 'Tornar a intentar', webGva: 'Busca en la web de la GVA', paso: 'Pas {0} de {1}',
+    avPlazT: '📅 Demà: {0}', avPlazHoyT: '📅 Hui: {0}', avPlazTxt: 'Recordatori de Mi Bolsa', borrar: 'Esborrar', privAds: 'Privacitat i publicitat', privPol: 'Política de privacitat', cancelar2: 'Cancel·lar', fallo: 'La GVA no ha tornat la teua fila a temps. Pot ser que no estigues inscrit/a en esta borsa o en este departament, que el teu nom estiga escrit d\'una altra manera, o que la web de la GVA anara lenta.', reintentar: 'Tornar a intentar', webGva: 'Busca en la web de la GVA', paso: 'Pas {0} de {1}',
     actividad: 'Activitat de la borsa', penal: 'Penalitzacions', penalNueva: '⚠️ Apareixes en la llista de penalitzacions de la GVA',
     actT: '📈 Activitat de la borsa', actMes: 'Nomenaments en {0}', actDep: '{0} en {1}', largos: 'llargs (vacants, interinitats)', cortos: 'curts (substitucions, eventuals…)', otros: 'altres',
     hastaPuesto: 'Van cridar fins al lloc {0}', parcial: 'Només es compta la primera pàgina de la consulta.', rankT: 'Departaments que més criden',
@@ -1463,6 +1463,8 @@ function pintar() {
         <button class="ajuste" id="aBolsas">📋 ${t('bEdit')}<i>›</i></button>
         <button class="ajuste" id="aBar">${t('bBaremo')}<i>›</i></button>
         <div class="ajuste" style="cursor:default">🌐 ${t('idioma')}<div class="seg" id="aLang" style="width:150px"><button data-v="es" class="${lang === 'es' ? 'on' : ''}">CAS</button><button data-v="va" class="${lang === 'va' ? 'on' : ''}">VAL</button></div></div>
+        ${ADMOB() ? `<button class="ajuste" id="aPriv">🛡️ ${t('privAds')}<i>›</i></button>` : ''}
+        <a class="ajuste" href="https://mjtbapps.github.io/GVA-SALUT/privacidad.html" target="_blank" rel="noopener">📄 ${t('privPol')}<i>↗︎</i></a>
         <label class="check" style="margin-top:6px"><input type="checkbox" id="aAv" ${store.get('avisosOn', true) ? 'checked' : ''}> ${t('avTxt')}</label>
         <label class="check" style="margin-top:6px"><input type="checkbox" id="aVer" ${store.get('ver', false) ? 'checked' : ''}> ${t('verWebC')}</label></div>
       ${reg.length ? `<details class="card reg"><summary>${t('detalles')}</summary><pre>${reg.map(esc).join('\n')}</pre></details>` : ''}`;
@@ -1499,6 +1501,7 @@ function pintar() {
   $app.querySelectorAll('[data-sit]').forEach(x => { x.onclick = () => explicarSit(x.dataset.sit); });
   const aa = document.getElementById('aAv');
   if (aa) aa.onchange = () => { store.set('avisosOn', aa.checked); programarAvisos(); };
+  on('aPriv', () => { const A = ADMOB(); if (A) A.showPrivacyOptionsForm().catch(() => {}); });
   enlazarPlazos();
 }
 
