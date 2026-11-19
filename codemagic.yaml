@@ -38,9 +38,7 @@ workflows:
           python3 - <<'EOF'
           from PIL import Image
           import glob, json, os
-          fg = Image.open('android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png').convert('RGBA').resize((1024, 1024), Image.LANCZOS)
-          bg = Image.new('RGBA', (1024, 1024), (0x0F, 0x17, 0x2A, 255))
-          bg.alpha_composite(fg)
+          bg = Image.open('resources/icon.png').convert('RGBA').resize((1024, 1024), Image.LANCZOS)  # logo de la app
           d = 'ios/App/App/Assets.xcassets/AppIcon.appiconset'
           for f in glob.glob(d + '/*.png'): os.remove(f)
           bg.convert('RGB').save(d + '/AppIcon-1024.png')
