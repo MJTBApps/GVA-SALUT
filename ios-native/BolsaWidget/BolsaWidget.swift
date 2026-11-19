@@ -59,7 +59,7 @@ struct VistaBolsa: View {
 struct BolsaWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "BolsaWidget", provider: Proveedor()) { e in VistaBolsa(e: e) }
-            .configurationDisplayName("Mi Bolsa")
+            .configurationDisplayName("Mi Bolsa Salut")
             .description("Tu puesto y la gente disponible delante.")
             .supportedFamilies([.systemSmall, .systemMedium])
     }

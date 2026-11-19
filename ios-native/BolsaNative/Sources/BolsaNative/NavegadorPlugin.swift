@@ -192,7 +192,7 @@ public class NavegadorPlugin: CAPPlugin, CAPBridgedPlugin, WKNavigationDelegate 
                     let fecha = Date(timeIntervalSince1970: ms / 1000)
                     if fecha <= Date() { continue }
                     let ct = UNMutableNotificationContent()
-                    ct.title = (a["titulo"] as? String) ?? "Mi Bolsa"
+                    ct.title = (a["titulo"] as? String) ?? "Mi Bolsa Salut"
                     ct.body = (a["texto"] as? String) ?? ""
                     ct.sound = .default
                     let comp = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: fecha)

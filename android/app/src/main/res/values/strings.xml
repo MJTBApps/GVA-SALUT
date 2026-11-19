@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="app_name">Mi Bolsa</string>
-    <string name="title_activity_main">Mi Bolsa</string>
+    <string name="title_activity_main">Mi Bolsa Salut</string>
     <string name="package_name">es.mjtbapps.mibolsa</string>
     <string name="custom_url_scheme">es.mjtbapps.mibolsa</string>
     <string name="widget_desc">Tu puesto y la gente disponible delante</string>

@@ -1,6 +1,6 @@
 # Mi Bolsa — contexto del proyecto
 
-App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que enseña a cada persona su situación en las **Listas de Empleo Temporal de la Conselleria de Sanidad** (Comunitat Valenciana), incluido el **SES** (Locutor C.I.C.U., Técnico Emergencias Sanitarias, Enfermera/o y Médico SAMU; departamentos SES Alicante, Castellón y Valencia). App **no oficial**. Nombre provisional: «Mi Bolsa» (`appId` `es.mjtbapps.mibolsa`).
+App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que enseña a cada persona su situación en las **Listas de Empleo Temporal de la Conselleria de Sanidad** (Comunitat Valenciana), incluido el **SES** (Locutor C.I.C.U., Técnico Emergencias Sanitarias, Enfermera/o y Médico SAMU; departamentos SES Alicante, Castellón y Valencia). App **no oficial**. Nombre: **«Mi Bolsa Salut»** (19/11/2026; debajo del icono «Mi Bolsa», que es lo que cabe en iPhone). `appId` `es.mjtbapps.mibolsa`. No usar «GVA» ni parecerse a la otra app, «BolsaSanidad».
 
 ## De dónde salen los datos (importante)
 

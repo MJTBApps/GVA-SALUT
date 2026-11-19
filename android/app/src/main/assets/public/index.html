@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<title>Mi Bolsa</title>
+<title>Mi Bolsa Salut</title>
 <style>
 :root{
   --bg:#f4f6fb; --card:#ffffff; --ink:#1e293b; --muted:#64748b; --line:#e5e9f2; --soft:#eef2f8;
@@ -139,7 +139,7 @@ body.con-anuncio main{padding-bottom:calc(env(safe-area-inset-bottom) + 170px)}
 </style>
 </head>
 <body>
-<header><div class="fila"><div><h1>Mi Bolsa</h1><p id="hSub"></p></div><button class="lang" id="bLang">VAL</button></div></header>
+<header><div class="fila"><div><h1>Mi Bolsa Salut</h1><p id="hSub"></p></div><button class="lang" id="bLang">VAL</button></div></header>
 <main id="app"></main>
 <nav id="tabs"><div class="in"></div></nav>
 <div id="hoja"><div class="h"><div class="tira"></div><div class="hc"><h3 id="hojaT"></h3><button class="sec" id="hojaX">✕</button></div>
@@ -192,7 +192,7 @@ const T = {
     nuevaPub: '📢 Nueva publicación de la GVA ({0})', cambioSit: '{0}: tu situación ha cambiado de «{1}» a «{2}»', cambioPuesto: '{0}: tu puesto ha pasado del {1} al {2}',
     menosDisp: '{0}: {1} disponible(s) menos delante de ti', masDisp: '{0}: {1} disponible(s) más delante de ti', empiezan: '{0}: {1} de delante empieza(n) a trabajar',
     detalles: 'Detalles de la última búsqueda', pie1: 'App no oficial. Datos de la consulta pública de las Listas de Empleo Temporal de la Conselleria de Sanidad.',
-    pie2: 'Tus datos y resultados se guardan solo en este móvil.', pubT: 'Publicación', compTexto: 'Mi situación en la bolsa de Sanidad (app Mi Bolsa, no oficial)',
+    pie2: 'Tus datos y resultados se guardan solo en este móvil.', pubT: 'Publicación', compTexto: 'Mi situación en la bolsa de Sanidad (app Mi Bolsa Salut, no oficial)',
     toca: 'Toca la casilla para continuar',
     sitQue: '¿Qué significa?', sitNota: 'Explicación orientativa. Lo que vale es la normativa de la Conselleria y lo que te diga tu departamento.',
     sitDisp: '<p><b>Disponible</b>: estás en la lista y puedes recibir ofertas de trabajo. Te llamarán por orden de puesto cuando haya un nombramiento para tu categoría y departamento.</p><p>Ten el teléfono y el correo al día en tu inscripción: si no te localizan, pueden pasar a la siguiente persona.</p>',
@@ -203,8 +203,8 @@ const T = {
     plazT: '📅 Plazos y recordatorios', plazNota: 'Apunta fechas importantes (entregar méritos, cambio de departamentos, una cita…) y te aviso el día antes y el mismo día.',
     plazQue: '¿Qué tienes que hacer?', plazAdd: '+ Añadir plazo', plazPub: 'Próxima publicación de las listas', plazHoy: 'hoy', plazManana: 'mañana', plazEn: 'dentro de {0} días', plazHace: 'ya pasó', plazFalta: 'Escribe qué es y elige una fecha.',
     avT: '🔔 Avisos en el móvil', avTxt: 'Avisarme los días de publicación y de mis plazos, aunque la app esté cerrada',
-    avPubT: '📢 Nueva publicación de las listas', avPubTxt: 'Hoy toca publicación de las listas de Sanidad. Abre Mi Bolsa para ver tu puesto.',
-    avPlazT: '📅 Mañana: {0}', avPlazHoyT: '📅 Hoy: {0}', avPlazTxt: 'Recordatorio de Mi Bolsa', borrar: 'Borrar', privAds: 'Privacidad y publicidad', privPol: 'Política de privacidad', cancelar2: 'Cancelar', fallo: 'La GVA no ha devuelto tu fila a tiempo. Puede que no estés inscrito/a en esta bolsa o en este departamento, que tu nombre esté escrito de otra forma, o que la web de la GVA fuera lenta.', reintentar: 'Intentar de nuevo', webGva: 'Búsqueda en la web de la GVA', paso: 'Paso {0} de {1}',
+    avPubT: '📢 Nueva publicación de las listas', avPubTxt: 'Hoy toca publicación de las listas de Sanidad. Abre Mi Bolsa Salut para ver tu puesto.',
+    avPlazT: '📅 Mañana: {0}', avPlazHoyT: '📅 Hoy: {0}', avPlazTxt: 'Recordatorio de Mi Bolsa Salut', borrar: 'Borrar', privAds: 'Privacidad y publicidad', privPol: 'Política de privacidad', cancelar2: 'Cancelar', fallo: 'La GVA no ha devuelto tu fila a tiempo. Puede que no estés inscrito/a en esta bolsa o en este departamento, que tu nombre esté escrito de otra forma, o que la web de la GVA fuera lenta.', reintentar: 'Intentar de nuevo', webGva: 'Búsqueda en la web de la GVA', paso: 'Paso {0} de {1}',
     actividad: 'Actividad de la bolsa', penal: 'Penalizaciones', penalNueva: '⚠️ Apareces en la lista de penalizaciones de la GVA',
     actT: '📈 Actividad de la bolsa', actMes: 'Nombramientos en {0}', actDep: '{0} en {1}', largos: 'largos (vacantes, interinidades)', cortos: 'cortos (sustituciones, eventuales…)', otros: 'otros',
     hastaPuesto: 'Llamaron hasta el puesto {0}', parcial: 'Solo se cuenta la primera página de la consulta.', rankT: 'Departamentos que más llaman',
@@ -221,7 +221,7 @@ const T = {
     barDoc: 'Doctorado relacionado', barDocNo: 'No', barDocSi: 'Sí', barDocCum: 'Sí, cum laude', barMas: 'Másteres oficiales relacionados', barProp: 'Títulos propios relacionados', barIdi: 'Otro idioma de la UE (nivel)',
     barCur: 'Cursos de formación continua (nº de cursos por horas)', barCurNota: 'Según la Orden 4/2019 solo puntúan en uno de los turnos: compruébalo en tu convocatoria.', barDocencia: 'Horas de docencia impartidas',
     barDis: 'Diversidad funcional igual o superior al 33 %', barTotal: 'Total aproximado', barNota: 'Cálculo orientativo con el baremo publicado en el DOGV. Los méritos que cuentan son los que tenías en la fecha de corte de la edición y la puntuación oficial es la de la GVA. No incluye puestos de difícil cobertura.',
-    extraBtn: 'Consultar actividad y penalizaciones', extraNota: 'La actividad de la bolsa (nombramientos) y las penalizaciones se consultan aparte para que la búsqueda principal sea rápida.', extraNota2: 'Pulsa para actualizar la actividad y las penalizaciones.',
+    extraBtn: 'Actualizar ahora', extraNota: 'La actividad de la bolsa (nombramientos) y las penalizaciones se cargan solas al entrar aquí (como mucho cada 12 horas).', extraNota2: 'Actualizado: {0}. Se vuelve a cargar solo cada 12 horas.',
     tInicio: 'Inicio', tEvol: 'Evolución', tBolsa: 'Bolsa', tAjustes: 'Ajustes', nfT: '😕 No te encontramos en esta bolsa',
     nfTxt: 'Puede que no estés inscrito/a en esta categoría, turno o departamento, o que tu nombre esté escrito de otra forma en la lista de la GVA (por ejemplo, con los dos apellidos o con tilde).', revisar: 'Revisar mis datos',
     evolVacia: 'Aquí verás la evolución cuando la app te haya encontrado en alguna bolsa.', idioma: 'Idioma', ajustesT: 'Ajustes', verWebC: 'Ver la web de la GVA mientras busca',
@@ -255,7 +255,7 @@ const T = {
     nuevaPub: '📢 Nova publicació de la GVA ({0})', cambioSit: '{0}: la teua situació ha canviat de «{1}» a «{2}»', cambioPuesto: '{0}: el teu lloc ha passat del {1} al {2}',
     menosDisp: '{0}: {1} disponible(s) menys davant de tu', masDisp: '{0}: {1} disponible(s) més davant de tu', empiezan: '{0}: {1} de davant comença(en) a treballar',
     detalles: 'Detalls de l\'última busca', pie1: 'App no oficial. Dades de la consulta pública de les Llistes d\'Ocupació Temporal de la Conselleria de Sanitat.',
-    pie2: 'Les teues dades i resultats es guarden només en este mòbil.', pubT: 'Publicació', compTexto: 'La meua situació en la borsa de Sanitat (app Mi Bolsa, no oficial)',
+    pie2: 'Les teues dades i resultats es guarden només en este mòbil.', pubT: 'Publicació', compTexto: 'La meua situació en la borsa de Sanitat (app Mi Bolsa Salut, no oficial)',
     toca: 'Toca la casella per a continuar',
     sitQue: 'Què vol dir?', sitNota: 'Explicació orientativa. El que val és la normativa de la Conselleria i el que et diga el teu departament.',
     sitDisp: '<p><b>Disponible</b>: estàs en la llista i pots rebre ofertes de treball. Et cridaran per orde de lloc quan hi haja un nomenament per a la teua categoria i departament.</p><p>Tin el telèfon i el correu al dia en la teua inscripció: si no et localitzen, poden passar a la persona següent.</p>',
@@ -266,8 +266,8 @@ const T = {
     plazT: '📅 Terminis i recordatoris', plazNota: 'Apunta dates importants (entregar mèrits, canvi de departaments, una cita…) i t\'avise el dia abans i el mateix dia.',
     plazQue: 'Què has de fer?', plazAdd: '+ Afegir termini', plazPub: 'Pròxima publicació de les llistes', plazHoy: 'hui', plazManana: 'demà', plazEn: 'd\'ací a {0} dies', plazHace: 'ja ha passat', plazFalta: 'Escriu què és i tria una data.',
     avT: '🔔 Avisos en el mòbil', avTxt: 'Avisar-me els dies de publicació i dels meus terminis, encara que l\'app estiga tancada',
-    avPubT: '📢 Nova publicació de les llistes', avPubTxt: 'Hui toca publicació de les llistes de Sanitat. Obri Mi Bolsa per a vore el teu lloc.',
-    avPlazT: '📅 Demà: {0}', avPlazHoyT: '📅 Hui: {0}', avPlazTxt: 'Recordatori de Mi Bolsa', borrar: 'Esborrar', privAds: 'Privacitat i publicitat', privPol: 'Política de privacitat', cancelar2: 'Cancel·lar', fallo: 'La GVA no ha tornat la teua fila a temps. Pot ser que no estigues inscrit/a en esta borsa o en este departament, que el teu nom estiga escrit d\'una altra manera, o que la web de la GVA anara lenta.', reintentar: 'Tornar a intentar', webGva: 'Busca en la web de la GVA', paso: 'Pas {0} de {1}',
+    avPubT: '📢 Nova publicació de les llistes', avPubTxt: 'Hui toca publicació de les llistes de Sanitat. Obri Mi Bolsa Salut per a vore el teu lloc.',
+    avPlazT: '📅 Demà: {0}', avPlazHoyT: '📅 Hui: {0}', avPlazTxt: 'Recordatori de Mi Bolsa Salut', borrar: 'Esborrar', privAds: 'Privacitat i publicitat', privPol: 'Política de privacitat', cancelar2: 'Cancel·lar', fallo: 'La GVA no ha tornat la teua fila a temps. Pot ser que no estigues inscrit/a en esta borsa o en este departament, que el teu nom estiga escrit d\'una altra manera, o que la web de la GVA anara lenta.', reintentar: 'Tornar a intentar', webGva: 'Busca en la web de la GVA', paso: 'Pas {0} de {1}',
     actividad: 'Activitat de la borsa', penal: 'Penalitzacions', penalNueva: '⚠️ Apareixes en la llista de penalitzacions de la GVA',
     actT: '📈 Activitat de la borsa', actMes: 'Nomenaments en {0}', actDep: '{0} en {1}', largos: 'llargs (vacants, interinitats)', cortos: 'curts (substitucions, eventuals…)', otros: 'altres',
     hastaPuesto: 'Van cridar fins al lloc {0}', parcial: 'Només es compta la primera pàgina de la consulta.', rankT: 'Departaments que més criden',
@@ -284,7 +284,7 @@ const T = {
     barDoc: 'Doctorat relacionat', barDocNo: 'No', barDocSi: 'Sí', barDocCum: 'Sí, cum laude', barMas: 'Màsters oficials relacionats', barProp: 'Títols propis relacionats', barIdi: 'Altre idioma de la UE (nivell)',
     barCur: 'Cursos de formació contínua (nre. de cursos per hores)', barCurNota: 'Segons l\'Ordre 4/2019 només puntuen en un dels torns: comprova-ho en la teua convocatòria.', barDocencia: 'Hores de docència impartides',
     barDis: 'Diversitat funcional igual o superior al 33 %', barTotal: 'Total aproximat', barNota: 'Càlcul orientatiu amb el barem publicat en el DOGV. Els mèrits que compten són els que tenies en la data de tall de l\'edició i la puntuació oficial és la de la GVA. No inclou llocs de difícil cobertura.',
-    extraBtn: 'Consultar activitat i penalitzacions', extraNota: 'L\'activitat de la borsa (nomenaments) i les penalitzacions es consulten a banda perquè la busca principal siga ràpida.', extraNota2: 'Prem per a actualitzar l\'activitat i les penalitzacions.',
+    extraBtn: 'Actualitzar ara', extraNota: 'L\'activitat de la borsa (nomenaments) i les penalitzacions es carreguen soles en entrar ací (com a molt cada 12 hores).', extraNota2: 'Actualitzat: {0}. Es torna a carregar sol cada 12 hores.',
     tInicio: 'Inici', tEvol: 'Evolució', tBolsa: 'Borsa', tAjustes: 'Ajustos', nfT: '😕 No t\'hem trobat en esta borsa',
     nfTxt: 'Pot ser que no estigues inscrit/a en esta categoria, torn o departament, o que el teu nom estiga escrit d\'una altra manera en la llista de la GVA (per exemple, amb els dos cognoms o amb accent).', revisar: 'Revisar les meues dades',
     evolVacia: 'Ací voràs l\'evolució quan l\'app t\'haja trobat en alguna borsa.', idioma: 'Idioma', ajustesT: 'Ajustos', verWebC: 'Vore la web de la GVA mentre busca',
@@ -788,7 +788,7 @@ async function actualizar(forzar = false) {
     try { await conTiempo(NAV.cerrar(), 5000, ''); } catch (e) {}
     actualizando = false; ovOff();
     store.set('errores', errores);
-    setTimeout(anuncioCadaTanto, 600);
+    setTimeout(() => { anuncioCadaTanto(); extrasAuto(); }, 600);
     programarAvisos();
     store.set('registro', registro);
     pintar();
@@ -839,7 +839,8 @@ async function actualizarExtras(forzarExtra = true) {
     }
     store.set('oficial', { pub: lista.pub || '', sit: lista.texto, nomb: lista.nomb && lista.nomb.texto, pen: lista.pen && lista.pen.texto });
     if (novedades.length) store.set('novedades', { fecha: Date.now(), items: novedades });
-  } catch (e) { paso('ERROR: ' + e.message); }
+    store.set('extrasFecha', Date.now());
+  } catch (e) { paso('ERROR: ' + e.message); store.set('extrasFecha', Date.now() - 11 * 3600e3); }  // si falla, se reintenta en 1 h
   finally {
     paso('Fin');
     limiteBusqueda = 0; cancelado = false;
@@ -1310,7 +1311,7 @@ function imagenSituacion(b, dep) {
       g.fillStyle = '#64748b'; F(30, '600'); g.fillText(x[1], X + 34, Y + 128);
     });
   }
-  g.fillStyle = '#94a3b8'; F(26, '500'); g.fillText('Mi Bolsa · ' + (lang === 'va' ? 'app no oficial' : 'app no oficial') + ' · ' + fechaTxt(d.pub), 130, 975);
+  g.fillStyle = '#94a3b8'; F(26, '500'); g.fillText('Mi Bolsa Salut · ' + (lang === 'va' ? 'app no oficial' : 'app no oficial') + ' · ' + fechaTxt(d.pub), 130, 975);
   return c.toDataURL('image/png');
 }
 async function compartir(k) {
@@ -1335,7 +1336,7 @@ function barraPestanas(visible) {
   const nav = document.getElementById('tabs');
   nav.style.display = visible ? 'block' : 'none';
   nav.querySelector('.in').innerHTML = PESTANAS.map(p => `<button data-tab="${p[0]}" class="${p[0] === pestana ? 'on' : ''}"><span>${p[1]}</span>${t(p[2])}</button>`).join('');
-  nav.onclick = e => { const b = e.target.closest('button'); if (!b) return; pestana = b.dataset.tab; store.set('tab', pestana); pintar(); window.scrollTo(0, 0); };
+  nav.onclick = e => { const b = e.target.closest('button'); if (!b) return; pestana = b.dataset.tab; store.set('tab', pestana); pintar(); window.scrollTo(0, 0); extrasAuto(); };
 }
 
 // ── Hoja de información: qué significa cada situación ──
@@ -1440,6 +1441,13 @@ async function anuncioPantalla(id) {
 }
 function anuncioCadaTanto() { if (Date.now() - ultimoInter > ADS.cadaMin * 60000) anuncioPantalla(ADS.inter); }
 
+// Pestaña Bolsa: actividad y penalizaciones se cargan solas al entrar (como mucho cada 12 h)
+function extrasAuto() {
+  if (pestana !== 'bolsa' || actualizando || !perfil || !NAV) return;
+  if (Date.now() - store.get('extrasFecha', 0) < 12 * 3600e3) return;
+  setTimeout(() => { if (pestana === 'bolsa' && !actualizando) actualizarExtras(false); }, 400);
+}
+
 function pintar() {
   document.getElementById('hSub').textContent = t('sub');
   document.getElementById('bLang').textContent = lang === 'es' ? 'VAL' : 'CAS';
@@ -1455,7 +1463,9 @@ function pintar() {
     html = partes || `<div class="card"><div class="note" style="margin:0">${t('evolVacia')}</div></div>`;
   } else if (pestana === 'bolsa') {
     const hay = Object.keys(store.get('actividad', {})).length || Object.keys(store.get('penal', {})).length;
-    html = `<div class="card"><div class="note" style="margin:0 0 10px">${t(hay ? 'extraNota2' : 'extraNota')}</div><button class="main" style="margin:0" id="bExtra">↻ ${t('extraBtn')}</button></div>`
+    const fx = store.get('extrasFecha', 0);
+    const fxTxt = fx ? new Date(fx).toLocaleString(lang === 'va' ? 'ca-ES' : 'es-ES', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+    html = `<div class="card"><div class="note" style="margin:0 0 10px">${hay && fx ? t('extraNota2', esc(fxTxt)) : t('extraNota')}</div><button class="sec" id="bExtra">↻ ${t('extraBtn')}</button></div>`
       + [...new Set(perfil.bolsas.map(b => b.cat))].map(actividadCard).join('') + penalCard() + plazosCard() + oficialCard();
   } else if (pestana === 'ajustes') {
     const reg = store.get('registro', []);
@@ -1519,7 +1529,7 @@ document.getElementById('ovX').onclick = () => { cancelado = true; paso('Cancela
 const alAbrir = () => { if (viejo()) actualizar(); else comprobarPublicacion(); };
 programarAvisos();
 // Primero el consentimiento y el anuncio de apertura; después la búsqueda
-anunciosIniciar().finally(alAbrir);
+anunciosIniciar().finally(() => { alAbrir(); extrasAuto(); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden) alAbrir(); });
 </script>
 </body>

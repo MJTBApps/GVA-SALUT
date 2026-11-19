@@ -36,7 +36,7 @@ public class AvisoReceiver extends BroadcastReceiver {
             JSONObject o = a.getJSONObject(i);
             long t = o.optLong("fecha");
             if (t <= System.currentTimeMillis()) continue;
-            am.set(AlarmManager.RTC_WAKEUP, t, pi(ctx, n, o.optString("titulo", "Mi Bolsa"), o.optString("texto", "")));
+            am.set(AlarmManager.RTC_WAKEUP, t, pi(ctx, n, o.optString("titulo", "Mi Bolsa Salut"), o.optString("texto", "")));
             n++;
         }
         return n;
@@ -56,7 +56,7 @@ public class AvisoReceiver extends BroadcastReceiver {
         }
         NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= 26 && nm.getNotificationChannel(CANAL) == null)
-            nm.createNotificationChannel(new NotificationChannel(CANAL, "Avisos de Mi Bolsa", NotificationManager.IMPORTANCE_DEFAULT));
+            nm.createNotificationChannel(new NotificationChannel(CANAL, "Avisos de Mi Bolsa Salut", NotificationManager.IMPORTANCE_DEFAULT));
         Intent abrir = new Intent(ctx, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pa = PendingIntent.getActivity(ctx, 7399, abrir, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         NotificationCompat.Builder b = new NotificationCompat.Builder(ctx, CANAL)
