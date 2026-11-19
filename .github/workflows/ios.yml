@@ -6,6 +6,11 @@ name: iPhone - Subir a TestFlight
 # (secretos ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8, los mismos que OpoAlert). Nada de eso va en el repo.
 on:
   workflow_dispatch:
+    inputs:
+      widget:
+        description: 'Incluir el widget de la pantalla de inicio'
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -77,6 +82,13 @@ jobs:
       - name: Complemento Navegador (BolsaNative)
         run: python3 ios-native/prepare.py ios/App
 
+      - name: Widget de la pantalla de inicio
+        if: ${{ inputs.widget }}
+        run: |
+          gem install xcodeproj --no-document --user-install || sudo gem install xcodeproj --no-document
+          export GEM_HOME="$(ruby -e 'print Gem.user_dir')"; export PATH="$GEM_HOME/bin:$PATH"
+          ruby ios-native/add_widget.rb ios/App
+
       - name: Guardar la clave de la API (solo en este ejecutor)
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
@@ -94,10 +106,16 @@ jobs:
           xcodebuild -resolvePackageDependencies -project App.xcodeproj -scheme App | tail -n 20
           xcodebuild -project App.xcodeproj -scheme App -configuration Release \
             -destination 'generic/platform=iOS' -archivePath build/App.xcarchive \
-            DEVELOPMENT_TEAM="$TEAM_ID" PRODUCT_BUNDLE_IDENTIFIER="$BUNDLE_ID" \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
             CODE_SIGN_STYLE=Automatic CODE_SIGNING_ALLOWED=NO \
             MARKETING_VERSION=0.1 CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
             archive | tail -n 60
+          # Archivado sin firmar: se marca con sus permisos (grupo de apps del widget) para que la exportación los vea
+          APP=build/App.xcarchive/Products/Applications/App.app
+          if [ -d "$APP/PlugIns/BolsaWidget.appex" ]; then
+            codesign --force --sign - --entitlements BolsaWidget/BolsaWidget.entitlements "$APP/PlugIns/BolsaWidget.appex"
+            codesign --force --sign - --entitlements App/App.entitlements "$APP"
+          fi
 
       - name: Firmar y subir a App Store Connect
         working-directory: ios/App

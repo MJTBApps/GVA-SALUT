@@ -46,6 +46,15 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 - Buscador de categoría/departamento: hoja inferior `hoja()`.
 - Complemento Navegador: métodos nuevos `widget` (Android: `BolsaWidget`; iPhone: sin widget todavía) y `compartir` (imagen PNG de «Mi situación», FileProvider en Android).
 
+## Versión 3 (19/11/2026)
+
+- Actividad de la bolsa: consulta de nombramientos (`consultarNombramientos`, último mes, por categoría, como mucho cada 7 días). `__mb.tablaSinNombres()` quita las columnas de nombres en la propia página: solo se guardan recuentos por departamento y tipo (`store 'actividad'`).
+- Predicción por tipo (largos = vacantes/interinidades, cortos = resto) en cada tarjeta; comparación de departamentos (`comparar`).
+- Penalizaciones (`consultarPenalizaciones`, por dirección territorial V/A/C/Y, una vez por publicación): `__mb.buscarYo()` devuelve solo la fila propia.
+- Tablón oficial, próxima publicación (días 1 y 15), calculadora de baremo (`calcBaremo`: Orden 4/2019 y Decreto 76/2024, cifras del DOGV; sin difícil cobertura).
+- Widget de iPhone: `ios-native/BolsaWidget` + `add_widget.rb` (gema xcodeproj) en `ios.yml` (entrada `widget`, por defecto sí). Grupo de apps `group.es.mjtbapps.mibolsa` y App ID `es.mjtbapps.mibolsa.BolsaWidget` creados en developer.apple.com. El archivado ya no fuerza `PRODUCT_BUNDLE_IDENTIFIER` (lo pone Capacitor) para no pisar el del widget.
+- Pendiente de comprobar en móvil: columnas reales de la tabla de nombramientos y de penalizaciones (salen en «Detalles de la última búsqueda»).
+
 ## Pendiente
 
 - Contar también a la gente de tramos anteriores (puestos > 200): una consulta más por tramo.

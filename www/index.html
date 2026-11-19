@@ -77,6 +77,15 @@ button.link{border:0;background:none;color:var(--acc-ink);font:600 15px inherit;
 .badge span{white-space:nowrap;font-size:10px}
 .nov{background:linear-gradient(135deg,var(--acc2),var(--blue2))}.nov ul{margin:0;padding-left:18px}.nov li{margin:5px 0;font-size:15px}
 .grupo{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:22px 4px 8px}
+.tabla{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}.tabla th{color:var(--muted);font-weight:600;text-align:right;padding:6px 4px;font-size:12px}.tabla th:first-child,.tabla td:first-child{text-align:left}
+.tabla td{padding:8px 4px;border-top:1px solid var(--line);text-align:right}.tabla tr.mejor td{color:var(--acc-ink);font-weight:700}
+.barra{height:10px;border-radius:6px;background:var(--soft);overflow:hidden;margin-top:4px}.barra i{display:block;height:100%;background:var(--acc)}
+.mini{display:flex;justify-content:space-between;gap:8px;font-size:14px;margin-top:10px}
+.enl{display:block;padding:12px 0;border-top:1px solid var(--line);color:var(--acc-ink);text-decoration:none;font-weight:600}
+.pred{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.pred div::first-letter{text-transform:uppercase}.pred div{background:var(--soft);border-radius:14px;padding:10px 12px;font-size:14px}.pred b{display:block;font-size:17px}
+.total{font-size:44px;font-weight:800;color:var(--acc-ink);line-height:1}
+.inl{display:flex;align-items:center;gap:10px;margin-top:10px}.inl label{flex:1;font-size:14px;color:var(--ink)}.inl input,.inl select{width:96px;flex:0 0 96px}
+select{font:inherit;padding:12px;border:1.5px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink)}
 .reg summary{font-weight:600;cursor:pointer;color:var(--muted);font-size:15px}.reg pre{white-space:pre-wrap;font-size:12px;color:var(--muted);margin:10px 0 0}
 .check{display:flex;gap:10px;align-items:center;font-size:15px;margin-top:16px;color:var(--muted)}.check input{width:auto}
 .guia{counter-reset:p;padding:0;margin:10px 0 0;list-style:none}
@@ -157,7 +166,24 @@ const T = {
     menosDisp: '{0}: {1} disponible(s) menos delante de ti', masDisp: '{0}: {1} disponible(s) más delante de ti', empiezan: '{0}: {1} de delante empieza(n) a trabajar',
     detalles: 'Detalles de la última búsqueda', pie1: 'App no oficial. Datos de la consulta pública de las Listas de Empleo Temporal de la Conselleria de Sanidad.',
     pie2: 'Tus datos y resultados se guardan solo en este móvil.', pubT: 'Publicación', compTexto: 'Mi situación en la bolsa de Sanidad (app Mi Bolsa, no oficial)',
-    toca: 'Toca la casilla para continuar', webGva: 'Búsqueda en la web de la GVA', paso: 'Paso {0} de {1}'
+    toca: 'Toca la casilla para continuar', webGva: 'Búsqueda en la web de la GVA', paso: 'Paso {0} de {1}',
+    actividad: 'Actividad de la bolsa', penal: 'Penalizaciones', penalNueva: '⚠️ Apareces en la lista de penalizaciones de la GVA',
+    actT: '📈 Actividad de la bolsa', actMes: 'Nombramientos en {0}', actDep: '{0} en {1}', largos: 'largos (vacantes, interinidades)', cortos: 'cortos (sustituciones, eventuales…)', otros: 'otros',
+    hastaPuesto: 'Llamaron hasta el puesto {0}', parcial: 'Solo se cuenta la primera página de la consulta.', rankT: 'Departamentos que más llaman',
+    predT: '🔮 Predicción por tipo de contrato', predL: 'Contrato largo: en unos {0}', predC: 'Contrato corto: en unos {0}', predNo: 'Sin datos suficientes', predNota: 'Al ritmo de nombramientos de {0} en tu departamento y con {1} disponibles delante. Orientativo.',
+    meses1: '{0} mes', mesesN: '{0} meses', menos1: 'menos de 1 mes',
+    penT: '🛡️ Penalizaciones', penNo: 'No apareces en la lista de penalizaciones ({0}).', penSi: 'Apareces en la lista de penalizaciones ({0}):', penSinNombre: 'Pon tu nombre en «Mis bolsas» para comprobar si tienes alguna penalización.',
+    ofiT: '📌 Información oficial', ofiSit: 'Situación de candidatos', ofiNomb: 'Nombramientos', ofiPen: 'Penalizaciones', ofiWeb: 'Página de las listas (Conselleria)', ofiCons: 'Consultas oficiales de la GVA',
+    calT: '🗓️ Próxima publicación', calTxt: 'Prevista el {0} (en {1}).', calHoy: 'Prevista hoy: la app la buscará sola al abrirla.', calNota: 'La GVA suele publicar la situación los días 1 y 15. Al abrir la app ese día, se actualiza sola.',
+    dia1: '{0} día', diaN: '{0} días',
+    compT: '⚖️ ¿Dónde avanzas más rápido?', compDisp: 'disp. delante', compRitmo: 'bajan/mes', compNomb: 'nombram./mes', compMejor: 'Mejor opción ahora: {0}',
+    bBaremo: '🧮 Baremo', barT: 'Calculadora de baremo', barNorma: 'Norma que se aplica a tu categoría', barDec: 'Decreto 76/2024 (A1/A2 sanitarias)', barOrd: 'Orden 4/2019 (resto)',
+    barServ: 'Servicios prestados (meses)', barS1: 'Misma categoría en instituciones sanitarias públicas', barS2: 'Otra categoría en instituciones sanitarias públicas', barS3: 'Sanidad militar, prisiones o centros sociosanitarios de la GVA', barS4: 'Centros concertados o mutuas',
+    barOpo: 'Nota de oposición (0-10)', barOpoN: 'Nº de ejercicios eliminatorios', barRes: 'Años de residencia (MIR, EIR…) con título', barVal: 'Valenciano (nivel más alto)', barNinguno: 'Ninguno',
+    barDoc: 'Doctorado relacionado', barDocNo: 'No', barDocSi: 'Sí', barDocCum: 'Sí, cum laude', barMas: 'Másteres oficiales relacionados', barProp: 'Títulos propios relacionados', barIdi: 'Otro idioma de la UE (nivel)',
+    barCur: 'Cursos de formación continua (nº de cursos por horas)', barCurNota: 'Según la Orden 4/2019 solo puntúan en uno de los turnos: compruébalo en tu convocatoria.', barDocencia: 'Horas de docencia impartidas',
+    barDis: 'Diversidad funcional igual o superior al 33 %', barTotal: 'Total aproximado', barNota: 'Cálculo orientativo con el baremo publicado en el DOGV. Los méritos que cuentan son los que tenías en la fecha de corte de la edición y la puntuación oficial es la de la GVA. No incluye puestos de difícil cobertura.',
+    barVolver: 'Volver', puntos: 'puntos', barServT: 'Servicios', barOpoT: 'Oposición', barFormT: 'Formación', barValT: 'Valenciano', barOtrosT: 'Otros'
   },
   va: {
     sub: 'El teu lloc a les borses de Sanitat', act: 'Buscant les teues borses…', actualizado: 'Actualitzat', nunca: 'mai',
@@ -188,7 +214,24 @@ const T = {
     menosDisp: '{0}: {1} disponible(s) menys davant de tu', masDisp: '{0}: {1} disponible(s) més davant de tu', empiezan: '{0}: {1} de davant comença(en) a treballar',
     detalles: 'Detalls de l\'última busca', pie1: 'App no oficial. Dades de la consulta pública de les Llistes d\'Ocupació Temporal de la Conselleria de Sanitat.',
     pie2: 'Les teues dades i resultats es guarden només en este mòbil.', pubT: 'Publicació', compTexto: 'La meua situació en la borsa de Sanitat (app Mi Bolsa, no oficial)',
-    toca: 'Toca la casella per a continuar', webGva: 'Busca en la web de la GVA', paso: 'Pas {0} de {1}'
+    toca: 'Toca la casella per a continuar', webGva: 'Busca en la web de la GVA', paso: 'Pas {0} de {1}',
+    actividad: 'Activitat de la borsa', penal: 'Penalitzacions', penalNueva: '⚠️ Apareixes en la llista de penalitzacions de la GVA',
+    actT: '📈 Activitat de la borsa', actMes: 'Nomenaments en {0}', actDep: '{0} en {1}', largos: 'llargs (vacants, interinitats)', cortos: 'curts (substitucions, eventuals…)', otros: 'altres',
+    hastaPuesto: 'Van cridar fins al lloc {0}', parcial: 'Només es compta la primera pàgina de la consulta.', rankT: 'Departaments que més criden',
+    predT: '🔮 Predicció per tipus de contracte', predL: 'Contracte llarg: en uns {0}', predC: 'Contracte curt: en uns {0}', predNo: 'Sense dades suficients', predNota: 'Al ritme de nomenaments de {0} en el teu departament i amb {1} disponibles davant. Orientatiu.',
+    meses1: '{0} mes', mesesN: '{0} mesos', menos1: 'menys d\'1 mes',
+    penT: '🛡️ Penalitzacions', penNo: 'No apareixes en la llista de penalitzacions ({0}).', penSi: 'Apareixes en la llista de penalitzacions ({0}):', penSinNombre: 'Posa el teu nom en «Les meues borses» per a comprovar si tens alguna penalització.',
+    ofiT: '📌 Informació oficial', ofiSit: 'Situació de candidats', ofiNomb: 'Nomenaments', ofiPen: 'Penalitzacions', ofiWeb: 'Pàgina de les llistes (Conselleria)', ofiCons: 'Consultes oficials de la GVA',
+    calT: '🗓️ Pròxima publicació', calTxt: 'Prevista el {0} (d\'ací a {1}).', calHoy: 'Prevista hui: l\'app la buscarà sola en obrir-la.', calNota: 'La GVA sol publicar la situació els dies 1 i 15. En obrir l\'app eixe dia, s\'actualitza sola.',
+    dia1: '{0} dia', diaN: '{0} dies',
+    compT: '⚖️ On avances més ràpid?', compDisp: 'disp. davant', compRitmo: 'baixen/mes', compNomb: 'nomen./mes', compMejor: 'Millor opció ara: {0}',
+    bBaremo: '🧮 Barem', barT: 'Calculadora de barem', barNorma: 'Norma que s\'aplica a la teua categoria', barDec: 'Decret 76/2024 (A1/A2 sanitàries)', barOrd: 'Ordre 4/2019 (resta)',
+    barServ: 'Serveis prestats (mesos)', barS1: 'Mateixa categoria en institucions sanitàries públiques', barS2: 'Altra categoria en institucions sanitàries públiques', barS3: 'Sanitat militar, presons o centres sociosanitaris de la GVA', barS4: 'Centres concertats o mútues',
+    barOpo: 'Nota d\'oposició (0-10)', barOpoN: 'Nre. d\'exercicis eliminatoris', barRes: 'Anys de residència (MIR, EIR…) amb títol', barVal: 'Valencià (nivell més alt)', barNinguno: 'Cap',
+    barDoc: 'Doctorat relacionat', barDocNo: 'No', barDocSi: 'Sí', barDocCum: 'Sí, cum laude', barMas: 'Màsters oficials relacionats', barProp: 'Títols propis relacionats', barIdi: 'Altre idioma de la UE (nivell)',
+    barCur: 'Cursos de formació contínua (nre. de cursos per hores)', barCurNota: 'Segons l\'Ordre 4/2019 només puntuen en un dels torns: comprova-ho en la teua convocatòria.', barDocencia: 'Hores de docència impartides',
+    barDis: 'Diversitat funcional igual o superior al 33 %', barTotal: 'Total aproximat', barNota: 'Càlcul orientatiu amb el barem publicat en el DOGV. Els mèrits que compten són els que tenies en la data de tall de l\'edició i la puntuació oficial és la de la GVA. No inclou llocs de difícil cobertura.',
+    barVolver: 'Tornar', puntos: 'punts', barServT: 'Serveis', barOpoT: 'Oposició', barFormT: 'Formació', barValT: 'Valencià', barOtrosT: 'Altres'
   }
 };
 let lang = store.get('lang', 'es');
@@ -224,11 +267,16 @@ function paginaGVA() {
   window.__mb = {
     lista() {
       const a = [...document.querySelectorAll('a')].find(x => /getListadoSituacionCandidatoIntervalo/.test(x.getAttribute('href') || ''));
-      const pub = [...document.querySelectorAll('main a')].map(x => x.textContent.trim()).find(t => /Reedici|edici/i.test(t)) || '';
-      return a ? { url: a.href, texto: a.textContent.trim(), pub } : null;
+      const pub = [...document.querySelectorAll('a')].map(x => x.textContent.trim().replace(/\s+/g, ' ')).find(t => /^(Reedici|Edici)/i.test(t)) || '';
+      const enl = re => { const x = [...document.querySelectorAll('a')].find(y => re.test(y.getAttribute('href') || '')); return x ? { url: x.href, texto: x.textContent.trim().replace(/\s+/g, ' ') } : null; };
+      return a ? { url: a.href, texto: a.textContent.trim(), pub, nomb: enl(/getListadoContratadosCategoria/), pen: enl(/getListadoSuspendidosTerritorial/) } : null;
     },
     listo() {
       return !!(window.PrimeFaces && window.jQuery && document.querySelectorAll('#filToogle select').length >= 3 &&
+        (!PrimeFaces.ajax.Queue.isEmpty || PrimeFaces.ajax.Queue.isEmpty()) && jQuery.active === 0);
+    },
+    quieto() {
+      return !!(window.PrimeFaces && window.jQuery && document.getElementById('filToogle') &&
         (!PrimeFaces.ajax.Queue.isEmpty || PrimeFaces.ajax.Queue.isEmpty()) && jQuery.active === 0);
     },
     elegir(i, valor) {
@@ -264,6 +312,42 @@ function paginaGVA() {
       const s = [...document.querySelectorAll('select')].find(x => [...x.options].some(o => /^\d+\s*-\s*\d+$/.test(o.text.trim())));
       if (!s) return [];
       return [...s.options].map(o => o.text.trim().match(/^(\d+)\s*-\s*(\d+)$/)).filter(Boolean).map(m => [+m[1], +m[2]]);
+    },
+    // Consulta de nombramientos: meses disponibles (botones) y elegir uno
+    meses() { return [...document.querySelectorAll('#filToogle .ui-selectonebutton .ui-button')].map((b, i) => ({ i, txt: b.innerText.trim(), sel: b.classList.contains('ui-state-active') })); },
+    elegirMes(i) { const b = [...document.querySelectorAll('#filToogle .ui-selectonebutton .ui-button')][i]; if (!b) return 'sin-mes'; if (b.classList.contains('ui-state-active')) return 'ya'; b.click(); return 'ok'; },
+    // Tabla genérica SIN columnas de nombres (solo se cuentan cosas: nunca se guardan datos de otras personas)
+    tablaSinNombres() {
+      const zona = document.getElementById('formData') || document;
+      const tabla = [...zona.querySelectorAll('table')].find(t => !t.hasAttribute('data-mb-viejo') && t.querySelectorAll('tbody tr').length > 0);
+      const visibles = sel => [...document.querySelectorAll(sel)].filter(e => e.offsetParent !== null).map(e => e.innerText.trim()).filter(Boolean).join(' ');
+      if (!tabla) return { filas: null, error: visibles('.ui-messages-error, .ui-message-error, .ui-growl-message'), captcha: visibles('#messageErrorCaptchaOffline') };
+      const cab = [...tabla.querySelectorAll('thead th')].map(th => norm(th.innerText));
+      const quitar = cab.map(h => /NOM|APELL|COGNOM|DNI|NIF/.test(h) && !/NOMBRAM|NOMENAM/.test(h));
+      const celda = td => { const c = td.cloneNode(true); c.querySelectorAll('.ui-column-title').forEach(e => e.remove()); return (c.textContent || '').replace(/\s+/g, ' ').trim(); };
+      const filas = [...tabla.querySelectorAll('tbody tr')].map(tr => [...tr.querySelectorAll('td')].map(celda)).filter(c => c.length > 1)
+        .map(c => c.filter((x, i) => !quitar[i]));
+      return { cab: cab.filter((h, i) => !quitar[i]), filas, rangos: (this.rangos() || []).length };
+    },
+    // Penalizaciones: busca SOLO tu fila (por palabras de tu nombre) y devuelve tus datos sin el nombre
+    buscarYo(palabras) {
+      const zona = document.getElementById('formData') || document;
+      const tabla = [...zona.querySelectorAll('table')].find(t => !t.hasAttribute('data-mb-viejo') && t.querySelectorAll('tbody tr').length > 0);
+      const visibles = sel => [...document.querySelectorAll(sel)].filter(e => e.offsetParent !== null).map(e => e.innerText.trim()).filter(Boolean).join(' ');
+      if (!tabla) return { hecho: false, error: visibles('.ui-messages-error, .ui-message-error, .ui-growl-message'), captcha: visibles('#messageErrorCaptchaOffline') };
+      const cab = [...tabla.querySelectorAll('thead th')].map(th => norm(th.innerText));
+      const celda = td => { const c = td.cloneNode(true); c.querySelectorAll('.ui-column-title').forEach(e => e.remove()); return (c.textContent || '').replace(/\s+/g, ' ').trim(); };
+      const vacia = tabla.querySelector('.ui-datatable-empty-message');
+      for (const tr of tabla.querySelectorAll('tbody tr')) {
+        const c = [...tr.querySelectorAll('td')].map(celda);
+        const p = norm(c.join(' ')).split(' ');
+        if (palabras.length && palabras.every(w => p.includes(w))) {
+          const out = {};
+          cab.forEach((h, i) => { if (!(/NOM|APELL|COGNOM|DNI|NIF/.test(h))) out[h] = c[i]; });
+          return { hecho: true, yo: out };
+        }
+      }
+      return { hecho: true, yo: null, vacia: !!vacia, rangos: (this.rangos() || []).length };
     },
     marcar() { document.querySelectorAll('table').forEach(t => t.setAttribute('data-mb-viejo', '1')); return true; },
     enviar() { const b = document.getElementById('filToogle:formDynamicFilters:obtenerListado'); if (!b) return false; b.click(); return true; },
@@ -441,6 +525,97 @@ async function consultarDep(url, b, dep, etiqueta, conNombre = true, puesto = nu
   return res;
 }
 
+// ── Nombramientos de los últimos meses: solo se cuentan (por departamento y tipo), sin nombres ──
+const tipoLargo = x => /VACANT|INTERIN/.test(x);
+const tipoCorto = x => /SUSTIT|EVENTUAL|ACUMUL|REFUER|PROGRAM|TEMPORAL|CORTA/.test(x);
+async function abrirConsulta(url, etiqueta) {
+  ov(t('act'), etiqueta);
+  paso(etiqueta + ': abriendo la consulta');
+  await NAV.abrir({ url });
+  await prepararPagina();
+  if (!await esperar('window.__mb.quieto()', 20000)) throw new Error('La página de la GVA no ha cargado');
+}
+async function consultarNombramientos(lista, cat) {
+  const etiqueta = t('actividad') + ' · ' + catCorta(cat);
+  await abrirConsulta(lista.nomb.url, etiqueta);
+  const meses = (await ev('window.__mb.meses()')) || [];
+  if (meses.length) {
+    const r = await ev('window.__mb.elegirMes(0)');
+    if (r === 'ok') { await sleep(800); await prepararPagina(); await esperar('window.__mb.quieto()', 15000, 300); }
+  }
+  const mes = meses.length ? meses[0].txt : '';
+  const r = await ev('window.__mb.elegir(0,' + JSON.stringify(cat) + ')');
+  if (r !== 'ok') throw new Error('No se pudo elegir la categoría (' + r + ')');
+  await esperar('window.__mb.quieto()', 10000, 200);
+  await ev('window.__mb.escribir("","","")');
+  if (!await verificacion(etiqueta)) throw new Error('No se completó la verificación de Cloudflare');
+  await ev('window.__mb.marcar()');
+  await ev('window.__mb.enviar()');
+  paso('Consulta de nombramientos enviada (' + mes + ')');
+  const fin = Date.now() + 40000;
+  let res = null;
+  while (Date.now() < fin) {
+    await sleep(600);
+    if (!await ev('window.__mb.quieto()')) continue;
+    res = await ev('window.__mb.tablaSinNombres()');
+    if (res && (res.filas || res.error || res.captcha)) break;
+  }
+  if (!res || !res.filas) throw new Error(res && (res.error || res.captcha) || 'La GVA no ha devuelto los nombramientos');
+  paso('Nombramientos: ' + res.filas.length + ' filas · columnas: ' + res.cab.join(', '));
+  // Recuento por departamento y tipo (y el puesto más alto llamado, si la tabla lo trae)
+  const col = re => res.cab.findIndex(h => re.test(h));
+  const iDep = col(/DEPART/), iTipo = col(/TIPO|MOTIVO|CLASE|MODALI|NOMBRAM/), iPos = col(/LLOC|PUESTO|ORDEN|POSICI/), iTurno = col(/TURNO|TORN|ACCES/);
+  const porDep = {};
+  for (const f of res.filas) {
+    const dn = iDep >= 0 ? f[iDep] : '?';
+    const code = (DEPS.find(d => norm2(d[1]) === norm2(dn) || norm2(dn).includes(norm2(d[1]))) || [dn])[0];
+    const tp = (iTipo >= 0 ? f[iTipo] : '').toUpperCase();
+    const o = porDep[code] || (porDep[code] = { n: 0, largos: 0, cortos: 0, otros: 0, max: 0, turnos: {} });
+    o.n++;
+    if (tipoLargo(tp)) o.largos++; else if (tipoCorto(tp)) o.cortos++; else o.otros++;
+    const pz = iPos >= 0 ? parseInt((f[iPos].match(/\d+/) || [])[0], 10) : NaN;
+    if (pz > o.max) o.max = pz;
+    if (iTurno >= 0) o.turnos[f[iTurno]] = (o.turnos[f[iTurno]] || 0) + 1;
+  }
+  return { mes, total: res.filas.length, porDep, parcial: res.rangos > 1, conTipo: iTipo >= 0, conPuesto: iPos >= 0, fecha: Date.now() };
+}
+
+// ── Penalizaciones: se mira solo si TÚ apareces (por tu nombre), sin guardar a nadie más ──
+const TERRIT = { A: ['SA', 'ALI', 'CTA', 'DEN', 'ELX', 'ELD', 'MBA', 'ORI', 'SPA', 'SJO', 'TRV'], C: ['SC', 'CAS', 'CTC', 'PLA', 'SPC', 'VIN'], Y: ['ALY', 'SPY'] };
+const territorio = d => Object.keys(TERRIT).find(k => TERRIT[k].includes(d)) || 'V';
+async function consultarPenalizaciones(lista, terr) {
+  const etiqueta = t('penal') + ' · ' + ({ V: 'València', A: 'Alacant', C: 'Castelló', Y: 'Alcoi' }[terr]);
+  await abrirConsulta(lista.pen.url, etiqueta);
+  const r = await ev('window.__mb.elegir(0,' + JSON.stringify(terr) + ')');
+  if (r !== 'ok') throw new Error('No se pudo elegir la dirección territorial (' + r + ')');
+  await esperar('window.__mb.quieto()', 10000, 200);
+  if (!await verificacion(etiqueta)) throw new Error('No se completó la verificación de Cloudflare');
+  await ev('window.__mb.marcar()');
+  await ev('window.__mb.enviar()');
+  const pals = JSON.stringify(norm2([perfil.ap1, perfil.ap2, perfil.nombre].join(' ')).toUpperCase().split(/\s+/).filter(Boolean));
+  const fin = Date.now() + 40000;
+  let res = null;
+  while (Date.now() < fin) {
+    await sleep(600);
+    if (!await ev('window.__mb.quieto()')) continue;
+    res = await ev('window.__mb.buscarYo(' + pals + ')');
+    if (res && (res.hecho || res.error || res.captcha)) break;
+  }
+  if (!res || !res.hecho) throw new Error(res && (res.error || res.captcha) || 'La GVA no ha devuelto la lista de penalizaciones');
+  // Si la lista tiene varios tramos y no apareces en el primero, se miran los demás (hasta 8)
+  if (!res.yo && res.rangos > 1) {
+    const rg = (await ev('window.__mb.rangos()')) || [];
+    for (const x of rg.slice(1, 9)) {
+      const ok = await irATramo(x[0], etiqueta);
+      if (!ok) break;
+      const r2 = await ev('window.__mb.buscarYo(' + pals + ')');
+      if (r2 && r2.yo) { res = r2; break; }
+    }
+  }
+  paso('Penalizaciones ' + terr + ': ' + (res.yo ? 'apareces' : 'no apareces'));
+  return { terr, yo: res.yo || null, fecha: Date.now() };
+}
+
 // De la lista solo se guarda TU fila y recuentos: nunca nombres de otras personas
 function resumir(res, b, puestoSabido = null) {
   const pal = x => (x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z0-9Ñ ]+/g, ' ').split(/\s+/).filter(Boolean);
@@ -514,6 +689,34 @@ async function actualizar() {
       } catch (e) { errores.push(etiqueta + ': ' + e.message); paso('ERROR ' + etiqueta + ': ' + e.message); }
     }
     store.set('datos', datos);
+    // Actividad de la bolsa: una consulta por categoría, solo si hay mes nuevo o han pasado 7 días
+    const act = store.get('actividad', {});
+    if (lista.nomb) for (const cat of [...new Set(perfil.bolsas.map(b => b.cat))]) {
+      const a = act[cat];
+      if (a && Date.now() - a.fecha < 7 * 86400e3 && a.pubNomb === lista.nomb.texto) continue;
+      try {
+        progreso(0.92, t('actividad') + ' · ' + catCorta(cat));
+        const r = await consultarNombramientos(lista, cat);
+        const hist = (a && a.hist || []).filter(h => h.mes !== r.mes).concat([{ mes: r.mes, total: r.total, porDep: Object.fromEntries(Object.entries(r.porDep).map(([k, v]) => [k, v.n])) }]).slice(-12);
+        act[cat] = Object.assign(r, { pubNomb: lista.nomb.texto, hist });
+        store.set('actividad', act);
+      } catch (e) { paso('Actividad ' + catCorta(cat) + ': ' + e.message); }
+    }
+    // Penalizaciones: solo si has puesto tu nombre, una vez por publicación y por dirección territorial
+    if (lista.pen && conNombreP()) {
+      const pen = store.get('penal', {});
+      for (const terr of [...new Set(perfil.bolsas.flatMap(b => b.deps.map(territorio)))]) {
+        if (pen[terr] && pen[terr].pub === lista.pen.texto) continue;
+        try {
+          progreso(0.96, t('penal'));
+          const r = await consultarPenalizaciones(lista, terr);
+          if (r.yo && !(pen[terr] && pen[terr].yo)) novedades.push(t('penalNueva'));
+          pen[terr] = Object.assign(r, { pub: lista.pen.texto });
+          store.set('penal', pen);
+        } catch (e) { paso('Penalizaciones ' + terr + ': ' + e.message); }
+      }
+    }
+    store.set('oficial', { pub: lista.pub || '', sit: lista.texto, nomb: lista.nomb && lista.nomb.texto, pen: lista.pen && lista.pen.texto });
     store.set('ultimaPub', lista.texto);
     store.set('comprobado', Date.now());
     if (novedades.length) store.set('novedades', { fecha: Date.now(), items: novedades });
@@ -796,9 +999,158 @@ function tarjeta(b, dep) {
       <div class="badge"><span>${t('tuPuesto')}</span><b>${d.puesto}</b></div></div>
     ${d.perfil ? `<div class="perf">${t('perfiles')}: <b>${esc(d.perfil)}</b></div>` : ''}
     ${d.trabaja ? `<div class="perf">${t('trabajaEn')}: <b>${esc(d.trabaja)}</b></div>` : ''}
-    ${cifras(dl, true)}${delta}${alc}${estimacion(d.hist, dl)}${grafica(d.hist)}
+    ${cifras(dl, true)}${delta}${alc}${estimacion(d.hist, dl)}${prediccion(b, dep, dl)}${grafica(d.hist)}
     <div class="acciones"><button class="sec" data-share="${esc(k)}">↗︎ ${t('compartir')}</button></div>
   </div>`;
+}
+
+// ───────────────────────── Actividad, predicción, comparación, penalizaciones, calendario ─────────────────────────
+function nombDep(b, dep) {
+  const a = store.get('actividad', {})[b.cat];
+  const o = a && a.porDep && a.porDep[dep];
+  if (!o) return null;
+  // Si la tabla trae el turno, se cuentan solo los nombramientos de tu turno
+  let f = 1;
+  const tk = Object.keys(o.turnos || {});
+  if (tk.length) {
+    const mio = tk.filter(k => b.turno === 'P' ? /PROMO/i.test(k) : !/PROMO/i.test(k)).reduce((x, k) => x + o.turnos[k], 0);
+    f = o.n ? mio / o.n : 1;
+  }
+  return { mes: a.mes, n: o.n * f, largos: o.largos * f, cortos: o.cortos * f, max: o.max };
+}
+const enMeses = m => !isFinite(m) ? t('predNo') : m < 1 ? t('menos1') : Math.round(m) === 1 ? t('meses1', 1) : t('mesesN', Math.round(m));
+function prediccion(b, dep, dl) {
+  if (!dl) return '';
+  const o = nombDep(b, dep);
+  if (!o || !o.n) return '';
+  return `<div class="note" style="margin-top:14px;font-weight:600">${t('predT')}</div>
+    <div class="pred"><div>${t('largos').split(' (')[0]}<b>${enMeses(dl.disponibles / o.largos)}</b></div><div>${t('cortos').split(' (')[0]}<b>${enMeses(dl.disponibles / o.cortos)}</b></div></div>
+    <div class="note">${t('predNota', esc(cap(o.mes)), dl.disponibles)}${o.max ? ' · ' + t('hastaPuesto', o.max) : ''}</div>`;
+}
+function ritmoMes(h) {
+  const pts = (h || []).filter(p => typeof p.disp === 'number');
+  if (pts.length < 2) return null;
+  const a = pts[0], z = pts[pts.length - 1], dias = (z.fp - a.fp) / 86400000;
+  return dias >= 7 ? Math.max(0, (a.disp - z.disp) / dias * 30) : null;
+}
+function comparar(b) {
+  const filas = b.deps.map(d => { const x = datos[clave(b, d)]; return x && x.encontrado && x.delante ? { d, disp: x.delante.disponibles, r: ritmoMes(x.hist), n: (nombDep(b, d) || {}).n } : null; }).filter(Boolean);
+  if (filas.length < 2) return '';
+  filas.forEach(f => { const v = Math.max(f.r || 0, f.n || 0); f.m = v ? f.disp / v : (f.disp === 0 ? 0 : Infinity); });
+  const mejor = filas.slice().sort((x, y) => x.m - y.m || x.disp - y.disp)[0];
+  const n1 = v => v == null ? '–' : (v < 10 ? v.toFixed(1).replace('.0', '') : Math.round(v));
+  return `<div class="card"><h3>${t('compT')}</h3>
+    <table class="tabla"><tr><th></th><th>${t('compDisp')}</th><th>${t('compRitmo')}</th><th>${t('compNomb')}</th></tr>
+    ${filas.map(f => `<tr class="${f === mejor ? 'mejor' : ''}"><td>${esc(cap(depName(f.d)))}</td><td>${f.disp}</td><td>${n1(f.r)}</td><td>${n1(f.n)}</td></tr>`).join('')}</table>
+    <div class="est">${t('compMejor', esc(cap(depName(mejor.d))))}</div></div>`;
+}
+function actividadCard(cat) {
+  const a = store.get('actividad', {})[cat];
+  if (!a || !a.porDep) return '';
+  const deps = perfil.bolsas.filter(b => b.cat === cat).flatMap(b => b.deps);
+  const rank = Object.entries(a.porDep).sort((x, y) => y[1].n - x[1].n).slice(0, 6);
+  const max = rank.length ? rank[0][1].n : 1;
+  const suma = Object.values(a.porDep).reduce((x, o) => ({ l: x.l + o.largos, c: x.c + o.cortos, o: x.o + o.otros }), { l: 0, c: 0, o: 0 });
+  return `<div class="card"><h3>${t('actT')} · ${esc(catCorta(cat))}</h3>
+    <div class="note" style="margin-top:0">${t('actMes', esc(cap(a.mes)))}: <b style="color:var(--ink)">${a.total}</b></div>
+    ${a.conTipo ? `<div class="mini"><span>🟢 ${suma.l} ${t('largos')}</span></div><div class="mini" style="margin-top:4px"><span>🔵 ${suma.c} ${t('cortos')}</span></div>${suma.o ? `<div class="mini" style="margin-top:4px"><span>⚪️ ${suma.o} ${t('otros')}</span></div>` : ''}` : ''}
+    <div class="note" style="margin-top:14px;font-weight:600">${t('rankT')}</div>
+    ${rank.map(([k, o]) => `<div class="mini"><span${deps.includes(k) ? ' style="font-weight:700;color:var(--acc-ink)"' : ''}>${esc(cap(depName(k)))}</span><span>${o.n}</span></div><div class="barra"><i style="width:${Math.round(o.n / max * 100)}%"></i></div>`).join('')}
+    ${a.parcial ? `<div class="note">${t('parcial')}</div>` : ''}</div>`;
+}
+function penalCard() {
+  if (!conNombreP()) return '';
+  const pen = store.get('penal', {});
+  const ks = Object.keys(pen);
+  if (!ks.length) return '';
+  const nom = { V: 'València', A: 'Alacant', C: 'Castelló', Y: 'Alcoi' };
+  return `<div class="card"><h3>${t('penT')}</h3>${ks.map(k => pen[k].yo
+    ? `<div class="err">${t('penSi', nom[k])}<br>${Object.entries(pen[k].yo).map(([h, v]) => esc(cap(h)) + ': <b>' + esc(v) + '</b>').join('<br>')}</div>`
+    : `<div class="note">✅ ${t('penNo', nom[k])}</div>`).join('')}</div>`;
+}
+function proximaPub() {
+  const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+  let d = new Date(hoy);
+  if (d.getDate() <= 1) d.setDate(1); else if (d.getDate() <= 15) d.setDate(15); else { d.setMonth(d.getMonth() + 1); d.setDate(1); }
+  const ult = fechaPub(store.get('ultimaPub', ''));
+  if (ult && ult >= d.getTime()) { d = new Date(ult); if (d.getDate() < 15) d.setDate(15); else { d.setMonth(d.getMonth() + 1); d.setDate(1); } }
+  return { d, dias: Math.round((d - hoy) / 86400000) };
+}
+function calendarioCard() {
+  const { d, dias } = proximaPub();
+  const f = d.toLocaleDateString(lang === 'va' ? 'ca-ES' : 'es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+  return `<div class="card"><h3>${t('calT')}</h3><div style="font-size:16px">${dias <= 0 ? t('calHoy') : t('calTxt', esc(f), dias === 1 ? t('dia1', 1) : t('diaN', dias))}</div><div class="note">${t('calNota')}</div></div>`;
+}
+function oficialCard() {
+  const o = store.get('oficial', null);
+  return `<div class="card"><h3>${t('ofiT')}</h3>
+    ${o && o.pub ? `<div style="font-size:15px">${esc(o.pub)}</div>` : ''}
+    ${o && o.nomb ? `<div class="note">${t('ofiNomb')}: ${esc(o.nomb)}</div>` : ''}
+    ${o && o.pen ? `<div class="note">${t('ofiPen')}: ${esc(o.pen)}</div>` : ''}
+    <a class="enl" style="margin-top:10px" href="https://www.san.gva.es/es/web/recursos-humans/lista-definitiva-2025" target="_blank" rel="noopener">${t('ofiWeb')} ↗︎</a>
+    <a class="enl" href="${INDEX_URL}" target="_blank" rel="noopener">${t('ofiCons')} ↗︎</a></div>`;
+}
+
+// ───────────────────────── Calculadora de baremo (DOGV: Orden 4/2019 y Decreto 76/2024) ─────────────────────────
+const esA1A2 = c => /ENFERMER|MEDIC|MÉDIC|^F\. ESP|FAC\. ESP|FACULTATIVO|FISIOTERAP|LOGOPED|TERAPEUTA OCUP|PODÓLOG|DIETISTA|ÓPTICO|ODONTOL|PEDIATRIA AP|FARMACEUTICO DE AREA/.test(catName(c)) && !/ADM(Ó|O)N|SALUD P(Ú|U)BLICA|INSPECTOR|GESTI(Ó|O)N/.test(catName(c));
+function calcBaremo(v) {
+  const dec = v.norma === 'D', r = {};
+  const s3 = 0.15 * v.s3, s4 = 0.10 * v.s4;
+  r.serv = Math.min(70, 0.30 * v.s1 + 0.15 * v.s2 + (dec ? Math.min(5, s3) + Math.min(5, s4) : s3 + s4));
+  const esc_ = dec ? [[4, 5], [5, 10], [6, 20], [7, 30], [8, 40], [9, 45], [10, 50]] : [[4, 5], [5, 10], [6, 15], [7, 20], [8, 30], [9, 40], [10, 50]];
+  const n = v.opo >= 3.5 ? (esc_.find(x => v.opo <= x[0]) || [0, 50])[1] : 0;
+  r.opo = Math.min(50, n / Math.max(1, v.opoN || 1));
+  r.form = 7.2 * (v.res || 0);
+  if (dec) {
+    r.form += Math.min(10, v.doc === 'C' ? 10 : v.doc === 'S' ? 9 : 0) + Math.min(7, 3 * (v.mas || 0) + 2 * (v.prop || 0));
+    r.val = { B1: 1, B2: 2, C1: 3, C2: 4 }[v.val] || 0;
+    r.otros = ({ B1: 0.5, B2: 1, C1: 1.5, C2: 2 }[v.idi] || 0) + (v.dis ? 3 : 0);
+  } else {
+    r.form += Math.min(5, 5 * (v.c100 || 0) + 4 * (v.c75 || 0) + 3 * (v.c50 || 0) + 2 * (v.c25 || 0) + 1 * (v.c10 || 0) + 0.1 * (v.doce || 0));
+    r.val = { A1: 0.5, A2: 1.5, B1: 3, B2: 4, C1: 6, C2: 8 }[v.val] || 0;
+    r.otros = v.dis ? 3 : 0;
+  }
+  r.total = r.serv + r.opo + r.form + r.val + r.otros;
+  return r;
+}
+function pantallaBaremo() {
+  const cat0 = perfil && perfil.bolsas[0] ? perfil.bolsas[0].cat : '';
+  const v = Object.assign({ norma: esA1A2(cat0) ? 'D' : 'O', s1: 0, s2: 0, s3: 0, s4: 0, opo: 0, opoN: 1, res: 0, val: '', doc: 'N', mas: 0, prop: 0, idi: '', dis: false, c100: 0, c75: 0, c50: 0, c25: 0, c10: 0, doce: 0 }, store.get('baremo', {}));
+  const num = (k, txt, step) => `<div class="inl"><label for="v_${k}">${txt}</label><input id="v_${k}" data-k="${k}" type="number" inputmode="decimal" min="0" step="${step || 1}" value="${v[k] || ''}" placeholder="0"></div>`;
+  const sel = (k, txt, ops) => `<div class="inl"><label for="v_${k}">${txt}</label><select id="v_${k}" data-k="${k}">${ops.map(o => `<option value="${o[0]}"${v[k] === o[0] ? ' selected' : ''}>${o[1]}</option>`).join('')}</select></div>`;
+  const niveles = ini => [['', t('barNinguno')]].concat(ini.map(x => [x, x]));
+  const dibujar = () => {
+    const dec = v.norma === 'D', r = calcBaremo(v), f = x => x.toFixed(2).replace('.', ',');
+    $app.innerHTML = `<div class="bar"><button class="sec" id="bVolver">← ${t('barVolver')}</button></div>
+    <div class="card"><h2>${t('barT')}</h2>
+      <div class="note">${t('barNorma')}</div>
+      <div class="seg" id="vNorma" style="margin-top:8px"><button data-v="D" class="${dec ? 'on' : ''}">${t('barDec')}</button><button data-v="O" class="${!dec ? 'on' : ''}">${t('barOrd')}</button></div>
+      <div style="display:flex;align-items:baseline;gap:10px;margin-top:18px"><span class="total" id="vTot">${f(r.total)}</span><span class="note" style="margin:0">${t('puntos')} · ${t('barTotal')}</span></div>
+      <div class="mini"><span>${t('barServT')}</span><b>${f(r.serv)}</b></div><div class="mini"><span>${t('barOpoT')}</span><b>${f(r.opo)}</b></div>
+      <div class="mini"><span>${t('barFormT')}</span><b>${f(r.form)}</b></div><div class="mini"><span>${t('barValT')}</span><b>${f(r.val)}</b></div><div class="mini"><span>${t('barOtrosT')}</span><b>${f(r.otros)}</b></div>
+    </div>
+    <div class="card"><h3>${t('barServ')}</h3>${num('s1', t('barS1'))}${num('s2', t('barS2'))}${num('s3', t('barS3'))}${num('s4', t('barS4'))}</div>
+    <div class="card">${num('opo', t('barOpo'), 0.01)}${num('opoN', t('barOpoN'))}${num('res', t('barRes'), 0.5)}
+      ${sel('val', t('barVal'), niveles(dec ? ['B1', 'B2', 'C1', 'C2'] : ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']))}
+      ${dec ? sel('doc', t('barDoc'), [['N', t('barDocNo')], ['S', t('barDocSi')], ['C', t('barDocCum')]]) + num('mas', t('barMas')) + num('prop', t('barProp')) + sel('idi', t('barIdi'), niveles(['B1', 'B2', 'C1', 'C2']))
+        : `<h3 style="margin-top:18px">${t('barCur')}</h3>${num('c100', '≥ 100 h')}${num('c75', '75-99 h')}${num('c50', '50-74 h')}${num('c25', '25-49 h')}${num('c10', '10-24 h')}${num('doce', t('barDocencia'))}<div class="note">${t('barCurNota')}</div>`}
+      <label class="check"><input type="checkbox" id="v_dis" ${v.dis ? 'checked' : ''}> ${t('barDis')}</label></div>
+    <div class="note" style="padding:0 6px">${t('barNota')}</div>${pie()}`;
+    document.getElementById('bVolver').onclick = () => { $app.oninput = null; pintar(); };
+    document.getElementById('vNorma').onclick = e => { const b = e.target.closest('button'); if (b) { v.norma = b.dataset.v; store.set('baremo', v); dibujar(); } };
+    document.getElementById('v_dis').onchange = e => { v.dis = e.target.checked; store.set('baremo', v); dibujar(); };
+  };
+  $app.onclick = null;
+  $app.oninput = e => {
+    const k = e.target.dataset && e.target.dataset.k; if (!k) return;
+    v[k] = e.target.tagName === 'SELECT' ? e.target.value : (parseFloat(String(e.target.value).replace(',', '.')) || 0);
+    store.set('baremo', v);
+    const r = calcBaremo(v), f = x => x.toFixed(2).replace('.', ',');
+    document.getElementById('vTot').textContent = f(r.total);
+    const m = document.querySelectorAll('.mini b'); [r.serv, r.opo, r.form, r.val, r.otros].forEach((x, i) => { if (m[i]) m[i].textContent = f(x); });
+  };
+  $app.onchange = e => { if (e.target.tagName === 'SELECT') $app.oninput(e); };
+  dibujar();
 }
 
 // ───────────────────────── Compartir «Mi situación» (imagen con tus datos) ─────────────────────────
@@ -851,7 +1203,7 @@ function pintar() {
   document.getElementById('bLang').textContent = lang === 'es' ? 'VAL' : 'CAS';
   document.documentElement.lang = lang === 'va' ? 'ca' : 'es';
   if (!perfil) return pantallaPerfil();
-  $app.onclick = null;
+  $app.onclick = null; $app.oninput = null; $app.onchange = null;
   const fechas = [];
   perfil.bolsas.forEach(b => b.deps.forEach(d => { const x = datos[clave(b, d)]; if (x && x.fecha) fechas.push(x.fecha); }));
   const cuando = fechas.length ? new Date(Math.min(...fechas)).toLocaleString(lang === 'va' ? 'ca-ES' : 'es-ES', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' }) : t('nunca');
@@ -862,14 +1214,18 @@ function pintar() {
   $app.innerHTML = `
     <div class="bar"><span class="when">${t('actualizado')}: ${esc(cuando)}</span>
       <span><button class="sec" id="bAct">↻ ${t('bAct')}</button> <button class="sec" id="bEdit">${t('bEdit')}</button></span></div>
+    <div style="margin:-4px 0 14px"><button class="sec" id="bBar">${t('bBaremo')}</button></div>
     ${errores.length ? '<div class="err">' + errores.map(esc).join('<br>') + '</div><br>' : ''}
     ${avisos()}
-    ${perfil.bolsas.map(b => (varias ? `<div class="grupo">${esc(catCorta(b.cat))} · ${turnoTxt(b.turno)}</div>` : '') + b.deps.map(d => tarjeta(b, d)).join('')).join('')}
+    ${perfil.bolsas.map(b => (varias ? `<div class="grupo">${esc(catCorta(b.cat))} · ${turnoTxt(b.turno)}</div>` : '') + b.deps.map(d => tarjeta(b, d)).join('') + comparar(b)).join('')}
+    ${[...new Set(perfil.bolsas.map(b => b.cat))].map(actividadCard).join('')}
+    ${penalCard()}${calendarioCard()}${oficialCard()}
     ${pub ? '<div class="note" style="padding:0 6px">' + t('pubT') + ': ' + esc(fechaTxt(pub) || pub) + '</div>' : ''}
     ${reg.length ? `<details class="card reg" style="margin-top:16px"><summary>${t('detalles')}</summary><pre>${reg.map(esc).join('\n')}</pre></details>` : ''}
     ${pie()}`;
   document.getElementById('bAct').onclick = actualizar;
   document.getElementById('bEdit').onclick = pantallaPerfil;
+  document.getElementById('bBar').onclick = pantallaBaremo;
   const bn = document.getElementById('bNov');
   if (bn) bn.onclick = () => { store.set('novedades', null); pintar(); };
   $app.querySelectorAll('[data-share]').forEach(x => { x.onclick = () => compartir(x.dataset.share); });
@@ -877,7 +1233,7 @@ function pintar() {
 
 document.getElementById('bLang').onclick = () => {
   lang = lang === 'es' ? 'va' : 'es'; store.set('lang', lang);
-  if (document.getElementById('fOk')) pantallaPerfil(); else pintar();
+  if (document.getElementById('fOk')) pantallaPerfil(); else if (document.getElementById('vTot')) pantallaBaremo(); else pintar();
 };
 
 verVisible = store.get('ver', false);

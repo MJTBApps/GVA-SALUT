@@ -2,6 +2,7 @@ import Foundation
 import Capacitor
 import UIKit
 import WebKit
+import WidgetKit
 
 /// Mismo puente que NavegadorPlugin.java: navegador real del sistema (WKWebView), oculto
 /// detrás de la app, para la consulta pública de la GVA. No se toca el User-Agent.
@@ -145,8 +146,15 @@ public class NavegadorPlugin: CAPPlugin, CAPBridgedPlugin, WKNavigationDelegate 
         }
     }
 
-    /// En iPhone todavía no hay widget: se acepta la llamada sin hacer nada.
-    @objc func widget(_ call: CAPPluginCall) { call.resolve() }
+    /// Guarda el resumen para el widget (grupo de apps compartido) y lo repinta.
+    @objc func widget(_ call: CAPPluginCall) {
+        let d = UserDefaults(suiteName: "group.es.mjtbapps.mibolsa")
+        d?.set(call.getString("titulo") ?? "Mi Bolsa", forKey: "titulo")
+        d?.set(call.getString("linea1") ?? "", forKey: "linea1")
+        d?.set(call.getString("linea2") ?? "", forKey: "linea2")
+        if #available(iOS 14.0, *) { WidgetCenter.shared.reloadAllTimelines() }
+        call.resolve()
+    }
 
     /// Comparte la imagen de «Mi situación» con el menú de compartir de iOS.
     @objc func compartir(_ call: CAPPluginCall) {
