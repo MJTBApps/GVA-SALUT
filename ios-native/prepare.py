@@ -14,7 +14,8 @@ dst = os.path.join(APP, 'BolsaNative')
 shutil.rmtree(dst, ignore_errors=True)
 shutil.copytree(os.path.join(ROOT, 'BolsaNative'), dst)
 pk = os.path.join(dst, 'Package.swift')
-open(pk, 'w').write(open(pk).read().replace('CAPACITOR_DEP', m.group(0)))
+txt = open(pk).read().replace('CAPACITOR_DEP', m.group(0))
+open(pk, 'w').write(txt)  # leer antes de abrir para escribir (si no, queda vacío)
 
 # 2. CapApp-SPM depende de BolsaNative
 if 'BolsaNative' not in s:
