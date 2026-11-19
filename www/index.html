@@ -131,7 +131,7 @@ a{color:var(--acc-ink)}
 <div id="hoja"><div class="h"><div class="tira"></div><div class="hc"><h3 id="hojaT"></h3><button class="sec" id="hojaX">✕</button></div>
   <input id="hojaQ" type="search" autocomplete="off"><div class="lista" id="hojaL"></div></div></div>
 <div id="overlay"><div class="box"><div class="lupa"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></div>
-  <b id="ovT"></b><div class="ovs" id="ovS"></div><div class="prog"><i id="ovP"></i></div></div></div>
+  <b id="ovT"></b><div class="ovs" id="ovS"></div><div class="prog"><i id="ovP"></i></div><button class="sec" id="ovX" style="margin-top:16px">✕ <span id="ovXt"></span></button></div></div>
 
 <script>
 'use strict';
@@ -177,7 +177,7 @@ const T = {
     menosDisp: '{0}: {1} disponible(s) menos delante de ti', masDisp: '{0}: {1} disponible(s) más delante de ti', empiezan: '{0}: {1} de delante empieza(n) a trabajar',
     detalles: 'Detalles de la última búsqueda', pie1: 'App no oficial. Datos de la consulta pública de las Listas de Empleo Temporal de la Conselleria de Sanidad.',
     pie2: 'Tus datos y resultados se guardan solo en este móvil.', pubT: 'Publicación', compTexto: 'Mi situación en la bolsa de Sanidad (app Mi Bolsa, no oficial)',
-    toca: 'Toca la casilla para continuar', webGva: 'Búsqueda en la web de la GVA', paso: 'Paso {0} de {1}',
+    toca: 'Toca la casilla para continuar', cancelar2: 'Cancelar', fallo: 'Esta vez no se ha podido buscar en este departamento. Puede que la web de la GVA no respondiera.', reintentar: 'Intentar de nuevo', webGva: 'Búsqueda en la web de la GVA', paso: 'Paso {0} de {1}',
     actividad: 'Actividad de la bolsa', penal: 'Penalizaciones', penalNueva: '⚠️ Apareces en la lista de penalizaciones de la GVA',
     actT: '📈 Actividad de la bolsa', actMes: 'Nombramientos en {0}', actDep: '{0} en {1}', largos: 'largos (vacantes, interinidades)', cortos: 'cortos (sustituciones, eventuales…)', otros: 'otros',
     hastaPuesto: 'Llamaron hasta el puesto {0}', parcial: 'Solo se cuenta la primera página de la consulta.', rankT: 'Departamentos que más llaman',
@@ -229,7 +229,7 @@ const T = {
     menosDisp: '{0}: {1} disponible(s) menys davant de tu', masDisp: '{0}: {1} disponible(s) més davant de tu', empiezan: '{0}: {1} de davant comença(en) a treballar',
     detalles: 'Detalls de l\'última busca', pie1: 'App no oficial. Dades de la consulta pública de les Llistes d\'Ocupació Temporal de la Conselleria de Sanitat.',
     pie2: 'Les teues dades i resultats es guarden només en este mòbil.', pubT: 'Publicació', compTexto: 'La meua situació en la borsa de Sanitat (app Mi Bolsa, no oficial)',
-    toca: 'Toca la casella per a continuar', webGva: 'Busca en la web de la GVA', paso: 'Pas {0} de {1}',
+    toca: 'Toca la casella per a continuar', cancelar2: 'Cancel·lar', fallo: 'Esta vegada no s\'ha pogut buscar en este departament. Pot ser que la web de la GVA no responguera.', reintentar: 'Tornar a intentar', webGva: 'Busca en la web de la GVA', paso: 'Pas {0} de {1}',
     actividad: 'Activitat de la borsa', penal: 'Penalitzacions', penalNueva: '⚠️ Apareixes en la llista de penalitzacions de la GVA',
     actT: '📈 Activitat de la borsa', actMes: 'Nomenaments en {0}', actDep: '{0} en {1}', largos: 'llargs (vacants, interinitats)', cortos: 'curts (substitucions, eventuals…)', otros: 'altres',
     hastaPuesto: 'Van cridar fins al lloc {0}', parcial: 'Només es compta la primera pàgina de la consulta.', rankT: 'Departaments que més criden',
@@ -403,11 +403,20 @@ function paginaGVA() {
 
 // Cada orden se ejecuta en la página de la GVA: si la página ha cambiado (navegación) se
 // vuelven a poner las funciones, y si algo falla se apunta el error en el registro.
+// Límite de tiempo para cada orden al navegador y botón «Cancelar»: la búsqueda nunca se queda colgada
+let cancelado = false, limiteBusqueda = 0;
+const conTiempo = (p, ms, msg) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(new Error(msg)), ms))]);
+function revisarCancel() {
+  if (cancelado) throw new Error('Búsqueda cancelada');
+  if (limiteBusqueda && Date.now() > limiteBusqueda) { cancelado = true; throw new Error('La búsqueda ha tardado demasiado'); }
+}
+async function abrirNav(url) { revisarCancel(); await conTiempo(NAV.abrir({ url }), 30000, 'La web de la GVA no responde'); }
 async function ev(expr) {
+  revisarCancel();
   const js = '(function(){try{if(!window.__mb){(' + paginaGVA.toString() + ')()}return (' + expr + ');}' +
     'catch(e){return {__err: String((e && e.message) || e)}}})()';
   let r;
-  try { r = await NAV.ejecutar({ js }); } catch (e) { paso('Error del navegador: ' + (e.message || e)); return null; }
+  try { r = await conTiempo(NAV.ejecutar({ js }), 12000, 'sin respuesta'); } catch (e) { paso('Error del navegador: ' + (e.message || e)); revisarCancel(); return null; }
   let v = null;
   try { v = JSON.parse(r && r.valor); } catch (e) { v = null; }
   if (v && v.__err) { paso('Error en la página: ' + v.__err + ' [' + expr.slice(0, 40) + ']'); return null; }
@@ -415,7 +424,7 @@ async function ev(expr) {
 }
 async function esperar(expr, ms, paso = 300) {
   const fin = Date.now() + ms;
-  while (Date.now() < fin) { if (await ev(expr)) return true; await sleep(paso); }
+  while (Date.now() < fin) { revisarCancel(); if (await ev(expr)) return true; await sleep(paso); }
   return false;
 }
 async function prepararPagina() {
@@ -444,7 +453,7 @@ async function verificacion(etiqueta) {
   ovOff();
   const fin = Date.now() + 120000;
   let ok = false;
-  while (Date.now() < fin && !cerrado) { if (await ev('window.__mb.verificado()')) { ok = true; break; } await sleep(400); }
+  while (Date.now() < fin && !cerrado && !cancelado) { if (await ev('window.__mb.verificado()')) { ok = true; break; } await sleep(400); }
   if (!verVisible) await NAV.ocultar();
   h.remove();
   ov(t('act'), etiqueta);
@@ -457,7 +466,7 @@ async function esperarTabla(segundos) {
   let res = null;
   await sleep(500);
   while (Date.now() < fin) {
-    await sleep(500);
+    await sleep(500); revisarCancel();
     if (!await ev('window.__mb.listo()')) continue;
     res = await ev('window.__mb.leer()');
     if (res && (res.filas || res.error)) break;
@@ -501,7 +510,7 @@ async function irATramo(n, etiqueta) {
 async function consultarDep(url, b, dep, etiqueta, conNombre = true, puesto = null) {
   ov(t('act'), etiqueta);
   paso(etiqueta + ': abriendo la consulta');
-  await NAV.abrir({ url });
+  await abrirNav(url);
   await prepararPagina();
   if (!await esperar('window.__mb.listo()', 20000)) throw new Error('La página de la GVA no ha cargado');
   for (const [n, v] of [[0, b.cat], [1, b.turno], [2, dep]]) {
@@ -556,7 +565,7 @@ const tipoCorto = x => /SUSTIT|EVENTUAL|ACUMUL|REFUER|PROGRAM|TEMPORAL|CORTA/.te
 async function abrirConsulta(url, etiqueta) {
   ov(t('act'), etiqueta);
   paso(etiqueta + ': abriendo la consulta');
-  await NAV.abrir({ url });
+  await abrirNav(url);
   await prepararPagina();
   if (!await esperar('window.__mb.quieto()', 20000)) throw new Error('La página de la GVA no ha cargado');
 }
@@ -686,7 +695,7 @@ async function actualizar(forzar = false) {
   if (forzar && forzar.type) forzar = false; // llamado desde un botón
   if (actualizando || !perfil) return;
   if (!NAV) { demo(); return; }
-  actualizando = true;
+  actualizando = true; cancelado = false; limiteBusqueda = Date.now() + 240000;
   registro = []; t0 = Date.now();
   const errores = [], novedades = [];
   const tareas = [];
@@ -694,7 +703,7 @@ async function actualizar(forzar = false) {
   try {
     ov(t('act'), '', 0.03);
     paso('Buscando la última publicación');
-    await NAV.abrir({ url: INDEX_URL });
+    await abrirNav(INDEX_URL);
     if (verVisible) await NAV.mostrar({ titulo: t('webGva') });
     await prepararPagina();
     await esperar('!!window.__mb.lista()', 15000);
@@ -704,6 +713,7 @@ async function actualizar(forzar = false) {
     const ultima = store.get('ultimaPub', null);
     if (ultima && ultima !== lista.texto) novedades.push(t('nuevaPub', fechaTxt(lista.texto)));
     for (let i = 0; i < tareas.length; i++) {
+      if (cancelado) break;
       const [b, dep] = tareas[i];
       const etiqueta = depName(dep) + (perfil.bolsas.length > 1 ? ' · ' + catCorta(b.cat) : '');
       progreso((i + 0.2) / tareas.length, t('paso', i + 1, tareas.length) + ' · ' + etiqueta);
@@ -714,7 +724,13 @@ async function actualizar(forzar = false) {
         const r = await consultarBolsa(lista, b, dep, etiqueta);
         novedades.push(...cambios(depName(dep), prev, r));
         datos[k] = Object.assign(r, { fecha: Date.now(), pub: lista.texto, hist: sumarHist(prev && prev.hist, r, lista.texto), prev: prev && prev.delante ? prev.delante : null });
-      } catch (e) { errores.push(etiqueta + ': ' + e.message); paso('ERROR ' + etiqueta + ': ' + e.message); }
+      } catch (e) {
+        errores.push(etiqueta + ': ' + e.message); paso('ERROR ' + etiqueta + ': ' + e.message);
+        // Se apunta el fallo para no repetir la búsqueda sola cada vez que se abre la app
+        const k = clave(b, dep), prev = datos[k];
+        datos[k] = prev && !prev.fallo ? Object.assign(prev, { fecha: Date.now() }) : { fecha: Date.now(), pub: lista.texto, fallo: e.message };
+        store.set('datos', datos);
+      }
     }
     store.set('datos', datos);
     store.set('oficial', { pub: lista.pub || '', sit: lista.texto, nomb: lista.nomb && lista.nomb.texto, pen: lista.pen && lista.pen.texto });
@@ -724,7 +740,8 @@ async function actualizar(forzar = false) {
   } catch (e) { errores.push(e.message); paso('ERROR: ' + e.message); }
   finally {
     paso('Fin');
-    try { await NAV.cerrar(); } catch (e) {}
+    limiteBusqueda = 0; cancelado = false;
+    try { await conTiempo(NAV.cerrar(), 5000, ''); } catch (e) {}
     actualizando = false; ovOff();
     store.set('errores', errores);
     store.set('registro', registro);
@@ -736,12 +753,12 @@ async function actualizar(forzar = false) {
 // Actividad de la bolsa y penalizaciones: consultas aparte, solo desde la pestaña Bolsa
 async function actualizarExtras(forzarExtra = true) {
   if (actualizando || !perfil || !NAV) return;
-  actualizando = true;
+  actualizando = true; cancelado = false; limiteBusqueda = Date.now() + 240000;
   registro = []; t0 = Date.now();
   const novedades = [];
   try {
     ov(t('act'), '', 0.05);
-    await NAV.abrir({ url: INDEX_URL });
+    await abrirNav(INDEX_URL);
     if (verVisible) await NAV.mostrar({ titulo: t('webGva') });
     await prepararPagina();
     await esperar('!!window.__mb.lista()', 15000);
@@ -779,7 +796,8 @@ async function actualizarExtras(forzarExtra = true) {
   } catch (e) { paso('ERROR: ' + e.message); }
   finally {
     paso('Fin');
-    try { await NAV.cerrar(); } catch (e) {}
+    limiteBusqueda = 0; cancelado = false;
+    try { await conTiempo(NAV.cerrar(), 5000, ''); } catch (e) {}
     actualizando = false; ovOff();
     store.set('registro', registro);
     pintar();
@@ -791,7 +809,7 @@ async function comprobarPublicacion() {
   if (!NAV || actualizando || !perfil) return;
   if (Date.now() - store.get('comprobado', 0) < 3600e3) return;   // como mucho una vez por hora
   try {
-    await NAV.abrir({ url: INDEX_URL });
+    await abrirNav(INDEX_URL);
     await prepararPagina();
     await esperar('!!window.__mb.lista()', 15000);
     const lista = await ev('window.__mb.lista()');
@@ -847,6 +865,7 @@ const catCorta = c => cap(catName(c));
 const sitCorta = s => cap((s || '').replace(/^SITUACION\s*/, ''));
 const fechaTxt = tx => { const m = (tx || '').match(/(\d{1,2}\/\d{1,2}\/\d{4})/); return m ? m[1] : ''; };
 function ov(tt, s, frac) {
+  document.getElementById('ovXt').textContent = t('cancelar2');
   document.getElementById('ovT').textContent = tt; document.getElementById('ovS').textContent = s || '';
   if (typeof frac === 'number') progreso(frac);
   document.getElementById('overlay').style.display = 'flex';
@@ -1035,6 +1054,8 @@ function tarjeta(b, dep) {
   const k = clave(b, dep), d = datos[k];
   const cab = `<div class="kicker">${esc(catCorta(b.cat))} · ${turnoTxt(b.turno)}</div><div class="dep">${esc(cap(depName(dep)))}</div>`;
   if (!d) return `<div class="card res">${cab}<div class="note">${t('sinConsultar')}</div></div>`;
+  if (d.fallo) return `<div class="card res">${cab}<div class="err">${t('fallo')}</div>
+    <div class="acciones"><button class="sec" data-reintentar="1">↻ ${t('reintentar')}</button></div></div>`;
   if (!d.encontrado) {
     if (d.identificado) return `<div class="card res off">${cab}<div class="nf"><b>${t('nfT')}</b>${t('nfTxt')}</div>
       <div class="acciones"><button class="sec" data-revisar="1">✏️ ${t('revisar')}</button></div></div>`;
@@ -1325,6 +1346,7 @@ function pintar() {
   if (av) av.onchange = () => { verVisible = av.checked; store.set('ver', verVisible); };
   $app.querySelectorAll('[data-share]').forEach(x => { x.onclick = () => compartir(x.dataset.share); });
   $app.querySelectorAll('[data-revisar]').forEach(x => { x.onclick = pantallaPerfil; });
+  $app.querySelectorAll('[data-reintentar]').forEach(x => { x.onclick = () => actualizar(); });
 }
 
 document.getElementById('bLang').onclick = () => {
@@ -1337,6 +1359,7 @@ pintar();
 // Al abrir la app (y al volver a ella): si los datos tienen más de 6 horas se actualiza;
 // si no, se mira si la GVA ha sacado una publicación nueva y entonces se actualiza.
 const viejo = () => perfil && perfil.bolsas.some(b => b.deps.some(d => { const x = datos[clave(b, d)]; return !x || Date.now() - x.fecha > 6 * 3600e3; }));
+document.getElementById('ovX').onclick = () => { cancelado = true; paso('Cancelada por ti'); ovOff(); };
 const alAbrir = () => { if (viejo()) actualizar(); else comprobarPublicacion(); };
 alAbrir();
 document.addEventListener('visibilitychange', () => { if (!document.hidden) alAbrir(); });
