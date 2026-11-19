@@ -24,6 +24,9 @@
 
         </activity>
 
+        <!-- AdMob: identificador de la app Android «Mi Bolsa Sanidad» -->
+        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-1535697166232113~4767202281" />
+
         <!-- Compartir la imagen de "Mi situación" -->
         <provider
             android:name="androidx.core.content.FileProvider"

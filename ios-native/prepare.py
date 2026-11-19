@@ -45,3 +45,15 @@ if 'import BolsaNative' not in t:
     assert n == 1, 'No encuentro didFinishLaunchingWithOptions en ' + ad
     open(ad, 'w').write(t)
 print(open(ad).read()[:600])
+
+# 5. AdMob: identificador de la app iPhone «Mi Bolsa Sanidad», red de anuncios de Google
+#    (SKAdNetwork) y el texto del permiso de seguimiento (App Tracking Transparency)
+import plistlib
+ip = os.path.join(APP, 'App', 'Info.plist')
+with open(ip, 'rb') as f: pl = plistlib.load(f)
+pl['GADApplicationIdentifier'] = 'ca-app-pub-1535697166232113~5672043661'
+pl['SKAdNetworkItems'] = [{'SKAdNetworkIdentifier': 'cstr6suwn9.skadnetwork'}]
+pl['NSUserTrackingUsageDescription'] = ('Se usa solo para que los anuncios sean más relevantes para ti. '
+                                        'Tus datos de la bolsa nunca salen del móvil.')
+with open(ip, 'wb') as f: plistlib.dump(pl, f)
+print('Info.plist: AdMob listo')

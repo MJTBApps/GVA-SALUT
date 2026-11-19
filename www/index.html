@@ -1407,26 +1407,35 @@ function programarAvisos() {
   NAV.avisos({ avisos: lista.slice(0, 40) }).catch(() => {});
 }
 
-// ── Anuncios (preparado, todavía apagado) ──
-// Cuando se cree la app en AdMob: poner activo:true y los identificadores, y añadir el complemento
-// @capacitor-community/admob. Banner abajo (encima de las pestañas), uno al abrir la app y uno
-// intersticial cada cierto tiempo al acabar una búsqueda. Con «premium» no sale ninguno.
-const ADS = { activo: false, banner: '', inicio: '', inter: '', cadaMin: 4 };
-const ADMOB = () => window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.AdMob;
+// ── Anuncios (AdMob, complemento @capacitor-community/admob) ──
+// Banner abajo (encima de las pestañas), uno de «carga de aplicación» siempre al abrir la app y un
+// intersticial como mucho cada `cadaMin` minutos al acabar una búsqueda. Con «premium» no sale ninguno.
+// Antes se pide el consentimiento que exige la UE (formulario de Google) y, en iPhone, el permiso de seguimiento.
+const ES_IOS = !!(window.Capacitor && Capacitor.getPlatform && Capacitor.getPlatform() === 'ios');
+const ADS = ES_IOS
+  ? { activo: true, banner: 'ca-app-pub-1535697166232113/9848585686', inicio: 'ca-app-pub-1535697166232113/8846048090', inter: 'ca-app-pub-1535697166232113/6212593004', cadaMin: 4 }
+  : { activo: true, banner: 'ca-app-pub-1535697166232113/3454120610', inicio: 'ca-app-pub-1535697166232113/6709793163', inter: 'ca-app-pub-1535697166232113/1732798652', cadaMin: 4 };
+const ADMOB = () => window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform() && Capacitor.Plugins && Capacitor.Plugins.AdMob;
 const conAnuncios = () => ADS.activo && !store.get('premium', false) && !!ADMOB();
-let ultimoInter = 0;
+let ultimoInter = 0, adsListos = false;
 async function anunciosIniciar() {
   if (!conAnuncios()) return;
+  const A = ADMOB();
   try {
-    await ADMOB().initialize({});
+    let c = await A.requestConsentInfo();
+    if (c.isConsentFormAvailable && c.status === 'REQUIRED') c = await A.showConsentForm();
+    if (c && c.canRequestAds === false) return;
+    if (ES_IOS) { try { await A.requestTrackingAuthorization(); } catch (e) {} }
+    await A.initialize();
+    adsListos = true;
     document.body.classList.add('con-anuncio');
     const alto = (document.getElementById('tabs').offsetHeight || 64);
-    await ADMOB().showBanner({ adId: ADS.banner, adSize: 'ADAPTIVE_BANNER', position: 'BOTTOM_CENTER', margin: alto });
-    await anuncioPantalla(ADS.inicio);                       // siempre uno al abrir la app
+    A.showBanner({ adId: ADS.banner, adSize: 'ADAPTIVE_BANNER', position: 'BOTTOM_CENTER', margin: alto }).catch(() => {});
+    try { await A.loadAppOpen({ adId: ADS.inicio }); await A.showAppOpen(); ultimoInter = Date.now(); } catch (e) {}  // siempre uno al abrir
   } catch (e) {}
 }
 async function anuncioPantalla(id) {
-  if (!conAnuncios() || !id) return;
+  if (!adsListos || !conAnuncios() || !id || actualizando) return;
   try { await ADMOB().prepareInterstitial({ adId: id }); await ADMOB().showInterstitial(); ultimoInter = Date.now(); } catch (e) {}
 }
 function anuncioCadaTanto() { if (Date.now() - ultimoInter > ADS.cadaMin * 60000) anuncioPantalla(ADS.inter); }
@@ -1506,8 +1515,8 @@ const viejo = () => perfil && perfil.bolsas.some(b => b.deps.some(d => { const x
 document.getElementById('ovX').onclick = () => { cancelado = true; paso('Cancelada por ti'); ovOff(); };
 const alAbrir = () => { if (viejo()) actualizar(); else comprobarPublicacion(); };
 programarAvisos();
-anunciosIniciar();
-alAbrir();
+// Primero el consentimiento y el anuncio de apertura; después la búsqueda
+anunciosIniciar().finally(alAbrir);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) alAbrir(); });
 </script>
 </body>

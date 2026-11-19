@@ -9,6 +9,8 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle savedInstanceState) {
         // Complemento propio: navegador real (oculto) para la consulta pública de la GVA
         registerPlugin(NavegadorPlugin.class);
+        // Anuncios (AdMob)
+        registerPlugin(com.getcapacitor.community.admob.AdMob.class);
         super.onCreate(savedInstanceState);
     }
 }
