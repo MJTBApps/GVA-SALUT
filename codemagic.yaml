@@ -1,0 +1,109 @@
+# Codemagic: alternativa a GitHub Actions para subir el iPhone a TestFlight cuando
+# los Mac de GitHub están saturados. Hace lo mismo que .github/workflows/ios.yml.
+# Se lanza a mano desde codemagic.io («Start new build», workflow «Mi Bolsa → TestFlight»).
+# Secretos: grupo de variables «opoalert_ios» (ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8; la misma clave de App Store Connect).
+# Número de compilación = 100 + número de Codemagic, para no chocar con los de GitHub.
+workflows:
+  mibolsa-testflight:
+    name: Mi Bolsa → TestFlight
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      xcode: latest
+      node: 22
+      groups:
+        - opoalert_ios
+      vars:
+        TEAM_ID: 6QLP74LVPC
+        WIDGET: "true"
+    scripts:
+      - name: Comprobar secretos y Xcode
+        script: |
+          for name in ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8; do
+            if [ -z "${!name}" ]; then echo "Falta la variable $name en el grupo opoalert_ios"; exit 1; fi
+          done
+          xcodebuild -version
+
+      - name: Crear el proyecto de iPhone (Capacitor)
+        script: |
+          npm install --no-audit --no-fund
+          npm install --no-save --no-audit --no-fund @capacitor/ios@8.5.3
+          npx cap add ios
+          npx cap sync ios
+
+      - name: Icono, nombre y permisos
+        script: |
+          pip3 install --quiet --break-system-packages pillow || pip3 install --quiet pillow
+          python3 - <<'EOF'
+          from PIL import Image
+          import glob, json, os
+          fg = Image.open('android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png').convert('RGBA').resize((1024, 1024), Image.LANCZOS)
+          bg = Image.new('RGBA', (1024, 1024), (0x0F, 0x17, 0x2A, 255))
+          bg.alpha_composite(fg)
+          d = 'ios/App/App/Assets.xcassets/AppIcon.appiconset'
+          for f in glob.glob(d + '/*.png'): os.remove(f)
+          bg.convert('RGB').save(d + '/AppIcon-1024.png')
+          json.dump({"images": [{"filename": "AppIcon-1024.png", "idiom": "universal", "platform": "ios", "size": "1024x1024"}],
+                     "info": {"author": "xcode", "version": 1}}, open(d + '/Contents.json', 'w'), indent=2)
+          EOF
+          P=ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName Mi Bolsa" $P || /usr/libexec/PlistBuddy -c "Add :CFBundleDisplayName string Mi Bolsa" $P
+          /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" $P || true
+
+      - name: Complemento Navegador (BolsaNative)
+        script: python3 ios-native/prepare.py ios/App
+
+      - name: Widget de la pantalla de inicio
+        script: |
+          [ "$WIDGET" = "true" ] || exit 0
+          gem install xcodeproj --no-document --user-install || sudo gem install xcodeproj --no-document
+          export GEM_HOME="$(ruby -e 'print Gem.user_dir')"; export PATH="$GEM_HOME/bin:$PATH"
+          ruby ios-native/add_widget.rb ios/App
+
+      - name: Archivar
+        script: |
+          set -o pipefail
+          cd ios/App
+          NUM=$((100 + ${BUILD_NUMBER:-0}))
+          xcodebuild -resolvePackageDependencies -project App.xcodeproj -scheme App | tail -n 20
+          xcodebuild -project App.xcodeproj -scheme App -configuration Release \
+            -destination 'generic/platform=iOS' -archivePath build/App.xcarchive \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
+            CODE_SIGN_STYLE=Automatic CODE_SIGNING_ALLOWED=NO \
+            MARKETING_VERSION=0.1 CURRENT_PROJECT_VERSION="$NUM" \
+            archive | tail -n 60
+          APP=build/App.xcarchive/Products/Applications/App.app
+          if [ -d "$APP/PlugIns/BolsaWidget.appex" ]; then
+            codesign --force --sign - --entitlements BolsaWidget/BolsaWidget.entitlements "$APP/PlugIns/BolsaWidget.appex"
+            codesign --force --sign - --entitlements App/App.entitlements "$APP"
+          fi
+
+      - name: Firmar y subir a App Store Connect
+        script: |
+          set -o pipefail
+          K="$HOME/asc"; mkdir -p "$K"
+          printf '%s\n' "$ASC_KEY_P8" > "$K/AuthKey_$ASC_KEY_ID.p8"; chmod 600 "$K/AuthKey_$ASC_KEY_ID.p8"
+          trap 'rm -rf "$K"' EXIT
+          cd ios/App
+          for fw in build/App.xcarchive/Products/Applications/App.app/Frameworks/*.framework; do
+            [ -d "$fw" ] || continue
+            codesign --remove-signature "$fw" || true; rm -rf "$fw/_CodeSignature"
+          done
+          cat > build/ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>$TEAM_ID</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict></plist>
+          EOF
+          xcodebuild -exportArchive -archivePath build/App.xcarchive \
+            -exportOptionsPlist build/ExportOptions.plist -exportPath build/export \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$K/AuthKey_$ASC_KEY_ID.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            | tail -n 60
+          echo "Subida la compilación $((100 + ${BUILD_NUMBER:-0})). App Store Connect tarda unos minutos en procesarla."
