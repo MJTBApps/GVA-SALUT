@@ -128,9 +128,12 @@ function paginaGVA() {
       const cab = [...tabla.querySelectorAll('thead th, tr:first-child th')].map(th => norm(th.innerText));
       const col = re => cab.findIndex(h => re.test(h));
       const ix = { pos: col(/^(LLOC|PUESTO|ORDEN|N)/), nom: col(/^NOM/), sit: col(/SITUA/), per: col(/PERFIL/), cat: col(/CATEG/), dep: col(/DEPART/) };
-      const filas = [...tabla.querySelectorAll('tbody tr')].map(tr => [...tr.querySelectorAll('td')].map(td => td.innerText.trim()))
+      // En móvil la GVA mete el título de la columna dentro de cada celda («Puesto 123»): se quita
+      const celda = td => { const c = td.cloneNode(true); c.querySelectorAll('.ui-column-title').forEach(e => e.remove()); return (c.textContent || '').replace(/\s+/g, ' ').trim()
+        .replace(/^(Lloc|Puesto|Nom|Nombre|Situaci[oó]n?|Perfils|Perfiles|Perfil|Categor[ií]a|Departament|Departamento)\s*:?\s*/i, ''); };
+      const filas = [...tabla.querySelectorAll('tbody tr')].map(tr => [...tr.querySelectorAll('td')].map(celda))
         .filter(c => c.length > 1).map(c => ({
-          pos: parseInt(c[ix.pos >= 0 ? ix.pos : 0], 10), nom: norm(c[ix.nom >= 0 ? ix.nom : 1]),
+          pos: parseInt(((c[ix.pos >= 0 ? ix.pos : 0] || '').match(/\d+/) || [])[0], 10), nom: norm(c[ix.nom >= 0 ? ix.nom : 1]),
           sit: norm(c[ix.sit >= 0 ? ix.sit : 2]), per: ix.per >= 0 ? c[ix.per] : '', cat: ix.cat >= 0 ? c[ix.cat] : '', dep: ix.dep >= 0 ? c[ix.dep] : ''
         }));
       const rango = [...document.querySelectorAll('select')].find(s => [...s.options].some(o => /^\d+\s*-\s*\d+$/.test(o.text.trim())));
