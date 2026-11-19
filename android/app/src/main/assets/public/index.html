@@ -130,7 +130,7 @@ function paginaGVA() {
       const ix = { pos: col(/^(LLOC|PUESTO|ORDEN|N)/), nom: col(/^NOM/), sit: col(/SITUA/), per: col(/PERFIL/), cat: col(/CATEG/), dep: col(/DEPART/) };
       // En móvil la GVA mete el título de la columna dentro de cada celda («Puesto 123»): se quita
       const celda = td => { const c = td.cloneNode(true); c.querySelectorAll('.ui-column-title').forEach(e => e.remove()); return (c.textContent || '').replace(/\s+/g, ' ').trim()
-        .replace(/^(Lloc|Puesto|Nom|Nombre|Situaci[oó]n?|Perfils|Perfiles|Perfil|Categor[ií]a|Departament|Departamento)\s*:?\s*/i, ''); };
+        .replace(/^(Lloc|Puesto|Nombre|Nom|Situaci[oó]n?|Perfiles|Perfils|Perfil|Categor[ií]a|Departamento|Departament)\s*:?\s*/i, ''); };
       const filas = [...tabla.querySelectorAll('tbody tr')].map(tr => [...tr.querySelectorAll('td')].map(celda))
         .filter(c => c.length > 1).map(c => ({
           pos: parseInt(((c[ix.pos >= 0 ? ix.pos : 0] || '').match(/\d+/) || [])[0], 10), nom: norm(c[ix.nom >= 0 ? ix.nom : 1]),
