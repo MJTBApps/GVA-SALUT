@@ -29,6 +29,7 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 - APK: `.github/workflows/apk.yml` (artefacto `mi-bolsa-apk`). Firma fija opcional con `MIBOLSA_KEYSTORE_B64` y `MIBOLSA_KEYSTORE_PASSWORD`.
 - iPhone: `.github/workflows/ios.yml` (a mano) → TestFlight, con los secretos `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8` (los de OpoAlert). Antes hay que crear la app con el bundle `es.mjtbapps.mibolsa` en App Store Connect.
 - Alternativa si los Mac de GitHub están saturados: **Codemagic** (`codemagic.yaml`, app GVA-SALUT en codemagic.io, workflow «Mi Bolsa → TestFlight», grupo de variables `opoalert_ios` con las 3 claves ASC). Número de compilación = 100 + número de Codemagic.
+- **Google Play**: `.github/workflows/aab.yml` (a mano) → artefacto `mi-bolsa-aab`, firmado con la clave de subida. Clave y contraseña en `~/MiBolsa-claves/` del iMac (fuera del repo; guardar copia): `mibolsa-play-subida.jks`, `.b64` y `play.properties`. Secretos `MIBOLSA_PLAY_KEYSTORE_B64` y `MIBOLSA_PLAY_PASSWORD`. versionCode = 1000 + número de ejecución.
 - Claude no hace push: commits en local y el usuario sube con GitHub Desktop.
 
 ## Estado (19/11/2026)

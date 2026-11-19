@@ -3,6 +3,9 @@ apply plugin: 'com.android.application'
 // Firma fija (MIBOLSA_KEYSTORE + MIBOLSA_KEYSTORE_PASSWORD) para que cada APK se instale
 // encima de la anterior sin perder los datos. Sin ella se usa la firma de depuración.
 def keystorePath = System.getenv('MIBOLSA_KEYSTORE')
+// Google Play: clave de subida (MIBOLSA_PLAY_KEYSTORE + MIBOLSA_PLAY_PASSWORD, alias «subida»).
+// Solo en el workflow aab.yml; la clave está en ~/MiBolsa-claves del iMac, nunca en el repo.
+def playKeystore = System.getenv('MIBOLSA_PLAY_KEYSTORE')
 
 android {
     namespace = "es.mjtbapps.mibolsa"
@@ -18,14 +21,26 @@ android {
         }
         buildTypes.debug.signingConfig = signingConfigs.fija
     }
+    if (playKeystore && file(playKeystore).exists()) {
+        signingConfigs {
+            play {
+                storeFile file(playKeystore)
+                storePassword System.getenv('MIBOLSA_PLAY_PASSWORD')
+                keyAlias 'subida'
+                keyPassword System.getenv('MIBOLSA_PLAY_PASSWORD')
+            }
+        }
+        buildTypes.release.signingConfig = signingConfigs.play
+    }
     defaultConfig {
         applicationId "es.mjtbapps.mibolsa"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         // En GitHub cada compilación sube el número
         def run = (System.getenv('GITHUB_RUN_NUMBER') ?: '0') as int
-        versionCode 100 + run
-        versionName run ? "0.1.${run}" : "0.1"
+        def base = (System.getenv('MIBOLSA_VERSION_BASE') ?: '100') as int   // Google Play: 1000
+        versionCode base + run
+        versionName run ? (base >= 1000 ? "1.0.${run}" : "0.1.${run}") : "0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

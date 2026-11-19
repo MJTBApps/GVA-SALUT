@@ -1,0 +1,49 @@
+name: Google Play (AAB)
+
+# Genera el paquete AAB firmado con la clave de subida de Google Play, para subirlo a mano en
+# Play Console (prueba cerrada / producción). Se lanza a mano (Run workflow).
+# Secretos: MIBOLSA_PLAY_KEYSTORE_B64 (la clave en base64) y MIBOLSA_PLAY_PASSWORD.
+# Están en ~/MiBolsa-claves del iMac (mibolsa-play-subida.jks.b64 y play.properties). Hay que guardar copia.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  aab:
+    runs-on: ubuntu-latest
+    env:
+      MIBOLSA_VERSION_BASE: '1000'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Comprobar que las dos copias de la app son iguales
+        run: cmp www/index.html android/app/src/main/assets/public/index.html
+      - name: Clave de subida (solo en este ejecutor)
+        env:
+          B64: ${{ secrets.MIBOLSA_PLAY_KEYSTORE_B64 }}
+          PW: ${{ secrets.MIBOLSA_PLAY_PASSWORD }}
+        run: |
+          if [ -z "$B64" ] || [ -z "$PW" ]; then echo "::error::Faltan los secretos MIBOLSA_PLAY_KEYSTORE_B64 y MIBOLSA_PLAY_PASSWORD"; exit 1; fi
+          printf '%s' "$B64" | base64 -d > "$RUNNER_TEMP/play.jks"
+          echo "MIBOLSA_PLAY_KEYSTORE=$RUNNER_TEMP/play.jks" >> "$GITHUB_ENV"
+      - name: Compilar AAB
+        env:
+          MIBOLSA_PLAY_PASSWORD: ${{ secrets.MIBOLSA_PLAY_PASSWORD }}
+        run: chmod +x android/gradlew && cd android && ./gradlew --no-daemon bundleRelease
+      - name: Comprobar la firma
+        run: |
+          AAB=android/app/build/outputs/bundle/release/app-release.aab
+          jarsigner -verify "$AAB" | tail -1
+          echo "versionCode: $((1000 + GITHUB_RUN_NUMBER))"
+      - uses: actions/upload-artifact@v5
+        with:
+          name: mi-bolsa-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+      - name: Borrar la clave
+        if: always()
+        run: rm -f "$RUNNER_TEMP/play.jks"
