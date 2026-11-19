@@ -28,6 +28,7 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 - **No se compila en local**: el iMac solo tiene Java 17 y Capacitor 8 pide Java 21; no hay Node ni Xcode.
 - APK: `.github/workflows/apk.yml` (artefacto `mi-bolsa-apk`). Firma fija opcional con `MIBOLSA_KEYSTORE_B64` y `MIBOLSA_KEYSTORE_PASSWORD`.
 - iPhone: `.github/workflows/ios.yml` (a mano) → TestFlight, con los secretos `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8` (los de OpoAlert). Antes hay que crear la app con el bundle `es.mjtbapps.mibolsa` en App Store Connect.
+- Alternativa si los Mac de GitHub están saturados: **Codemagic** (`codemagic.yaml`, app GVA-SALUT en codemagic.io, workflow «Mi Bolsa → TestFlight», grupo de variables `opoalert_ios` con las 3 claves ASC). Número de compilación = 100 + número de Codemagic.
 - Claude no hace push: commits en local y el usuario sube con GitHub Desktop.
 
 ## Estado (19/11/2026)
