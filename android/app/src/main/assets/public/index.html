@@ -52,6 +52,10 @@ button.sec{border:1px solid var(--line);border-radius:10px;padding:9px 12px;back
 footer{font-size:12px;color:var(--muted);text-align:center;margin-top:24px}
 a{color:var(--acc)}
 .check{display:flex;gap:8px;align-items:center;font-weight:500;margin-top:16px}.check input{width:auto}
+.graf{margin-top:14px}.graf svg{width:100%;height:84px;display:block}
+.graf .ej{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.est{background:var(--acc2);color:#115e59;border-radius:10px;padding:10px;font-size:14px;margin-top:10px}
+.nov{border-left:4px solid var(--acc)}.nov h3{margin:0 0 6px;font-size:16px}.nov li{margin:4px 0;font-size:14px}.nov ul{margin:0;padding-left:18px}
 .reg summary{font-weight:600;cursor:pointer}.reg pre{white-space:pre-wrap;font-size:12px;color:var(--muted);margin:10px 0 0}
 </style>
 </head>
@@ -297,7 +301,7 @@ async function actualizar() {
   if (!NAV) { demo(); return; }
   actualizando = true;
   registro = []; t0 = Date.now();
-  const errores = [];
+  const errores = [], novedades = [];
   try {
     ov('Actualizando tus bolsas…', '');
     paso('Buscando la última publicación');
@@ -332,11 +336,13 @@ async function actualizar() {
           }
         }
         if (r === rA && r && r.encontrado) r.delante = null; // con el filtro de nombre no se puede contar
-        const hist = r.delante ? (prev && prev.hist || []).concat([{ f: Date.now(), act: r.delante.activos, des: r.delante.desactivados }]).slice(-24) : (prev && prev.hist || []);
+        const hist = sumarHist(prev && prev.hist, r, lista.texto);
+        novedades.push(...cambios(dep, prev, r));
         datos[dep] = Object.assign(r, { fecha: Date.now(), pub: lista.texto, hist, prev: prev && prev.delante ? prev.delante : null });
       } catch (e) { errores.push(depName(dep) + ': ' + e.message); paso('ERROR ' + depName(dep) + ': ' + e.message); }
     }
     store.set('datos', datos);
+    if (novedades.length) store.set('novedades', { fecha: Date.now(), items: novedades });
   } catch (e) { errores.push(e.message); paso('ERROR: ' + e.message); }
   finally {
     paso('Fin');
@@ -353,10 +359,12 @@ function demo() {
   perfil.deps.forEach((d, i) => {
     datos[d] = { identificado: true, encontrado: true, puesto: 37 + i * 12, situacion: i ? 'DESACTIVADO' : 'ACTIVO EN PLAZA VACANTE', perfil: '', trabaja: '', tramo: '1 - 200',
       delante: { activos: 18 - i, desactivados: 12 + i, noDisp: 4, disponibles: 2, total: 36 + i * 12 }, fecha: Date.now(),
-      pub: 'DATOS DE EJEMPLO', prev: { activos: 15 - i }, hist: [] };
+      pub: 'DATOS DE EJEMPLO', prev: { activos: 15 - i },
+      hist: [9, 8, 8, 6, 5, 4, 2].map((v, k) => ({ fp: Date.now() - (6 - k) * 7 * 86400000, pub: 'ej' + k, disp: v + i })) };
   });
   store.set('datos', datos);
   store.set('registro', ['0.0 s · Vista previa en el ordenador: datos de ejemplo']);
+  store.set('novedades', { fecha: Date.now(), items: [depName(perfil.deps[0]) + ': 2 personas disponibles menos delante de ti (ejemplo)'] });
   pintar();
 }
 
@@ -426,6 +434,73 @@ function tagSit(s) {
   return '<span class="tag ' + c + '">' + esc(s) + '</span>';
 }
 
+// ---- Evolución, estimación y novedades ----
+// Fecha de la publicación: «… del día de publicación (15/11/2026)»
+function fechaPub(t) { const m = (t || '').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m ? new Date(+m[3], m[2] - 1, +m[1]).getTime() : null; }
+
+// Un punto por publicación (si se actualiza varias veces la misma, se sustituye el último)
+function sumarHist(h, r, pub) {
+  h = (h || []).slice();
+  if (!r.encontrado || !r.delante) return h;
+  const p = { f: Date.now(), fp: fechaPub(pub) || Date.now(), pub, puesto: r.puesto, sit: r.situacion,
+    act: r.delante.activos, des: r.delante.desactivados, nd: r.delante.noDisp, disp: r.delante.disponibles };
+  if (h.length && h[h.length - 1].pub === pub) h[h.length - 1] = p; else h.push(p);
+  return h.slice(-60);
+}
+
+function cambios(dep, prev, r) {
+  const out = [], nom = depName(dep);
+  if (!prev || !prev.encontrado || !r.encontrado) return out;
+  const limpia = t => (t || '').toLowerCase();
+  if (prev.situacion && r.situacion && prev.situacion !== r.situacion) out.push(nom + ': tu situación ha cambiado de «' + limpia(prev.situacion) + '» a «' + limpia(r.situacion) + '»');
+  if (prev.puesto && r.puesto && prev.puesto !== r.puesto) out.push(nom + ': tu puesto ha pasado del ' + prev.puesto + ' al ' + r.puesto);
+  if (prev.delante && r.delante) {
+    const x = prev.delante.disponibles - r.delante.disponibles;
+    if (x > 0) out.push(nom + ': ' + x + (x > 1 ? ' personas disponibles menos' : ' persona disponible menos') + ' delante de ti');
+    if (x < 0) out.push(nom + ': ' + (-x) + (-x > 1 ? ' personas disponibles más' : ' persona disponible más') + ' delante de ti');
+    const a = r.delante.activos - prev.delante.activos;
+    if (a > 0) out.push(nom + ': ' + a + (a > 1 ? ' personas de delante han empezado' : ' persona de delante ha empezado') + ' a trabajar');
+  }
+  return out;
+}
+
+function grafica(h) {
+  const pts = (h || []).filter(p => typeof p.disp === 'number');
+  if (pts.length < 2) return '<div class="note">La gráfica de evolución aparecerá cuando haya datos de al menos dos publicaciones.</div>';
+  const W = 300, H = 70, max = Math.max(1, ...pts.map(p => p.disp)), n = pts.length;
+  const xy = pts.map((p, i) => [8 + i * (W - 16) / (n - 1), 6 + (H - 12) * (1 - p.disp / max)]);
+  const linea = xy.map(c => c[0].toFixed(1) + ',' + c[1].toFixed(1)).join(' ');
+  const f = t => new Date(t).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+  return `<div class="graf"><div class="note" style="margin:0 0 4px">Disponibles delante en cada publicación</div>
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="Evolución de disponibles delante">
+      <polyline points="${linea}" fill="none" stroke="var(--acc)" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+      ${xy.map(c => `<circle cx="${c[0].toFixed(1)}" cy="${c[1].toFixed(1)}" r="3" fill="var(--acc)"/>`).join('')}
+    </svg>
+    <div class="ej"><span>${f(pts[0].fp)} · ${pts[0].disp}</span><span>${f(pts[n - 1].fp)} · ${pts[n - 1].disp}</span></div></div>`;
+}
+
+// Aproximación: cuánto bajan los disponibles de delante al mes y cuánto falta
+function estimacion(h, dl) {
+  if (!dl) return '';
+  if (dl.disponibles === 0) return '<div class="est">No tienes a nadie disponible delante: eres de las siguientes personas en recibir oferta.</div>';
+  const pts = (h || []).filter(p => typeof p.disp === 'number');
+  if (pts.length < 2) return '<div class="note">Con más publicaciones, la app podrá estimar cuándo te puede tocar.</div>';
+  const a = pts[0], b = pts[pts.length - 1], dias = (b.fp - a.fp) / 86400000;
+  if (dias < 7) return '<div class="note">Con unas semanas más de datos, la app podrá estimar cuándo te puede tocar.</div>';
+  const baja = a.disp - b.disp;
+  if (baja <= 0) return '<div class="note">En las últimas ' + Math.round(dias / 7) + ' semanas no ha bajado la gente disponible delante: todavía no se puede estimar.</div>';
+  const porMes = baja / dias * 30, falta = dl.disponibles / (baja / dias);
+  const cuanto = falta < 14 ? 'unos ' + Math.max(1, Math.round(falta)) + ' días' : falta < 60 ? 'unas ' + Math.round(falta / 7) + ' semanas' : 'unos ' + Math.round(falta / 30) + ' meses';
+  return '<div class="est">Al ritmo actual (bajan unas ' + (porMes < 1 ? porMes.toFixed(1) : Math.round(porMes)) + ' personas disponibles al mes), te podría tocar en ' + cuanto + '. Es solo una aproximación.</div>';
+}
+
+function avisos() {
+  const n = store.get('novedades', null);
+  if (!n || !n.items || !n.items.length) return '';
+  return `<div class="card nov"><h3>Novedades desde la última consulta</h3><ul>${n.items.map(t => '<li>' + esc(t) + '</li>').join('')}</ul>
+    <button class="sec" id="bNov" style="margin-top:10px">Entendido</button></div>`;
+}
+
 function cifras(dl, txt) {
   if (!dl) return '<div class="note">No se ha podido contar quién tienes delante en esta consulta. Pulsa Actualizar para intentarlo de nuevo.</div>';
   return `<div class="stats">
@@ -456,7 +531,7 @@ function tarjeta(dep) {
   return `<div class="card bolsa">
     <div class="top"><div>${cab}${tagSit(d.situacion)}${d.trabaja ? '<div class="note">Trabajando en: ' + esc(d.trabaja) + '</div>' : ''}</div>
       <div class="puesto"><span>Tu puesto</span><b>#${d.puesto}</b></div></div>
-    ${cifras(dl, ' delante')}${delta}
+    ${cifras(dl, ' delante')}${delta}${estimacion(d.hist, dl)}${grafica(d.hist)}
     ${d.tramo && !/^1\s*-/.test(d.tramo) ? `<div class="note">Recuentos del tramo ${esc(d.tramo)} de la lista.</div>` : ''}
   </div>`;
 }
@@ -477,12 +552,15 @@ function pintar() {
     <div class="bar"><span class="when">Actualizado: ${esc(cuando)}</span>
       <span><button class="sec" id="bAct">Actualizar</button> <button class="sec" id="bEdit">Editar</button></span></div>
     ${errores.length ? '<div class="err">' + errores.map(esc).join('<br>') + '</div><br>' : ''}
+    ${avisos()}
     ${perfil.deps.map(tarjeta).join('')}
     ${pub ? '<div class="note">' + esc(pub) + '</div>' : ''}
     ${reg.length ? `<details class="card reg"><summary>Detalles de la última búsqueda</summary><pre>${reg.map(esc).join('\n')}</pre></details>` : ''}
     ${pie()}`;
   document.getElementById('bAct').onclick = actualizar;
   document.getElementById('bEdit').onclick = pantallaPerfil;
+  const bn = document.getElementById('bNov');
+  if (bn) bn.onclick = () => { store.set('novedades', null); pintar(); };
 }
 
 verVisible = store.get('ver', false);

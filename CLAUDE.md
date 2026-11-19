@@ -30,8 +30,15 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 - iPhone: `.github/workflows/ios.yml` (a mano) → TestFlight, con los secretos `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8` (los de OpoAlert). Antes hay que crear la app con el bundle `es.mjtbapps.mibolsa` en App Store Connect.
 - Claude no hace push: commits en local y el usuario sube con GitHub Desktop.
 
+## Estado (19/11/2026)
+
+- Funciona en iPhone (TestFlight, grupo interno «Pruebas»): encuentra a la persona por nombre, lee su puesto y cuenta quién tiene delante (consulta con nombre → puesto; luego lista completa en su tramo; el puesto se recuerda).
+- Las celdas de la GVA en móvil llevan el título de columna dentro («Puesto: 123»): `leer()` lo quita.
+- Historial por publicación (`sumarHist`), gráfica de disponibles delante (`grafica`), estimación (`estimacion`) y aviso de novedades dentro de la app (`cambios`/`avisos`). No hay notificaciones con la app cerrada.
+- iOS: `runs-on: macos-26`. Los Mac de GitHub se saturan a veces. Los minutos de Actions de repos privados se acaban (presupuesto 0 $): se renuevan el día 1 de cada mes.
+
 ## Pendiente
 
-- Probar en un móvil real la consulta oculta (no se ha podido validar la tabla de resultados ni el comportamiento de Turnstile dentro del WebView).
-- Icono definitivo (el actual es provisional: lista numerada turquesa sobre azul marino, generado con SF Symbols).
-- Si la persona no está en el primer tramo (1-200), los recuentos «delante» solo cubren su tramo.
+- Contar también a la gente de tramos anteriores (puestos > 200): una consulta más por tramo.
+- Varias bolsas (categorías/turnos), widget, valenciano.
+- Icono y nombre definitivos; página de privacidad y fichas para publicar.
