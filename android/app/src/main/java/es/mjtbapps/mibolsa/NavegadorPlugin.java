@@ -1,6 +1,15 @@
 package es.mjtbapps.mibolsa;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Base64;
+
+import androidx.core.content.FileProvider;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.Gravity;
@@ -162,5 +171,44 @@ public class NavegadorPlugin extends Plugin {
             if (pendienteAbrir != null) { pendienteAbrir.reject("Cerrado"); pendienteAbrir = null; }
             call.resolve();
         });
+    }
+
+    /** Guarda el resumen para el widget de la pantalla de inicio y lo repinta. */
+    @PluginMethod
+    public void widget(PluginCall call) {
+        Context ctx = getContext();
+        ctx.getSharedPreferences(BolsaWidget.PREFS, Context.MODE_PRIVATE).edit()
+            .putString("titulo", call.getString("titulo", "Mi Bolsa"))
+            .putString("linea1", call.getString("linea1", ""))
+            .putString("linea2", call.getString("linea2", ""))
+            .apply();
+        BolsaWidget.refrescar(ctx);
+        call.resolve();
+    }
+
+    /** Comparte una imagen PNG (base64) generada por la app con tu propia situación. */
+    @PluginMethod
+    public void compartir(PluginCall call) {
+        try {
+            String b64 = call.getString("imagen", "");
+            if (b64.contains(",")) b64 = b64.substring(b64.indexOf(',') + 1);
+            byte[] png = Base64.decode(b64, Base64.DEFAULT);
+            File dir = new File(getContext().getCacheDir(), "compartir");
+            dir.mkdirs();
+            File f = new File(dir, "mi-bolsa.png");
+            try (FileOutputStream o = new FileOutputStream(f)) { o.write(png); }
+            Uri uri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".fileprovider", f);
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("image/png");
+            i.putExtra(Intent.EXTRA_STREAM, uri);
+            i.putExtra(Intent.EXTRA_TEXT, call.getString("texto", ""));
+            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Intent ch = Intent.createChooser(i, "Compartir");
+            ch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(ch);
+            call.resolve();
+        } catch (Exception e) {
+            call.reject("No se pudo compartir: " + e.getMessage());
+        }
     }
 }

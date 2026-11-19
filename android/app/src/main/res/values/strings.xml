@@ -4,4 +4,5 @@
     <string name="title_activity_main">Mi Bolsa</string>
     <string name="package_name">es.mjtbapps.mibolsa</string>
     <string name="custom_url_scheme">es.mjtbapps.mibolsa</string>
+    <string name="widget_desc">Tu puesto y la gente disponible delante</string>
 </resources>

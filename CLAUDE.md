@@ -37,6 +37,15 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 - Historial por publicación (`sumarHist`), gráfica de disponibles delante (`grafica`), estimación (`estimacion`) y aviso de novedades dentro de la app (`cambios`/`avisos`). No hay notificaciones con la app cerrada.
 - iOS: `runs-on: macos-26`. Los Mac de GitHub se saturan a veces. Los minutos de Actions de repos privados se acaban (presupuesto 0 $): se renuevan el día 1 de cada mes.
 
+## Versión 2 (19/11/2026)
+
+- Perfil con varias bolsas: `perfil = {ap1, ap2, nombre, bolsas:[{id, cat, turno, deps[], puesto}]}`; `datos` por clave `cat|turno|dep` (`clave()`); `migrar()` convierte el perfil antiguo.
+- Recuento de todos los de delante: `consultarDep` salta al tramo del puesto (`irATramo`) y cuenta los tramos anteriores (`__mb.rangos()`); `alcance` = 'todo' o 'tramo'.
+- Al abrir: si hay datos de más de 6 h se actualiza; si no, `comprobarPublicacion()` (como mucho cada hora) y actualiza si hay publicación nueva.
+- Idiomas: `T.es` / `T.va` y `t(clave, …)`. Modo oscuro con `prefers-color-scheme`.
+- Buscador de categoría/departamento: hoja inferior `hoja()`.
+- Complemento Navegador: métodos nuevos `widget` (Android: `BolsaWidget`; iPhone: sin widget todavía) y `compartir` (imagen PNG de «Mi situación», FileProvider en Android).
+
 ## Pendiente
 
 - Contar también a la gente de tramos anteriores (puestos > 200): una consulta más por tramo.

@@ -3,84 +3,214 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
 <title>Mi Bolsa</title>
 <style>
 :root{
-  --bg:#f1f5f9; --card:#fff; --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
-  --brand:#0f172a; --acc:#0d9488; --acc2:#ccfbf1; --warn:#b45309; --warn2:#fef3c7;
-  --red:#b91c1c; --red2:#fee2e2; --blue:#1d4ed8; --blue2:#dbeafe;
+  --bg:#f4f6fb; --card:#ffffff; --ink:#1e293b; --muted:#64748b; --line:#e5e9f2; --soft:#eef2f8;
+  --acc:#0d9488; --acc-ink:#0f766e; --acc2:#d5f5ef; --hero1:#14b8a6; --hero2:#3b82f6;
+  --warn:#b45309; --warn2:#fff3d6; --red:#be123c; --red2:#ffe4ea; --blue:#1d4ed8; --blue2:#e0eaff;
+  --green:#15803d; --green2:#dcfce7; --shadow:0 6px 24px rgba(30,41,59,.07);
 }
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-header{background:var(--brand);color:#fff;padding:calc(env(safe-area-inset-top) + 14px) 16px 16px;position:sticky;top:0;z-index:5}
-header h1{margin:0;font-size:22px}
-header p{margin:2px 0 0;color:#94a3b8;font-size:13px}
-main{padding:16px;max-width:640px;margin:0 auto;padding-bottom:calc(env(safe-area-inset-bottom) + 40px)}
-.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
-h2{font-size:17px;margin:0 0 10px}
-label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:12px 0 4px}
-select,input{width:100%;font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
-.row{display:flex;gap:10px}.row>*{flex:1}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:14px;background:#fff;cursor:pointer;user-select:none}
-.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
-.chip.ses{border-color:#99f6e4}
-button.main{width:100%;border:0;border-radius:12px;padding:14px;font:600 16px inherit;background:var(--acc);color:#fff;margin-top:16px;cursor:pointer}
-button.sec{border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:#fff;font:600 14px inherit;color:var(--ink);cursor:pointer}
-.note{font-size:13px;color:var(--muted);margin-top:8px}
-.bolsa .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.bolsa .dep{font-weight:700;font-size:17px}
-.bolsa .cat{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
-.puesto{text-align:right}
-.puesto b{font-size:28px;display:block;line-height:1}
-.puesto span{font-size:11px;color:var(--muted);text-transform:uppercase}
-.tag{display:inline-block;font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;margin-top:6px}
-.t-act{background:var(--acc2);color:#115e59}.t-des{background:var(--warn2);color:var(--warn)}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0b1220; --card:#131c2e; --ink:#e7edf7; --muted:#93a1b8; --line:#24314a; --soft:#1a2539;
+    --acc:#2dd4bf; --acc-ink:#5eead4; --acc2:#123c3a; --hero1:#0f766e; --hero2:#1e40af;
+    --warn:#fbbf24; --warn2:#3a2c0d; --red:#fb7185; --red2:#3b1220; --blue:#93b4ff; --blue2:#16264a;
+    --green:#4ade80; --green2:#0f2f1d; --shadow:0 6px 24px rgba(0,0,0,.35);
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif}
+header{background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;padding:calc(env(safe-area-inset-top) + 18px) 20px 22px;border-radius:0 0 28px 28px}
+header .fila{display:flex;align-items:center;justify-content:space-between;gap:10px}
+header h1{margin:0;font-size:26px;letter-spacing:-.02em}
+header p{margin:4px 0 0;color:rgba(255,255,255,.85);font-size:14px}
+.lang{background:rgba(255,255,255,.18);border:0;color:#fff;border-radius:999px;padding:6px 12px;font:600 13px inherit}
+main{padding:18px 16px;max-width:640px;margin:0 auto;padding-bottom:calc(env(safe-area-inset-bottom) + 40px)}
+.card{background:var(--card);border-radius:22px;padding:18px;margin-bottom:16px;box-shadow:var(--shadow)}
+h2{font-size:20px;margin:0 0 6px;letter-spacing:-.01em}
+h3{font-size:16px;margin:0 0 8px}
+label.l{display:block;font-size:14px;font-weight:600;color:var(--muted);margin:16px 0 6px}
+input{width:100%;font:inherit;padding:13px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);outline:none}
+input:focus{border-color:var(--acc)}
+.row{display:flex;gap:10px}.row>*{flex:1;min-width:0}
+.picker{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;font:inherit;padding:13px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);cursor:pointer}
+.picker span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.picker i{font-style:normal;color:var(--muted)}
+.seg{display:flex;background:var(--soft);border-radius:14px;padding:4px;gap:4px}
+.seg button{flex:1;border:0;border-radius:11px;padding:10px;font:600 15px inherit;background:transparent;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{border:0;border-radius:999px;padding:8px 12px;font:600 14px inherit;background:var(--acc2);color:var(--acc-ink);cursor:pointer}
+.chip.add{background:var(--soft);color:var(--ink)}
+button.main{width:100%;border:0;border-radius:16px;padding:16px;font:700 17px inherit;background:var(--acc);color:#fff;margin-top:18px;cursor:pointer}
+@media (prefers-color-scheme: dark){button.main{color:#06201d}}
+button.sec{border:0;border-radius:999px;padding:9px 14px;background:var(--soft);font:600 14px inherit;color:var(--ink);cursor:pointer}
+button.link{border:0;background:none;color:var(--acc-ink);font:600 15px inherit;padding:8px 0;cursor:pointer}
+.note{font-size:14px;color:var(--muted);margin-top:8px}
+.bolsa-ed{border:1.5px solid var(--line);border-radius:18px;padding:14px;margin-top:12px}
+.bolsa-ed .cab{display:flex;justify-content:space-between;align-items:center}
+.bolsa-ed .cab b{font-size:15px}
+/* Tarjeta de resultados */
+.res .kicker{font-size:13px;color:var(--muted);font-weight:600}
+.res .dep{font-weight:800;font-size:21px;letter-spacing:-.01em;margin-top:2px}
+.res .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.badge{min-width:86px;text-align:center;background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;border-radius:18px;padding:10px 12px}
+.badge span{display:block;font-size:11px;opacity:.9;text-transform:uppercase;letter-spacing:.05em}
+.badge b{display:block;font-size:30px;line-height:1.1}
+.tag{display:inline-block;font-size:13px;font-weight:700;padding:5px 10px;border-radius:999px;margin-top:10px}
+.t-act{background:var(--green2);color:var(--green)}.t-des{background:var(--warn2);color:var(--warn)}
 .t-no{background:var(--red2);color:var(--red)}.t-dis{background:var(--blue2);color:var(--blue)}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
-.stat{background:var(--bg);border-radius:10px;padding:8px;text-align:center}
-.stat b{display:block;font-size:20px}.stat span{font-size:11px;color:var(--muted)}
-.delta{font-size:13px;margin-top:10px;color:var(--muted)}
-.delta.up{color:#15803d}
-.err{background:var(--red2);color:var(--red);border-radius:10px;padding:10px;font-size:14px;margin-top:10px}
-.bar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px}
-.bar .when{font-size:13px;color:var(--muted)}
-#overlay{position:fixed;inset:0;background:rgba(15,23,42,.72);display:none;align-items:center;justify-content:center;z-index:20;padding:24px}
-#overlay .box{background:#fff;border-radius:18px;padding:22px;max-width:340px;width:100%;text-align:center}
-.spin{width:38px;height:38px;border:4px solid var(--acc2);border-top-color:var(--acc);border-radius:50%;animation:g 0.9s linear infinite;margin:0 auto 12px}
-@keyframes g{to{transform:rotate(360deg)}}
-footer{font-size:12px;color:var(--muted);text-align:center;margin-top:24px}
-a{color:var(--acc)}
-.check{display:flex;gap:8px;align-items:center;font-weight:500;margin-top:16px}.check input{width:auto}
-.graf{margin-top:14px}.graf svg{width:100%;height:84px;display:block}
-.graf .ej{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
-.est{background:var(--acc2);color:#115e59;border-radius:10px;padding:10px;font-size:14px;margin-top:10px}
-.nov{border-left:4px solid var(--acc)}.nov h3{margin:0 0 6px;font-size:16px}.nov li{margin:4px 0;font-size:14px}.nov ul{margin:0;padding-left:18px}
-.reg summary{font-weight:600;cursor:pointer}.reg pre{white-space:pre-wrap;font-size:12px;color:var(--muted);margin:10px 0 0}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
+.stat{background:var(--soft);border-radius:16px;padding:12px 14px}
+.stat b{display:block;font-size:26px;line-height:1.1}.stat span{font-size:13px;color:var(--muted)}
+.stat.hl{background:var(--blue2)}.stat.hl b{color:var(--blue)}
+.delta{font-size:14px;margin-top:12px;color:var(--muted)}.delta.up{color:var(--green)}
+.est{background:var(--acc2);color:var(--acc-ink);border-radius:16px;padding:12px 14px;font-size:15px;margin-top:12px}
+.perf{font-size:14px;margin-top:10px;color:var(--muted)}.perf b{color:var(--ink)}
+.graf{margin-top:16px}.graf svg{width:100%;height:90px;display:block}
+.graf .ej{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.acciones{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.err{background:var(--red2);color:var(--red);border-radius:14px;padding:12px;font-size:15px;margin-top:10px}
+.bar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.bar .when{font-size:14px;color:var(--muted)}.bar>span:last-child{display:flex;gap:8px;flex-shrink:0}
+.badge span{white-space:nowrap;font-size:10px}
+.nov{background:linear-gradient(135deg,var(--acc2),var(--blue2))}.nov ul{margin:0;padding-left:18px}.nov li{margin:5px 0;font-size:15px}
+.grupo{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:22px 4px 8px}
+.reg summary{font-weight:600;cursor:pointer;color:var(--muted);font-size:15px}.reg pre{white-space:pre-wrap;font-size:12px;color:var(--muted);margin:10px 0 0}
+.check{display:flex;gap:10px;align-items:center;font-size:15px;margin-top:16px;color:var(--muted)}.check input{width:auto}
+.guia{counter-reset:p;padding:0;margin:10px 0 0;list-style:none}
+.guia li{counter-increment:p;display:flex;gap:10px;margin:10px 0;font-size:15px}
+.guia li::before{content:counter(p);flex:0 0 26px;height:26px;border-radius:50%;background:var(--acc2);color:var(--acc-ink);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px}
+footer{font-size:13px;color:var(--muted);text-align:center;margin-top:26px;line-height:1.5}
+a{color:var(--acc-ink)}
+/* Buscador de categorías y departamentos */
+#hoja{position:fixed;inset:0;background:rgba(2,6,23,.45);display:none;z-index:30;align-items:flex-end;justify-content:center}
+#hoja .h{background:var(--card);width:100%;max-width:640px;max-height:88vh;border-radius:26px 26px 0 0;display:flex;flex-direction:column;padding:14px 16px calc(env(safe-area-inset-bottom) + 10px)}
+#hoja .tira{width:40px;height:5px;border-radius:5px;background:var(--line);margin:0 auto 10px}
+#hoja .hc{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+#hoja .lista{overflow:auto;margin-top:10px;-webkit-overflow-scrolling:touch}
+#hoja .op{display:block;width:100%;text-align:left;border:0;background:none;color:var(--ink);font:inherit;padding:13px 6px;border-bottom:1px solid var(--line);cursor:pointer}
+#hoja .op small{display:block;color:var(--muted);font-size:12px}
+#hoja .op.sel{color:var(--acc-ink);font-weight:700}
+#hoja .sub{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:12px 6px 4px}
+/* Pantalla de búsqueda */
+#overlay{position:fixed;inset:0;background:rgba(2,6,23,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:20;padding:24px}
+#overlay .box{background:var(--card);border-radius:26px;padding:26px 22px;max-width:360px;width:100%;text-align:center;box-shadow:var(--shadow)}
+#overlay b{font-size:18px}
+.lupa{width:64px;height:64px;margin:0 auto 14px;border-radius:50%;background:linear-gradient(135deg,var(--hero1),var(--hero2));display:flex;align-items:center;justify-content:center;animation:lat 1.4s ease-in-out infinite}
+@keyframes lat{50%{transform:scale(1.08)}}
+.prog{height:8px;background:var(--soft);border-radius:8px;margin-top:16px;overflow:hidden}
+.prog i{display:block;height:100%;width:5%;background:linear-gradient(90deg,var(--hero1),var(--hero2));border-radius:8px;transition:width .4s}
+.ovs{font-size:14px;color:var(--muted);margin-top:8px;min-height:20px}
 </style>
 </head>
 <body>
-<header><h1>Mi Bolsa</h1><p>Tu situación en las listas de empleo temporal de Sanidad</p></header>
+<header><div class="fila"><div><h1>Mi Bolsa</h1><p id="hSub"></p></div><button class="lang" id="bLang">VAL</button></div></header>
 <main id="app"></main>
-<div id="overlay"><div class="box"><div class="spin"></div><b id="ovT">Actualizando tus bolsas…</b><div class="note" id="ovS"></div></div></div>
+<div id="hoja"><div class="h"><div class="tira"></div><div class="hc"><h3 id="hojaT"></h3><button class="sec" id="hojaX">✕</button></div>
+  <input id="hojaQ" type="search" autocomplete="off"><div class="lista" id="hojaL"></div></div></div>
+<div id="overlay"><div class="box"><div class="lupa"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></div>
+  <b id="ovT"></b><div class="ovs" id="ovS"></div><div class="prog"><i id="ovP"></i></div></div></div>
 
 <script>
 'use strict';
-// ───────────────────────── Datos fijos (de la consulta pública de la GVA) ─────────────────────────
 const SES_CATS = ['0402','1056','2000','2001']; // Locutor CICU, TES, Enfermera/o SAMU, Médico SAMU
 const SES_DEPS = ['SA','SC','SV'];
 const CATS = [["0088","ADM. DE GESTIÓN SANITARIA GVA"],["0087","ADMINISTRATIVO"],["0002","ANALISTA PROGRAMADOR Y DE SISTEMAS"],["1027","ANÁLISIS EPIDEMIOLÓGICOS Y ESTADÍSTICAS SAN"],["0089","AUX. DE GESTIÓN SANITARIA GVA"],["0011","AUXILIAR ADMINISTRATIVO"],["0090","AUXILIAR DE S.P. DE LA ADMINISTRACIÓN DE LA GENERALITAT"],["0277","CELADOR"],["1452","CIENTIFICO/A DE DATOS"],["1453","CIENTÍFICO Y CIENTÍFICA DE DATOS - A1-S05-01"],["0415","CONDUCTOR"],["0260","CONDUCTOR C Y D"],["1052","DIETISTA-NUTRICIONISTA"],["0285","ENFERMERA/O"],["3001","ENFERMERA/O ESPECIALISTA EN ENFERMERÍA DE SALUD MENTAL"],["3201","ENFERMERA/O ESPECIALISTA EN ENFERMERÍA GERIÁTRICA"],["1051","ENFERMERA/O ESPECIALISTA ENFERMERÍA DEL TRABAJO"],["1050","ENFERMERA/O ESPECIALISTA ENFERMERÍA FAMILIAR Y COMUNITARIA"],["0246","ENFERMERA/O ESPECIALISTA OBSTÉTRICO-GINECOLÓGICA"],["1028","ENFERMERA/O GESTIÓN SANITARIA Y SALUD PÚBLICA"],["3100","ENFERMERA/O INSPECTOR"],["2000","ENFERMERA/O SAMU"],["3200","ENFERMERO/A ESPECIALISTA PEDIATRÍA"],["1022","ESPECIALISTA SALUD PÚBLICA"],["0443","F. ESP. ALERGOLOGIA"],["0317","F. ESP. ANALISIS CLINICOS"],["0364","F. ESP. ANATOMIA PATOLOGICA"],["0371","F. ESP. ANESTESIOLOGIA / REANIMACION"],["0459","F. ESP. ANGIOLOGIA Y CIRUGIA VASCULAR"],["0306","F. ESP. APARATO DIGESTIVO / MEDICINA DIGESTIVA"],["0037","F. ESP. BIOQUIMICA CLINICA"],["0308","F. ESP. CARDIOLOGÍA"],["0450","F. ESP. CIRUGIA CARDIOVASCULAR"],["0370","F. ESP. CIRUGIA GENERAL Y DEL APARATO DIGESTIVO"],["0451","F. ESP. CIRUGIA MAXILOFACIAL"],["0449","F. ESP. CIRUGIA PEDIÁTRICA"],["0473","F. ESP. CIRUGIA PLASTICA Y REPARADORA"],["0486","F. ESP. CIRUGIA TORACICA"],["0310","F. ESP. DERMATOLOGIA M-Q Y VENEREOLOGIA"],["0305","F. ESP. ENDOCRINOLOGIA Y NUTRICION"],["0362","F. ESP. FARMACIA HOSPITALARIA"],["0350","F. ESP. FARMACOLOGIA CLINICA"],["0460","F. ESP. GERIATRIA"],["0463","F. ESP. HEMATOLOGIA Y HEMOTERAPIA"],["0259","F. ESP. INMUNOLOGIA"],["0368","F. ESP. MEDICINA INTENSIVA"],["0302","F. ESP. MEDICINA INTERNA"],["0476","F. ESP. MEDICINA NUCLEAR"],["0363","F. ESP. MEDICINA PREVENTIVA Y SALUD PUBLICA"],["0366","F. ESP. MICROBIOLOGIA Y PARASITOLOGIA"],["0444","F. ESP. NEFROLOGIA"],["0307","F. ESP. NEUMOLOGIA"],["0452","F. ESP. NEUROCIRUGIA"],["0441","F. ESP. NEUROFISIOLOGIA CLÍNICA"],["0304","F. ESP. NEUROLOGIA"],["0315","F. ESP. OBSTETRICIA / GINECOLOGIA"],["0312","F. ESP. OFTALMOLOGIA"],["0446","F. ESP. ONCOLOGIA MEDICA"],["0457","F. ESP. ONCOLOGIA RADIOTERAPICA"],["0313","F. ESP. OTORRINOLARINGOLOGIA"],["0369","F. ESP. PEDIATRIA Y ÁREAS ESPECÍFICAS"],["0257","F. ESP. PSIQUIATRIA"],["0365","F. ESP. RADIODIAGNOSTICO"],["0400","F. ESP. RADIOFARMACIA"],["0375","F. ESP. RADIOFÍSICA HOSPITALARIA"],["0367","F. ESP. REHABILITACION"],["0303","F. ESP. REUMATOLOGIA"],["0314","F. ESP. TRAUMATOLOGIA Y CIRUGIA ORTOPEDICA"],["0311","F. ESP. UROLOGIA"],["3101","FAC. ESP. PSICOLOGÍA CLÍNICA"],["3002","FACULTATIVO ESPECIALISTA EN MEDICINA DEL TRABAJO"],["0019","FARMACEUTICO DE AREA"],["1024","FARMACÉUTICO ADMÓN SANITARIA Y SALUD PÚBLICA"],["0276","FISIOTERAPEUTA"],["0484","GESTION FUNCION ADMINISTRATIVA"],["1061","GESTIÓN DE LA ADMÓN GRAL. SANITARIA"],["1062","GESTIÓN SANIDAD AMBIENTAL"],["1014","GESTIÓN SEGURIDAD ALIMENTARIA Y LABORATORIO"],["0404","GOBERNANTA"],["1001","HIGIENISTA DENTAL"],["3206","INGENIERO BIOMÉDICO E INGENIERA BIOMÉDICA - A1-S05-04"],["0001","INGENIERO DE APLICACIONES Y SISTEMAS"],["3205","INGENIERO O INGENIERA BIOMÉDICOS"],["0516","INGENIERO TÉCNICO"],["1006","INGENIERO/A DE ORGANIZACIÓN INDUSTRIAL"],["3204","INGENIERO/A SUPERIOR"],["3102","INSPECTOR FARMACÉUTICO"],["3103","INSPECTOR MÉDICO"],["1019","LABORATORIO ANÁLISIS MICROBIOLÓGICO"],["0402","LOCUTOR C.I.C.U."],["3003","LOGOPEDA"],["0244","MEDICO DE FAMILIA E.A.P."],["0020","MEDICO EQUIPO MOVIL"],["2001","MEDICO SAMU"],["0557","MEDICO URGENCIA HOSPITALARIA"],["0004","MÉDICO CONDUCTAS ADICTIVAS"],["1026","MÉDICO DE ADMÓN SANITARIA Y SALUD PÚBLICA"],["0010","MÉDICO DOCUMENTACIÓN CLÍNICA Y ADMISIÓN"],["0018","MÉDICO PLANIFICACIÓN FAMILIAR"],["0006","MÉDICO UNIDAD DE CORTA ESTANCIA"],["0007","MÉDICO UNIDAD DE PREVENCION CANCER DE MAMA"],["0008","MÉDICO UNIDAD HOSPITALIZACIÓN A DOMICILIO"],["1032","NUTRICIONISTA/DIETISTA DE ADMINISTRACIÓN SANITARIA Y S.P."],["0279","ODONTOLOGOS DE PRIMARIA"],["3203","OPERADOR/A CÁMARA HIPERBÁRICA"],["0477","PEDIATRIA AP"],["3202","PERIODISTA"],["1054","PODÓLOGO/A"],["1030","PSICÓLOGO/A DE ADMINISTRACIÓN SANITARIA Y S.P."],["0091","SUBALTERNO DE GESTIÓN SANITARIA GVA"],["1058","SUPERIOR DE ADMINISTRACIÓN GENERAL SANITARIA"],["1020","SUPERIOR LABORATORIO DE ANÁLISIS QUIMICO"],["1059","SUPERIOR SANIDAD AMBIENTAL"],["1015","SUPERIOR SEGURIDAD ALIMENTARIA"],["0455","T.E. ANATOMIA PATOLOGICA"],["0296","T.E. EN IMAGEN PARA EL DIAGNÓSTICO Y MEDICINA NUCLEAR"],["0258","T.E. LABORATORIO"],["0017","T.E. RADIOTERAPIA"],["0382","TERAPEUTA OCUPACIONAL"],["5000","TITULADO/A SUPERIOR BIÓLOGO/A-BIOQUÍMICO/A"],["0057","TRABAJADOR SOCIAL"],["1031","TRABAJADOR/A SOCIAL DE ADMINISTRACIÓN SANITARIA Y S.P."],["0483","TÉCNICO DE FUNCION ADMINISTRATIVA"],["0009","TÉCNICO DE INFORMATICA"],["0015","TÉCNICO DE MANTENIMIENTO"],["1056","TÉCNICO EMERGENCIAS SANITARIAS"],["1055","TÉCNICO ESPECIALISTA EN AUDIOLOGÍA-PROTÉSICA"],["3008","TÉCNICO ESPECIALISTA EN DOCUMENTACIÓN SANITARIA"],["3004","TÉCNICO INTERMEDIO EN PREVENCIÓN DE RIESGOS LABORALES"],["3005","TÉCNICO SUPERIOR EN HIGIENE DEL TRABAJO"],["3007","TÉCNICO SUPERIOR EN PSICOSOCIOLOGÍA Y ERGONOMÍA DEL TRABAJO"],["3006","TÉCNICO SUPERIOR EN SEGURIDAD EN EL TRABAJO"],["1029","TÉCNICO/A EN COMUNICACIÓN DE ADMINISTRACIÓN SANITARIA Y S.P."],["0275","TÉCNICO/A EN CUIDADOS AUXILIARES DE ENFERMERÍA"],["1057","TÉCNICO/A EN FARMACIA"],["0442","VETERINARIO SALUD PÚBLICA"],["1053","ÓPTICO-OPTOMETRISTA"]];
 const DEPS = [["SA","SES ALICANTE"],["SC","SES CASTELLÓN"],["SV","SES VALENCIA"],["ALY","ALCOY"],["ALI","ALICANTE"],["ARN","ARNAU"],["CTA","C.TRANS. ALICANTE"],["CTC","C.TRANS. CASTELLÓN"],["CTV","C.TRANS. VALENCIA"],["CAS","CASTELLON"],["CLI","CLINICO"],["DEN","DENIA"],["ELX","ELCHE"],["ELD","ELDA"],["GAN","GANDIA"],["GEN","GENERAL"],["LFE","LA FE"],["PLA","LA PLANA"],["MAN","MANISES"],["MBA","MARINA"],["ORI","ORIHUELA"],["PES","PESET"],["REQ","REQUENA"],["RIB","RIBERA"],["SPC","S. P. CASTELLÓN"],["SPY","S. P. ALCOY"],["SPA","S. P. ALICANTE"],["SPV","S. P. VALENCIA"],["SAG","SAGUNTO"],["SJO","SANT JOAN D'ALACANT"],["SCC","SERVICIOS CENTRALES"],["TRV","TORREVIEJA"],["VIN","VINAROZ"],["XAT","XATIVA"]];
 const catName = c => (CATS.find(x => x[0] === c) || [, c])[1];
 const depName = d => (DEPS.find(x => x[0] === d) || [, d])[1];
-
-// ───────────────────────── Guardado (solo en este móvil) ─────────────────────────
 const store = {
   get(k, d) { try { const v = localStorage.getItem('mb.' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem('mb.' + k, JSON.stringify(v)); } catch (e) {} }
 };
-let perfil = store.get('perfil', null);   // {cat, turno, deps[], ap1, ap2, nombre, puesto}
-let datos = store.get('datos', {});       // por departamento: {fecha, pub, puesto, situacion, tramo, delante, hist[]}
+
+// ───────────────────────── Idioma (castellano / valenciano) ─────────────────────────
+const T = {
+  es: {
+    sub: 'Tu sitio en las bolsas de Sanidad', act: 'Buscando tus bolsas…', actualizado: 'Actualizado', nunca: 'nunca',
+    bAct: 'Actualizar', bEdit: 'Mis bolsas', hola: '¡Hola! 👋', intro: 'Dime en qué bolsas estás y yo miro tu sitio en la lista pública de la Conselleria cada vez que abras la app.',
+    guia1: 'Añade tu bolsa: categoría, turno y departamentos.', guia2: 'Si quieres saber tu puesto, pon tu nombre como sale en la lista.', guia3: 'Pulsa «Guardar y buscar». Si sale una casilla de seguridad, tócala.',
+    tusBolsas: 'Tus bolsas', bolsa: 'Bolsa', categoria: 'Categoría', turno: 'Turno', ord: 'Ordinario', prom: 'Promoción interna',
+    deps: 'Departamentos', addDep: '+ Añadir', quitarBolsa: 'Quitar', otraBolsa: '+ Añadir otra bolsa', quien: '¿Quién eres en la lista?', opcional: 'opcional',
+    quienNota: 'Para ver tu puesto y cuánta gente tienes delante. Escríbelo como aparece en la lista de la GVA. Se guarda solo en este móvil.',
+    ap1: 'Primer apellido', ap2: 'Segundo apellido', nombre: 'Nombre', puestoO: '…o tu número de puesto', ej: 'Ej.: 37',
+    verWeb: 'Ver la web de la GVA mientras busca (pruebas)', guardar: 'Guardar y buscar', cancelar: 'Cancelar',
+    faltaDep: 'Cada bolsa necesita al menos un departamento.', buscarCat: 'Busca tu categoría', buscarDep: 'Busca un departamento',
+    escribe: 'Escribe para buscar…', ses: 'SES · Emergencias', todas: 'Todas las categorías', depsT: 'Departamentos', sinRes: 'Sin resultados',
+    sinConsultar: 'Todavía sin buscar.', noEncuentro: 'No te encuentro en esta lista. Revisa cómo está escrito tu nombre en la GVA o tu número de puesto.',
+    resumen: 'Resumen de la lista{0}. Añade tu nombre o tu puesto para ver quién tienes delante.', tuPuesto: 'Tu puesto',
+    activos: 'trabajando', desact: 'desactivados', noDisp: 'no disponibles', disp: 'disponibles', delante: 'Delante de ti',
+    sinCuenta: 'Esta vez no se ha podido contar quién tienes delante. Pulsa «Actualizar» para intentarlo de nuevo.',
+    tramoSolo: 'Cuenta solo tu tramo ({0}) de la lista.', todosDelante: 'Cuenta a todas las personas de delante (tramos {0}).',
+    deltaUp: '▲ {0} de delante {1} a trabajar desde la última vez', deltaDown: '▼ {0} de delante {1} de estar activas', sinCambios: 'Sin cambios delante de ti desde la última vez',
+    empezado1: 'ha empezado', empezadoN: 'han empezado', dejado1: 'ha dejado', dejadoN: 'han dejado',
+    nadie: '🎉 No tienes a nadie disponible delante: eres de las siguientes personas en recibir oferta.',
+    masPub: 'Con más publicaciones podré estimar cuándo te puede tocar.', masSem: 'Con unas semanas más de datos podré estimar cuándo te puede tocar.',
+    noBaja: 'En las últimas {0} semanas no ha bajado la gente disponible delante: todavía no se puede estimar.',
+    estim: '⏳ Al ritmo actual (bajan unas {0} personas disponibles al mes), te podría tocar en {1}. Es solo una aproximación.',
+    dias: 'unos {0} días', semanas: 'unas {0} semanas', meses: 'unos {0} meses',
+    grafT: 'Disponibles delante en cada publicación', grafFalta: 'La gráfica aparecerá cuando haya datos de al menos dos publicaciones.',
+    perfiles: 'Perfiles', trabajaEn: 'Trabajando en', compartir: 'Compartir', novT: 'Novedades', entendido: 'Entendido',
+    nuevaPub: '📢 Nueva publicación de la GVA ({0})', cambioSit: '{0}: tu situación ha cambiado de «{1}» a «{2}»', cambioPuesto: '{0}: tu puesto ha pasado del {1} al {2}',
+    menosDisp: '{0}: {1} disponible(s) menos delante de ti', masDisp: '{0}: {1} disponible(s) más delante de ti', empiezan: '{0}: {1} de delante empieza(n) a trabajar',
+    detalles: 'Detalles de la última búsqueda', pie1: 'App no oficial. Datos de la consulta pública de las Listas de Empleo Temporal de la Conselleria de Sanidad.',
+    pie2: 'Tus datos y resultados se guardan solo en este móvil.', pubT: 'Publicación', compTexto: 'Mi situación en la bolsa de Sanidad (app Mi Bolsa, no oficial)',
+    toca: 'Toca la casilla para continuar', webGva: 'Búsqueda en la web de la GVA', paso: 'Paso {0} de {1}'
+  },
+  va: {
+    sub: 'El teu lloc a les borses de Sanitat', act: 'Buscant les teues borses…', actualizado: 'Actualitzat', nunca: 'mai',
+    bAct: 'Actualitzar', bEdit: 'Les meues borses', hola: 'Hola! 👋', intro: 'Digues-me en quines borses estàs i jo mire el teu lloc en la llista pública de la Conselleria cada vegada que obris l\'app.',
+    guia1: 'Afig la teua borsa: categoria, torn i departaments.', guia2: 'Si vols saber el teu lloc, posa el teu nom com ix en la llista.', guia3: 'Prem «Guardar i buscar». Si ix una casella de seguretat, toca-la.',
+    tusBolsas: 'Les teues borses', bolsa: 'Borsa', categoria: 'Categoria', turno: 'Torn', ord: 'Ordinari', prom: 'Promoció interna',
+    deps: 'Departaments', addDep: '+ Afegir', quitarBolsa: 'Llevar', otraBolsa: '+ Afegir una altra borsa', quien: 'Qui eres en la llista?', opcional: 'opcional',
+    quienNota: 'Per a vore el teu lloc i quanta gent tens davant. Escriu-ho com apareix en la llista de la GVA. Es guarda només en este mòbil.',
+    ap1: 'Primer cognom', ap2: 'Segon cognom', nombre: 'Nom', puestoO: '…o el teu número de lloc', ej: 'Ex.: 37',
+    verWeb: 'Vore la web de la GVA mentre busca (proves)', guardar: 'Guardar i buscar', cancelar: 'Cancel·lar',
+    faltaDep: 'Cada borsa necessita almenys un departament.', buscarCat: 'Busca la teua categoria', buscarDep: 'Busca un departament',
+    escribe: 'Escriu per a buscar…', ses: 'SES · Emergències', todas: 'Totes les categories', depsT: 'Departaments', sinRes: 'Sense resultats',
+    sinConsultar: 'Encara sense buscar.', noEncuentro: 'No et trobe en esta llista. Revisa com està escrit el teu nom en la GVA o el teu número de lloc.',
+    resumen: 'Resum de la llista{0}. Afig el teu nom o el teu lloc per a vore qui tens davant.', tuPuesto: 'El teu lloc',
+    activos: 'treballant', desact: 'desactivats', noDisp: 'no disponibles', disp: 'disponibles', delante: 'Davant de tu',
+    sinCuenta: 'Esta vegada no s\'ha pogut comptar qui tens davant. Prem «Actualitzar» per a tornar-ho a intentar.',
+    tramoSolo: 'Compta només el teu tram ({0}) de la llista.', todosDelante: 'Compta totes les persones de davant (trams {0}).',
+    deltaUp: '▲ {0} de davant {1} a treballar des de l\'última vegada', deltaDown: '▼ {0} de davant {1} d\'estar actives', sinCambios: 'Sense canvis davant de tu des de l\'última vegada',
+    empezado1: 'ha començat', empezadoN: 'han començat', dejado1: 'ha deixat', dejadoN: 'han deixat',
+    nadie: '🎉 No tens ningú disponible davant: eres de les següents persones a rebre oferta.',
+    masPub: 'Amb més publicacions podré estimar quan et pot tocar.', masSem: 'Amb unes setmanes més de dades podré estimar quan et pot tocar.',
+    noBaja: 'En les últimes {0} setmanes no ha baixat la gent disponible davant: encara no es pot estimar.',
+    estim: '⏳ Al ritme actual (baixen unes {0} persones disponibles al mes), et podria tocar en {1}. És només una aproximació.',
+    dias: 'uns {0} dies', semanas: 'unes {0} setmanes', meses: 'uns {0} mesos',
+    grafT: 'Disponibles davant en cada publicació', grafFalta: 'La gràfica apareixerà quan hi haja dades d\'almenys dues publicacions.',
+    perfiles: 'Perfils', trabajaEn: 'Treballant en', compartir: 'Compartir', novT: 'Novetats', entendido: 'Entesos',
+    nuevaPub: '📢 Nova publicació de la GVA ({0})', cambioSit: '{0}: la teua situació ha canviat de «{1}» a «{2}»', cambioPuesto: '{0}: el teu lloc ha passat del {1} al {2}',
+    menosDisp: '{0}: {1} disponible(s) menys davant de tu', masDisp: '{0}: {1} disponible(s) més davant de tu', empiezan: '{0}: {1} de davant comença(en) a treballar',
+    detalles: 'Detalls de l\'última busca', pie1: 'App no oficial. Dades de la consulta pública de les Llistes d\'Ocupació Temporal de la Conselleria de Sanitat.',
+    pie2: 'Les teues dades i resultats es guarden només en este mòbil.', pubT: 'Publicació', compTexto: 'La meua situació en la borsa de Sanitat (app Mi Bolsa, no oficial)',
+    toca: 'Toca la casella per a continuar', webGva: 'Busca en la web de la GVA', paso: 'Pas {0} de {1}'
+  }
+};
+let lang = store.get('lang', 'es');
+const t = (k, ...a) => { let s = (T[lang] && T[lang][k]) || T.es[k] || k; a.forEach((v, i) => { s = s.split('{' + i + '}').join(v); }); return s; };
+
+// ───────────────────────── Perfil: varias bolsas ─────────────────────────
+// perfil = { ap1, ap2, nombre, bolsas: [{ id, cat, turno, deps[], puesto }] }
+// datos  = { 'cat|turno|dep': { fecha, pub, puesto, situacion, perfil, tramo, delante, hist[] } }
+let perfil = store.get('perfil', null);
+let datos = store.get('datos', {});
+(function migrar() {
+  if (perfil && !perfil.bolsas && perfil.cat) {   // versión anterior: una sola bolsa
+    const b = { id: 'b1', cat: perfil.cat, turno: perfil.turno, deps: perfil.deps || [], puesto: perfil.puesto || null };
+    const nd = {};
+    for (const d of b.deps) if (datos[d]) nd[b.cat + '|' + b.turno + '|' + d] = datos[d];
+    perfil = { ap1: perfil.ap1 || '', ap2: perfil.ap2 || '', nombre: perfil.nombre || '', bolsas: [b] };
+    datos = nd; store.set('perfil', perfil); store.set('datos', datos);
+  }
+})();
+const clave = (b, d) => b.cat + '|' + b.turno + '|' + d;
+const turnoTxt = x => x === 'P' ? t('prom') : t('ord');
+const conNombreP = () => !!(perfil && (perfil.ap1 || perfil.ap2 || perfil.nombre));
 
 // ───────────────────────── Consulta en el navegador real (oculto) ─────────────────────────
 const NAV = window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.Navegador;
@@ -129,6 +259,11 @@ function paginaGVA() {
       const w = wOf(s);
       try { if (w && w.selectValue) w.selectValue(o.value); else { s.value = o.value; jQuery(s).trigger('change'); } } catch (e) { return 'no: ' + e.message; }
       return 'ok';
+    },
+    rangos() {
+      const s = [...document.querySelectorAll('select')].find(x => [...x.options].some(o => /^\d+\s*-\s*\d+$/.test(o.text.trim())));
+      if (!s) return [];
+      return [...s.options].map(o => o.text.trim().match(/^(\d+)\s*-\s*(\d+)$/)).filter(Boolean).map(m => [+m[1], +m[2]]);
     },
     marcar() { document.querySelectorAll('table').forEach(t => t.setAttribute('data-mb-viejo', '1')); return true; },
     enviar() { const b = document.getElementById('filToogle:formDynamicFilters:obtenerListado'); if (!b) return false; b.click(); return true; },
@@ -196,20 +331,18 @@ async function verificacion(etiqueta) {
   let cerrado = false;
   const h = await NAV.addListener('cerrado', () => { cerrado = true; });
   await ev('(function(){var t=document.getElementById("turnstileTarget");if(t)t.scrollIntoView({block:"center"});return true})()');
-  if (!verVisible) await NAV.mostrar({ titulo: 'Toca la casilla para continuar' });
+  if (!verVisible) await NAV.mostrar({ titulo: t('toca') });
   ovOff();
   const fin = Date.now() + 120000;
   let ok = false;
   while (Date.now() < fin && !cerrado) { if (await ev('window.__mb.verificado()')) { ok = true; break; } await sleep(400); }
   if (!verVisible) await NAV.ocultar();
   h.remove();
-  ov('Actualizando tus bolsas…', etiqueta);
+  ov(t('act'), etiqueta);
   paso(ok ? 'Verificación superada tocando la casilla' : (cerrado ? 'Verificación cerrada sin completar' : 'Verificación: tiempo agotado'));
   return ok;
 }
 
-// conNombre: filtra por tu nombre (para saber tu puesto). puesto: si se sabe, se pide la lista
-// completa y se salta al tramo donde estás, para contar quién tienes delante.
 async function esperarTabla(segundos) {
   const fin = Date.now() + segundos * 1000;
   let res = null;
@@ -224,14 +357,45 @@ async function esperarTabla(segundos) {
   return res;
 }
 
-async function consultarDep(url, dep, i, total, conNombre = true, puesto = null) {
-  const etiqueta = depName(dep) + ' (' + (i + 1) + '/' + total + ')';
-  ov('Actualizando tus bolsas…', etiqueta);
+// Recuentos de una lista (solo números: nunca se guardan nombres de otras personas)
+function contar(filas) {
+  const c = { activos: 0, desactivados: 0, noDisp: 0, disponibles: 0, total: 0 };
+  for (const f of filas) {
+    c.total++;
+    if (/DESACTIV/.test(f.sit)) c.desactivados++;
+    else if (/NO DISPONIBLE/.test(f.sit)) c.noDisp++;
+    else if (/ACTI/.test(f.sit)) c.activos++;
+    else if (/DISPONIBLE/.test(f.sit)) c.disponibles++;
+  }
+  return c;
+}
+const sumar = (a, b) => ({ activos: a.activos + b.activos, desactivados: a.desactivados + b.desactivados, noDisp: a.noDisp + b.noDisp, disponibles: a.disponibles + b.disponibles, total: a.total + b.total });
+const inicioTramo = tx => { const m = (tx || '').match(/^(\d+)/); return m ? +m[1] : 1; };
+
+// Cambia de tramo (1-200, 201-400…) y espera la tabla nueva; si la GVA pide verificación, se enseña
+async function irATramo(n, etiqueta) {
+  const r = await ev('window.__mb.elegirRango(' + n + ')');
+  if (r === 'ya') return await ev('window.__mb.leer()');
+  if (r !== 'ok') { paso('Tramo ' + n + ': ' + r); return null; }
+  await ev('window.__mb.marcar()');
+  let res = await esperarTabla(15);
+  if (!(res && res.filas) && await verificacion(etiqueta)) {
+    await ev('window.__mb.marcar()');
+    await ev('window.__mb.elegirRango(' + n + ')');
+    res = await esperarTabla(20);
+  }
+  return res && res.filas ? res : null;
+}
+
+// conNombre: filtra por tu nombre (para saber tu puesto). puesto: si se sabe, se pide la lista
+// completa, se salta a tu tramo y se cuentan también los tramos anteriores (todos los de delante).
+async function consultarDep(url, b, dep, etiqueta, conNombre = true, puesto = null) {
+  ov(t('act'), etiqueta);
   paso(etiqueta + ': abriendo la consulta');
   await NAV.abrir({ url });
   await prepararPagina();
   if (!await esperar('window.__mb.listo()', 20000)) throw new Error('La página de la GVA no ha cargado');
-  for (const [n, v] of [[0, perfil.cat], [1, perfil.turno], [2, dep]]) {
+  for (const [n, v] of [[0, b.cat], [1, b.turno], [2, dep]]) {
     const r = await ev('window.__mb.elegir(' + n + ',' + JSON.stringify(v) + ')');
     if (r !== 'ok') throw new Error('No se pudo elegir ' + ['la categoría', 'el turno', 'el departamento'][n] + ' (' + r + ')');
     await esperar('window.__mb.listo()', 10000, 200);
@@ -245,54 +409,76 @@ async function consultarDep(url, dep, i, total, conNombre = true, puesto = null)
   paso('Consulta enviada a la GVA');
   let res = await esperarTabla(40);
   if (res && !res.filas && res.captcha) paso('La GVA no aceptó la verificación');
-  // Saltar al tramo donde está tu puesto (1-200, 201-400…)
-  if (res && res.filas && puesto) {
-    const r = await ev('window.__mb.elegirRango(' + puesto + ')');
-    paso('Tramo de tu puesto: ' + r);
-    if (r === 'ok') {
-      await ev('window.__mb.marcar()');
-      let res2 = await esperarTabla(15);
-      if (!(res2 && res2.filas) && await verificacion(etiqueta)) {
-        await ev('window.__mb.marcar()');
-        await ev('window.__mb.elegirRango(' + puesto + ')');
-        res2 = await esperarTabla(20);
-      }
-      if (res2 && res2.filas) res = res2; else paso('No se pudo cambiar de tramo');
-    }
-  }
   if (!res || !res.filas) throw new Error(res && (res.error || res.captcha) ? (res.error || res.captcha) : 'La GVA no ha devuelto la lista');
   paso('Lista recibida: ' + res.filas.length + ' filas' + (res.tramo ? ' (tramo ' + res.tramo + ')' : '') + ' · columnas: ' + (res.cab || []).join(', '));
+  if (!puesto) return res;
+
+  // Recuentos ya vistos por tramo (el primero que devuelve la GVA suele ser 1-200)
+  const vistos = {};
+  if (res.tramo) vistos[inicioTramo(res.tramo)] = contar(res.filas);
+  const rangos = (await ev('window.__mb.rangos()')) || [];
+  const mio = rangos.find(r => puesto >= r[0] && puesto <= r[1]);
+  if (mio && inicioTramo(res.tramo) !== mio[0]) {
+    paso('Saltando a tu tramo ' + mio[0] + '-' + mio[1]);
+    const r2 = await irATramo(mio[0], etiqueta);
+    if (!r2) { paso('No se pudo cambiar de tramo'); res.parcial = true; return res; }
+    res = r2;
+  }
+  // Tramos anteriores al tuyo: toda esa gente también está delante
+  let antes = { activos: 0, desactivados: 0, noDisp: 0, disponibles: 0, total: 0 }, completos = true;
+  const previos = rangos.filter(r => mio && r[1] < mio[0]);
+  for (const r of previos) {
+    if (!vistos[r[0]]) {
+      paso('Contando el tramo ' + r[0] + '-' + r[1]);
+      const rr = await irATramo(r[0], etiqueta);
+      if (!rr) { completos = false; break; }
+      vistos[r[0]] = contar(rr.filas);
+    }
+    antes = sumar(antes, vistos[r[0]]);
+  }
+  res.antes = completos ? antes : null;
+  res.tramos = previos.length && completos ? '1-' + mio[1] : '';
   return res;
 }
 
 // De la lista solo se guarda TU fila y recuentos: nunca nombres de otras personas
-function resumir(res, puestoSabido = null) {
-  const yo = [perfil.ap1, perfil.ap2, perfil.nombre].filter(Boolean).join(' ')
-    .normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/\s+/g, ' ').trim();
-  let mia = null;
-  // La GVA escribe «APELLIDOS, NOMBRE»: se compara por palabras, sin comas ni tildes
-  const pal = t => (t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z0-9Ñ ]+/g, ' ').split(/\s+/).filter(Boolean);
-  const mias = pal(yo);
+function resumir(res, b, puestoSabido = null) {
+  const pal = x => (x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z0-9Ñ ]+/g, ' ').split(/\s+/).filter(Boolean);
+  const mias = pal([perfil.ap1, perfil.ap2, perfil.nombre].join(' '));
   const esYo = f => !mias.length || mias.every(w => pal(f.nom).includes(w));
-  const p = perfil.puesto || puestoSabido;
+  const p = b.puesto || puestoSabido;
+  let mia = null;
   if (p) mia = res.filas.find(f => f.pos === p && esYo(f)) || null;
-  if (!mia && mias.length) mia = res.filas.find(f => { const p = pal(f.nom); return mias.every(w => p.includes(w)); });
-  const cuenta = filas => {
-    const c = { activos: 0, desactivados: 0, noDisp: 0, disponibles: 0, total: 0 };
-    for (const f of filas) {
-      c.total++;
-      if (/DESACTIV/.test(f.sit)) c.desactivados++;
-      else if (/NO DISPONIBLE/.test(f.sit)) c.noDisp++;
-      else if (/ACTI/.test(f.sit)) c.activos++;
-      else if (/DISPONIBLE/.test(f.sit)) c.disponibles++;
-    }
-    return c;
-  };
+  if (!mia && mias.length) mia = res.filas.find(f => mias.every(w => pal(f.nom).includes(w))) || null;
+  let delante = mia ? contar(res.filas.filter(f => f.pos < mia.pos)) : contar(res.filas);
+  let alcance = 'tramo';
+  if (mia && res.antes) { delante = sumar(delante, res.antes); alcance = 'todo'; }
+  if (mia && inicioTramo(res.tramo) === 1 && !res.parcial) alcance = 'todo';
   return {
-    identificado: !!(perfil.puesto || yo), encontrado: !!mia, puesto: mia ? mia.pos : null, situacion: mia ? mia.sit : '', perfil: mia ? mia.per : '',
-    trabaja: mia && mia.dep ? (mia.cat + ' · ' + mia.dep) : '', tramo: res.tramo,
-    delante: mia ? cuenta(res.filas.filter(f => f.pos < mia.pos)) : cuenta(res.filas)
+    identificado: !!(p || mias.length), encontrado: !!mia, puesto: mia ? mia.pos : null, situacion: mia ? mia.sit : '', perfil: mia ? mia.per : '',
+    trabaja: mia && mia.dep ? [mia.cat, mia.dep].filter(Boolean).join(' · ') : '', tramo: res.tramo, alcance, tramos: res.tramos || '', delante
   };
+}
+
+// Una bolsa y un departamento: primero tu puesto (si hace falta), luego la lista completa
+async function consultarBolsa(lista, b, dep, etiqueta) {
+  const prev = datos[clave(b, dep)];
+  const conNombre = conNombreP();
+  let sabido = b.puesto || (prev && prev.encontrado && prev.puesto) || null;
+  let rA = null;
+  if (conNombre && !sabido) {
+    rA = resumir(await consultarDep(lista.url, b, dep, etiqueta, true), b);
+    sabido = rA.puesto;
+    paso(sabido ? 'Tu puesto: ' + sabido : 'No apareces con ese nombre');
+  }
+  let r = rA;
+  if (sabido || !conNombre) {
+    const rB = resumir(await consultarDep(lista.url, b, dep, etiqueta, false, sabido), b, sabido);
+    if (rB.encontrado || !conNombre) r = rB;
+    else if (!rA) { r = rA = resumir(await consultarDep(lista.url, b, dep, etiqueta, true), b); }
+  }
+  if (r === rA && r && r.encontrado) r.delante = null; // con el filtro de nombre no se puede contar
+  return r;
 }
 
 let actualizando = false;
@@ -302,46 +488,34 @@ async function actualizar() {
   actualizando = true;
   registro = []; t0 = Date.now();
   const errores = [], novedades = [];
+  const tareas = [];
+  perfil.bolsas.forEach(b => b.deps.forEach(d => tareas.push([b, d])));
   try {
-    ov('Actualizando tus bolsas…', '');
+    ov(t('act'), '', 0.03);
     paso('Buscando la última publicación');
     await NAV.abrir({ url: INDEX_URL });
-    if (verVisible) await NAV.mostrar({ titulo: 'Búsqueda en la web de la GVA' });
+    if (verVisible) await NAV.mostrar({ titulo: t('webGva') });
     await prepararPagina();
     await esperar('!!window.__mb.lista()', 15000);
     const lista = await ev('window.__mb.lista()');
     if (!lista) throw new Error('No encuentro la consulta de situación en la web de la GVA');
     paso('Publicación: ' + lista.texto.replace(/^.*\((\d+\/\d+\/\d+)\).*$/, '$1'));
-    for (let i = 0; i < perfil.deps.length; i++) {
-      const dep = perfil.deps[i];
+    const ultima = store.get('ultimaPub', null);
+    if (ultima && ultima !== lista.texto) novedades.push(t('nuevaPub', fechaTxt(lista.texto)));
+    for (let i = 0; i < tareas.length; i++) {
+      const [b, dep] = tareas[i];
+      const etiqueta = depName(dep) + (perfil.bolsas.length > 1 ? ' · ' + catCorta(b.cat) : '');
+      progreso((i + 0.2) / tareas.length, t('paso', i + 1, tareas.length) + ' · ' + etiqueta);
       try {
-        const prev = datos[dep];
-        const conNombre = !!(perfil.ap1 || perfil.ap2 || perfil.nombre);
-        let sabido = perfil.puesto || (prev && prev.encontrado && prev.puesto) || null;
-        let rA = null;
-        // Paso 1 (solo si no sabemos tu puesto): buscar por tu nombre
-        if (conNombre && !sabido) {
-          rA = resumir(await consultarDep(lista.url, dep, i, perfil.deps.length, true));
-          sabido = rA.puesto;
-          paso(sabido ? 'Tu puesto: ' + sabido : 'No apareces con ese nombre');
-        }
-        let r = rA;
-        // Paso 2: lista completa en tu tramo, para contar quién tienes delante
-        if (sabido || !conNombre) {
-          const rB = resumir(await consultarDep(lista.url, dep, i, perfil.deps.length, false, sabido), sabido);
-          if (rB.encontrado || !conNombre) r = rB;
-          else if (!rA) { // el puesto guardado ya no es el tuyo: volver a buscar por nombre
-            rA = resumir(await consultarDep(lista.url, dep, i, perfil.deps.length, true));
-            r = rA;
-          }
-        }
-        if (r === rA && r && r.encontrado) r.delante = null; // con el filtro de nombre no se puede contar
-        const hist = sumarHist(prev && prev.hist, r, lista.texto);
-        novedades.push(...cambios(dep, prev, r));
-        datos[dep] = Object.assign(r, { fecha: Date.now(), pub: lista.texto, hist, prev: prev && prev.delante ? prev.delante : null });
-      } catch (e) { errores.push(depName(dep) + ': ' + e.message); paso('ERROR ' + depName(dep) + ': ' + e.message); }
+        const k = clave(b, dep), prev = datos[k];
+        const r = await consultarBolsa(lista, b, dep, etiqueta);
+        novedades.push(...cambios(depName(dep), prev, r));
+        datos[k] = Object.assign(r, { fecha: Date.now(), pub: lista.texto, hist: sumarHist(prev && prev.hist, r, lista.texto), prev: prev && prev.delante ? prev.delante : null });
+      } catch (e) { errores.push(etiqueta + ': ' + e.message); paso('ERROR ' + etiqueta + ': ' + e.message); }
     }
     store.set('datos', datos);
+    store.set('ultimaPub', lista.texto);
+    store.set('comprobado', Date.now());
     if (novedades.length) store.set('novedades', { fecha: Date.now(), items: novedades });
   } catch (e) { errores.push(e.message); paso('ERROR: ' + e.message); }
   finally {
@@ -351,130 +525,213 @@ async function actualizar() {
     store.set('errores', errores);
     store.set('registro', registro);
     pintar();
+    actualizarWidget();
+  }
+}
+
+// Al abrir la app: mira (sin consultar listas) si la GVA ha sacado una publicación nueva
+async function comprobarPublicacion() {
+  if (!NAV || actualizando || !perfil) return;
+  if (Date.now() - store.get('comprobado', 0) < 3600e3) return;   // como mucho una vez por hora
+  try {
+    await NAV.abrir({ url: INDEX_URL });
+    await prepararPagina();
+    await esperar('!!window.__mb.lista()', 15000);
+    const lista = await ev('window.__mb.lista()');
+    await NAV.cerrar();
+    store.set('comprobado', Date.now());
+    if (lista && lista.texto && lista.texto !== store.get('ultimaPub', null)) actualizar();
+  } catch (e) { try { await NAV.cerrar(); } catch (x) {} }
+}
+
+function actualizarWidget() {
+  if (!NAV || !NAV.widget) return;
+  for (const b of perfil.bolsas) for (const d of b.deps) {
+    const x = datos[clave(b, d)];
+    if (x && x.encontrado) {
+      NAV.widget({ titulo: 'Mi Bolsa · ' + depName(d), linea1: '#' + x.puesto + ' · ' + sitCorta(x.situacion),
+        linea2: x.delante ? x.delante.disponibles + ' ' + t('disp') + ' · ' + catCorta(b.cat) : catCorta(b.cat) }).catch(() => {});
+      return;
+    }
   }
 }
 
 function demo() {
   // Vista previa en el ordenador (sin el navegador del móvil): datos inventados
-  perfil.deps.forEach((d, i) => {
-    datos[d] = { identificado: true, encontrado: true, puesto: 37 + i * 12, situacion: i ? 'DESACTIVADO' : 'ACTIVO EN PLAZA VACANTE', perfil: '', trabaja: '', tramo: '1 - 200',
-      delante: { activos: 18 - i, desactivados: 12 + i, noDisp: 4, disponibles: 2, total: 36 + i * 12 }, fecha: Date.now(),
-      pub: 'DATOS DE EJEMPLO', prev: { activos: 15 - i },
-      hist: [9, 8, 8, 6, 5, 4, 2].map((v, k) => ({ fp: Date.now() - (6 - k) * 7 * 86400000, pub: 'ej' + k, disp: v + i })) };
-  });
+  let i = 0;
+  for (const b of perfil.bolsas) for (const d of b.deps) {
+    datos[clave(b, d)] = { identificado: true, encontrado: true, puesto: 237 + i * 12, situacion: i ? 'DESACTIVADO' : 'DISPONIBLE', perfil: i ? '' : 'UCI, Urgencias', trabaja: '',
+      tramo: '201 - 400', alcance: 'todo', tramos: '1-400',
+      delante: { activos: 118 - i, desactivados: 52 + i, noDisp: 14, disponibles: 6 + i, total: 236 + i * 12 }, fecha: Date.now(),
+      pub: 'DATOS DE EJEMPLO (15/11/2026)', prev: { activos: 115 - i, disponibles: 8 + i },
+      hist: [14, 13, 12, 11, 9, 8, 6].map((v, k) => ({ fp: Date.now() - (6 - k) * 15 * 86400000, pub: 'ej' + k, disp: v + i })) };
+    i++;
+  }
   store.set('datos', datos);
   store.set('registro', ['0.0 s · Vista previa en el ordenador: datos de ejemplo']);
-  store.set('novedades', { fecha: Date.now(), items: [depName(perfil.deps[0]) + ': 2 personas disponibles menos delante de ti (ejemplo)'] });
+  store.set('novedades', { fecha: Date.now(), items: [t('nuevaPub', '15/11/2026'), t('menosDisp', depName(perfil.bolsas[0].deps[0]), 2)] });
   pintar();
 }
 
-// ───────────────────────── Pantallas ─────────────────────────
+// ───────────────────────── Utilidades de pantalla ─────────────────────────
 const $app = document.getElementById('app');
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-function ov(t, s) { document.getElementById('ovT').textContent = t; document.getElementById('ovS').textContent = s || ''; document.getElementById('overlay').style.display = 'flex'; }
+// «ENFERMERA/O SAMU» → «Enfermera/o SAMU»: siglas en mayúsculas, el resto en minúscula con inicial
+const SIGLAS = new Set(['SAMU', 'SES', 'GVA', 'AP', 'EAP', 'E.A.P.', 'C.I.C.U.', 'S.P.', 'P.', 'T.E.', 'F.', 'ESP.', 'M-Q', 'UCI', 'S.', 'C.TRANS.', 'TCAE']);
+const MENUDAS = new Set(['de', 'del', 'y', 'en', 'la', 'el', 'los', 'las', 'a', 'o', 'e', 'para', 'por']);
+const cap = s => (s || '').split(' ').map((w, i) => {
+  if (SIGLAS.has(w) || /\d/.test(w)) return w;
+  const l = w.toLowerCase();
+  if (i > 0 && MENUDAS.has(l)) return l;
+  if (/^d'./.test(l)) return "d'" + l.charAt(2).toUpperCase() + l.slice(3);
+  return l.charAt(0).toUpperCase() + l.slice(1);
+}).join(' ');
+const catCorta = c => cap(catName(c));
+const sitCorta = s => cap((s || '').replace(/^SITUACION\s*/, ''));
+const fechaTxt = tx => { const m = (tx || '').match(/(\d{1,2}\/\d{1,2}\/\d{4})/); return m ? m[1] : ''; };
+function ov(tt, s, frac) {
+  document.getElementById('ovT').textContent = tt; document.getElementById('ovS').textContent = s || '';
+  if (typeof frac === 'number') progreso(frac);
+  document.getElementById('overlay').style.display = 'flex';
+}
+function progreso(frac, s) {
+  document.getElementById('ovP').style.width = Math.max(5, Math.min(100, frac * 100)) + '%';
+  if (s) document.getElementById('ovT').textContent = s;
+}
 function ovOff() { document.getElementById('overlay').style.display = 'none'; }
+const norm2 = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
+// Hoja inferior con buscador (categorías y departamentos)
+function hoja(titulo, grupos, actual, alElegir) {
+  const H = document.getElementById('hoja'), Q = document.getElementById('hojaQ'), L = document.getElementById('hojaL');
+  document.getElementById('hojaT').textContent = titulo;
+  Q.value = ''; Q.placeholder = t('escribe');
+  const dibujar = () => {
+    const q = norm2(Q.value.trim());
+    let html = '';
+    for (const g of grupos) {
+      const ops = g.ops.filter(o => !q || norm2(o[1]).includes(q) || o[0].toLowerCase() === q);
+      if (!ops.length) continue;
+      html += '<div class="sub">' + esc(g.t) + '</div>' + ops.map(o => `<button class="op${o[0] === actual ? ' sel' : ''}" data-v="${o[0]}">${esc(cap(o[1]))}</button>`).join('');
+    }
+    L.innerHTML = html || '<div class="note" style="padding:12px 6px">' + t('sinRes') + '</div>';
+  };
+  dibujar();
+  Q.oninput = dibujar;
+  L.onclick = e => { const b = e.target.closest('.op'); if (b) { cerrar(); alElegir(b.dataset.v); } };
+  const cerrar = () => { H.style.display = 'none'; };
+  document.getElementById('hojaX').onclick = cerrar;
+  H.onclick = e => { if (e.target === H) cerrar(); };
+  H.style.display = 'flex';
+  setTimeout(() => Q.focus(), 250);
+}
+const gruposCat = () => [{ t: t('ses'), ops: CATS.filter(c => SES_CATS.includes(c[0])) }, { t: t('todas'), ops: CATS.filter(c => !SES_CATS.includes(c[0])) }];
+const gruposDep = usados => [{ t: t('ses'), ops: DEPS.filter(d => SES_DEPS.includes(d[0]) && !usados.includes(d[0])) }, { t: t('depsT'), ops: DEPS.filter(d => !SES_DEPS.includes(d[0]) && !usados.includes(d[0])) }];
+
+// ───────────────────────── Pantalla «Mis bolsas» ─────────────────────────
 function pantallaPerfil() {
-  const p = perfil || { cat: '0402', turno: 'O', deps: [], ap1: '', ap2: '', nombre: '', puesto: null };
-  let deps = p.deps.slice();
-  const opt = (v, t, sel) => '<option value="' + v + '"' + (sel ? ' selected' : '') + '>' + esc(t) + '</option>';
-  const sesOpts = SES_CATS.map(c => opt(c, catName(c), c === p.cat)).join('');
-  const resto = CATS.filter(c => !SES_CATS.includes(c[0])).map(c => opt(c[0], c[1], c[0] === p.cat)).join('');
-  $app.innerHTML = `
-  <div class="card">
-    <h2>${perfil ? 'Editar mis bolsas' : 'Bienvenido/a'}</h2>
-    <div class="note">Rellénalo una vez. La app consultará por ti la lista pública de la Conselleria cada vez que la abras.</div>
-    <label>Categoría</label>
-    <select id="fCat"><optgroup label="SES · Emergencias">${sesOpts}</optgroup><optgroup label="Todas las categorías">${resto}</optgroup></select>
-    <label>Turno</label>
-    <select id="fTurno">${opt('O', 'Ordinario', p.turno === 'O')}${opt('P', 'Promoción interna', p.turno === 'P')}</select>
-    <label>Departamentos</label>
-    <select id="fDepSel"></select>
-    <div class="chips" id="fDeps" style="margin-top:8px"></div>
-    <h2 style="margin-top:20px">¿Quién eres en la lista? <span class="note">(opcional)</span></h2>
-    <div class="note">Para ver tu puesto y cuántas personas tienes delante. Sin esto, la app te enseña el resumen de la lista.</div>
-    <label>Primer apellido</label><input id="fAp1" autocomplete="family-name" value="${esc(p.ap1)}">
-    <div class="row"><div><label>Segundo apellido</label><input id="fAp2" value="${esc(p.ap2)}"></div>
-    <div><label>Nombre</label><input id="fNom" autocomplete="given-name" value="${esc(p.nombre)}"></div></div>
-    <label>…o tu número de puesto</label><input id="fPuesto" inputmode="numeric" placeholder="Ej.: 37" value="${p.puesto || ''}">
-    <div class="note">Tal y como aparece en la lista de la GVA. Se guarda solo en este móvil.</div>
-    <label class="check"><input type="checkbox" id="fVer" ${store.get('ver', false) ? 'checked' : ''}> Ver la web de la GVA mientras busca (para pruebas)</label>
-    <div id="fErr"></div>
-    <button class="main" id="fOk">Guardar y consultar</button>
-    ${perfil ? '<button class="sec" id="fCancel" style="width:100%;margin-top:10px">Cancelar</button>' : ''}
-  </div>${pie()}`;
-  const sel = document.getElementById('fDepSel');
-  const dibujarDeps = () => {
-    const libres = DEPS.filter(d => !deps.includes(d[0]));
-    sel.innerHTML = '<option value="">+ Añadir departamento…</option>' +
-      '<optgroup label="SES · Emergencias">' + libres.filter(d => SES_DEPS.includes(d[0])).map(d => opt(d[0], d[1])).join('') + '</optgroup>' +
-      '<optgroup label="Departamentos">' + libres.filter(d => !SES_DEPS.includes(d[0])).map(d => opt(d[0], d[1])).join('') + '</optgroup>';
-    document.getElementById('fDeps').innerHTML = deps.length
-      ? deps.map(d => `<span class="chip on" data-d="${d}">${esc(depName(d))} ✕</span>`).join('')
-      : '<span class="note">Ninguno elegido todavía.</span>';
+  const p = perfil ? JSON.parse(JSON.stringify(perfil)) : { ap1: '', ap2: '', nombre: '', bolsas: [{ id: 'b' + Date.now(), cat: '2000', turno: 'O', deps: [], puesto: null }] };
+  const nuevo = !perfil;
+  const dibujar = () => {
+    $app.innerHTML = `
+    ${nuevo ? `<div class="card"><h2>${t('hola')}</h2><div class="note" style="font-size:15px">${t('intro')}</div>
+      <ol class="guia"><li>${t('guia1')}</li><li>${t('guia2')}</li><li>${t('guia3')}</li></ol></div>` : ''}
+    <div class="card"><h2>${t('tusBolsas')}</h2>
+      ${p.bolsas.map((b, i) => `<div class="bolsa-ed" data-i="${i}">
+        <div class="cab"><b>${t('bolsa')} ${i + 1}</b>${p.bolsas.length > 1 ? `<button class="link" data-q="${i}">${t('quitarBolsa')}</button>` : ''}</div>
+        <label class="l">${t('categoria')}</label><button class="picker" data-cat="${i}"><span>${esc(catCorta(b.cat))}</span><i>⌄</i></button>
+        <label class="l">${t('turno')}</label><div class="seg" data-tu="${i}"><button data-v="O" class="${b.turno === 'O' ? 'on' : ''}">${t('ord')}</button><button data-v="P" class="${b.turno === 'P' ? 'on' : ''}">${t('prom')}</button></div>
+        <label class="l">${t('deps')}</label><div class="chips">${b.deps.map(d => `<button class="chip" data-x="${i}|${d}">${esc(cap(depName(d)))} ✕</button>`).join('')}<button class="chip add" data-dep="${i}">${t('addDep')}</button></div>
+        ${p.bolsas.length > 1 ? `<label class="l">${t('puestoO')}</label><input inputmode="numeric" data-pu="${i}" placeholder="${t('ej')}" value="${b.puesto || ''}">` : ''}
+      </div>`).join('')}
+      <button class="link" id="fMas">${t('otraBolsa')}</button>
+    </div>
+    <div class="card"><h2>${t('quien')} <span class="note">(${t('opcional')})</span></h2>
+      <div class="note">${t('quienNota')}</div>
+      <label class="l">${t('ap1')}</label><input id="fAp1" autocomplete="family-name" value="${esc(p.ap1)}">
+      <div class="row"><div><label class="l">${t('ap2')}</label><input id="fAp2" value="${esc(p.ap2)}"></div>
+      <div><label class="l">${t('nombre')}</label><input id="fNom" autocomplete="given-name" value="${esc(p.nombre)}"></div></div>
+      ${p.bolsas.length === 1 ? `<label class="l">${t('puestoO')}</label><input id="fPuesto" inputmode="numeric" placeholder="${t('ej')}" value="${p.bolsas[0].puesto || ''}">` : ''}
+      <label class="check"><input type="checkbox" id="fVer" ${store.get('ver', false) ? 'checked' : ''}> ${t('verWeb')}</label>
+      <div id="fErr"></div>
+      <button class="main" id="fOk">${t('guardar')}</button>
+      ${perfil ? `<button class="sec" id="fCancel" style="width:100%;margin-top:10px;padding:13px">${t('cancelar')}</button>` : ''}
+    </div>${pie()}`;
   };
-  dibujarDeps();
-  sel.onchange = () => { if (sel.value) { deps.push(sel.value); dibujarDeps(); } };
-  document.getElementById('fDeps').onclick = e => { const c = e.target.closest('.chip'); if (c) { deps = deps.filter(d => d !== c.dataset.d); dibujarDeps(); } };
-  if (perfil) document.getElementById('fCancel').onclick = pintar;
-  document.getElementById('fOk').onclick = () => {
-    const puesto = parseInt(fPuesto.value, 10) || null;
-    const np = { cat: fCat.value, turno: fTurno.value, deps, ap1: fAp1.value.trim(), ap2: fAp2.value.trim(), nombre: fNom.value.trim(), puesto };
-    if (!deps.length) { document.getElementById('fErr').innerHTML = '<div class="err">Elige al menos un departamento.</div>'; return; }
-    if (perfil && (perfil.cat !== np.cat || perfil.turno !== np.turno)) datos = {};
-    store.set('ver', fVer.checked); verVisible = fVer.checked;
-    perfil = np; store.set('perfil', perfil); store.set('datos', datos);
-    pintar(); actualizar();
+  const leerCampos = () => {
+    const v = id => { const e = document.getElementById(id); return e ? e.value.trim() : ''; };
+    p.ap1 = v('fAp1'); p.ap2 = v('fAp2'); p.nombre = v('fNom');
+    const fp = document.getElementById('fPuesto');
+    if (fp) p.bolsas[0].puesto = parseInt(fp.value, 10) || null;
+    document.querySelectorAll('[data-pu]').forEach(e => { p.bolsas[+e.dataset.pu].puesto = parseInt(e.value, 10) || null; });
+  };
+  dibujar();
+  $app.onclick = e => {
+    const el = e.target.closest('button'); if (!el) return;
+    leerCampos();
+    if (el.dataset.cat !== undefined) { const b = p.bolsas[+el.dataset.cat]; hoja(t('buscarCat'), gruposCat(), b.cat, v => { b.cat = v; dibujar(); }); }
+    else if (el.parentNode.dataset.tu !== undefined) { p.bolsas[+el.parentNode.dataset.tu].turno = el.dataset.v; dibujar(); }
+    else if (el.dataset.dep !== undefined) { const b = p.bolsas[+el.dataset.dep]; hoja(t('buscarDep'), gruposDep(b.deps), '', v => { b.deps.push(v); dibujar(); }); }
+    else if (el.dataset.x) { const [i, d] = el.dataset.x.split('|'); p.bolsas[+i].deps = p.bolsas[+i].deps.filter(x => x !== d); dibujar(); }
+    else if (el.dataset.q !== undefined) { p.bolsas.splice(+el.dataset.q, 1); dibujar(); }
+    else if (el.id === 'fMas') { const u = p.bolsas[p.bolsas.length - 1]; p.bolsas.push({ id: 'b' + Date.now(), cat: u.cat, turno: u.turno === 'O' ? 'P' : 'O', deps: u.deps.slice(), puesto: null }); dibujar(); }
+    else if (el.id === 'fCancel') { $app.onclick = null; pintar(); }
+    else if (el.id === 'fOk') {
+      if (p.bolsas.some(b => !b.deps.length)) { document.getElementById('fErr').innerHTML = '<div class="err">' + t('faltaDep') + '</div>'; return; }
+      // Si cambia el nombre, los puestos guardados ya no valen
+      if (perfil && [perfil.ap1, perfil.ap2, perfil.nombre].join('|') !== [p.ap1, p.ap2, p.nombre].join('|'))
+        for (const k in datos) { datos[k].encontrado = false; datos[k].puesto = null; }
+      const ver = document.getElementById('fVer').checked;
+      store.set('ver', ver); verVisible = ver;
+      perfil = p; store.set('perfil', perfil); store.set('datos', datos);
+      $app.onclick = null;
+      pintar(); actualizar();
+    }
   };
 }
 
-function tagSit(s) {
-  if (!s) return '';
-  const c = /DESACTIV/.test(s) ? 't-des' : /NO DISPONIBLE/.test(s) ? 't-no' : /ACTI/.test(s) ? 't-act' : 't-dis';
-  return '<span class="tag ' + c + '">' + esc(s) + '</span>';
-}
-
-// ---- Evolución, estimación y novedades ----
-// Fecha de la publicación: «… del día de publicación (15/11/2026)»
-function fechaPub(t) { const m = (t || '').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m ? new Date(+m[3], m[2] - 1, +m[1]).getTime() : null; }
+// ───────────────────────── Evolución, estimación y novedades ─────────────────────────
+function fechaPub(tx) { const m = (tx || '').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m ? new Date(+m[3], m[2] - 1, +m[1]).getTime() : null; }
 
 // Un punto por publicación (si se actualiza varias veces la misma, se sustituye el último)
 function sumarHist(h, r, pub) {
   h = (h || []).slice();
   if (!r.encontrado || !r.delante) return h;
-  const p = { f: Date.now(), fp: fechaPub(pub) || Date.now(), pub, puesto: r.puesto, sit: r.situacion,
+  const pt = { f: Date.now(), fp: fechaPub(pub) || Date.now(), pub, puesto: r.puesto, sit: r.situacion, alc: r.alcance,
     act: r.delante.activos, des: r.delante.desactivados, nd: r.delante.noDisp, disp: r.delante.disponibles };
-  if (h.length && h[h.length - 1].pub === pub) h[h.length - 1] = p; else h.push(p);
+  if (h.length && h[h.length - 1].pub === pub) h[h.length - 1] = pt; else h.push(pt);
   return h.slice(-60);
 }
 
-function cambios(dep, prev, r) {
-  const out = [], nom = depName(dep);
+function cambios(nom, prev, r) {
+  const out = [];
   if (!prev || !prev.encontrado || !r.encontrado) return out;
-  const limpia = t => (t || '').toLowerCase();
-  if (prev.situacion && r.situacion && prev.situacion !== r.situacion) out.push(nom + ': tu situación ha cambiado de «' + limpia(prev.situacion) + '» a «' + limpia(r.situacion) + '»');
-  if (prev.puesto && r.puesto && prev.puesto !== r.puesto) out.push(nom + ': tu puesto ha pasado del ' + prev.puesto + ' al ' + r.puesto);
-  if (prev.delante && r.delante) {
+  if (prev.situacion && r.situacion && prev.situacion !== r.situacion) out.push(t('cambioSit', nom, sitCorta(prev.situacion), sitCorta(r.situacion)));
+  if (prev.puesto && r.puesto && prev.puesto !== r.puesto) out.push(t('cambioPuesto', nom, prev.puesto, r.puesto));
+  if (prev.delante && r.delante && prev.alcance === r.alcance) {
     const x = prev.delante.disponibles - r.delante.disponibles;
-    if (x > 0) out.push(nom + ': ' + x + (x > 1 ? ' personas disponibles menos' : ' persona disponible menos') + ' delante de ti');
-    if (x < 0) out.push(nom + ': ' + (-x) + (-x > 1 ? ' personas disponibles más' : ' persona disponible más') + ' delante de ti');
+    if (x > 0) out.push(t('menosDisp', nom, x));
+    if (x < 0) out.push(t('masDisp', nom, -x));
     const a = r.delante.activos - prev.delante.activos;
-    if (a > 0) out.push(nom + ': ' + a + (a > 1 ? ' personas de delante han empezado' : ' persona de delante ha empezado') + ' a trabajar');
+    if (a > 0) out.push(t('empiezan', nom, a));
   }
   return out;
 }
 
 function grafica(h) {
   const pts = (h || []).filter(p => typeof p.disp === 'number');
-  if (pts.length < 2) return '<div class="note">La gráfica de evolución aparecerá cuando haya datos de al menos dos publicaciones.</div>';
-  const W = 300, H = 70, max = Math.max(1, ...pts.map(p => p.disp)), n = pts.length;
-  const xy = pts.map((p, i) => [8 + i * (W - 16) / (n - 1), 6 + (H - 12) * (1 - p.disp / max)]);
+  if (pts.length < 2) return '<div class="note">' + t('grafFalta') + '</div>';
+  const W = 300, H = 76, max = Math.max(1, ...pts.map(p => p.disp)), n = pts.length;
+  const xy = pts.map((p, i) => [8 + i * (W - 16) / (n - 1), 8 + (H - 16) * (1 - p.disp / max)]);
   const linea = xy.map(c => c[0].toFixed(1) + ',' + c[1].toFixed(1)).join(' ');
-  const f = t => new Date(t).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
-  return `<div class="graf"><div class="note" style="margin:0 0 4px">Disponibles delante en cada publicación</div>
-    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="Evolución de disponibles delante">
-      <polyline points="${linea}" fill="none" stroke="var(--acc)" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
-      ${xy.map(c => `<circle cx="${c[0].toFixed(1)}" cy="${c[1].toFixed(1)}" r="3" fill="var(--acc)"/>`).join('')}
+  const area = '8,' + H + ' ' + linea + ' ' + (W - 8) + ',' + H;
+  const f = x => new Date(x).toLocaleDateString(lang === 'va' ? 'ca-ES' : 'es-ES', { day: 'numeric', month: 'short' });
+  return `<div class="graf"><div class="note" style="margin:0 0 6px">${t('grafT')}</div>
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="${t('grafT')}">
+      <defs><linearGradient id="gA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--acc)" stop-opacity=".28"/><stop offset="1" stop-color="var(--acc)" stop-opacity="0"/></linearGradient></defs>
+      <polygon points="${area}" fill="url(#gA)"/>
+      <polyline points="${linea}" fill="none" stroke="var(--acc)" stroke-width="3" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/>
+      ${xy.map(c => `<circle cx="${c[0].toFixed(1)}" cy="${c[1].toFixed(1)}" r="3.2" fill="var(--acc)"/>`).join('')}
     </svg>
     <div class="ej"><span>${f(pts[0].fp)} · ${pts[0].disp}</span><span>${f(pts[n - 1].fp)} · ${pts[n - 1].disp}</span></div></div>`;
 }
@@ -482,93 +739,155 @@ function grafica(h) {
 // Aproximación: cuánto bajan los disponibles de delante al mes y cuánto falta
 function estimacion(h, dl) {
   if (!dl) return '';
-  if (dl.disponibles === 0) return '<div class="est">No tienes a nadie disponible delante: eres de las siguientes personas en recibir oferta.</div>';
+  if (dl.disponibles === 0) return '<div class="est">' + t('nadie') + '</div>';
   const pts = (h || []).filter(p => typeof p.disp === 'number');
-  if (pts.length < 2) return '<div class="note">Con más publicaciones, la app podrá estimar cuándo te puede tocar.</div>';
+  if (pts.length < 2) return '<div class="note">' + t('masPub') + '</div>';
   const a = pts[0], b = pts[pts.length - 1], dias = (b.fp - a.fp) / 86400000;
-  if (dias < 7) return '<div class="note">Con unas semanas más de datos, la app podrá estimar cuándo te puede tocar.</div>';
+  if (dias < 7) return '<div class="note">' + t('masSem') + '</div>';
   const baja = a.disp - b.disp;
-  if (baja <= 0) return '<div class="note">En las últimas ' + Math.round(dias / 7) + ' semanas no ha bajado la gente disponible delante: todavía no se puede estimar.</div>';
+  if (baja <= 0) return '<div class="note">' + t('noBaja', Math.round(dias / 7)) + '</div>';
   const porMes = baja / dias * 30, falta = dl.disponibles / (baja / dias);
-  const cuanto = falta < 14 ? 'unos ' + Math.max(1, Math.round(falta)) + ' días' : falta < 60 ? 'unas ' + Math.round(falta / 7) + ' semanas' : 'unos ' + Math.round(falta / 30) + ' meses';
-  return '<div class="est">Al ritmo actual (bajan unas ' + (porMes < 1 ? porMes.toFixed(1) : Math.round(porMes)) + ' personas disponibles al mes), te podría tocar en ' + cuanto + '. Es solo una aproximación.</div>';
+  const cuanto = falta < 14 ? t('dias', Math.max(1, Math.round(falta))) : falta < 60 ? t('semanas', Math.round(falta / 7)) : t('meses', Math.round(falta / 30));
+  return '<div class="est">' + t('estim', porMes < 1 ? porMes.toFixed(1) : Math.round(porMes), cuanto) + '</div>';
 }
 
 function avisos() {
   const n = store.get('novedades', null);
   if (!n || !n.items || !n.items.length) return '';
-  return `<div class="card nov"><h3>Novedades desde la última consulta</h3><ul>${n.items.map(t => '<li>' + esc(t) + '</li>').join('')}</ul>
-    <button class="sec" id="bNov" style="margin-top:10px">Entendido</button></div>`;
+  return `<div class="card nov"><h3>✨ ${t('novT')}</h3><ul>${n.items.map(x => '<li>' + esc(x) + '</li>').join('')}</ul>
+    <button class="sec" id="bNov" style="margin-top:12px">${t('entendido')}</button></div>`;
 }
 
-function cifras(dl, txt) {
-  if (!dl) return '<div class="note">No se ha podido contar quién tienes delante en esta consulta. Pulsa Actualizar para intentarlo de nuevo.</div>';
-  return `<div class="stats">
-      <div class="stat"><b>${dl.activos}</b><span>activos${txt}</span></div>
-      <div class="stat"><b>${dl.desactivados}</b><span>desactivados</span></div>
-      <div class="stat"><b>${dl.noDisp}</b><span>no disponibles</span></div>
-      <div class="stat"><b>${dl.disponibles}</b><span>disponibles</span></div>
+function tagSit(s) {
+  if (!s) return '';
+  const c = /DESACTIV/.test(s) ? 't-des' : /NO DISPONIBLE/.test(s) ? 't-no' : /ACTI/.test(s) ? 't-act' : 't-dis';
+  return '<span class="tag ' + c + '">' + esc(sitCorta(s)) + '</span>';
+}
+
+function cifras(dl, conTitulo) {
+  if (!dl) return '<div class="note">' + t('sinCuenta') + '</div>';
+  return `${conTitulo ? '<div class="note" style="margin-top:16px;font-weight:600">' + t('delante') + '</div>' : ''}<div class="stats" style="${conTitulo ? 'margin-top:8px' : ''}">
+      <div class="stat hl"><b>${dl.disponibles}</b><span>${t('disp')}</span></div>
+      <div class="stat"><b>${dl.activos}</b><span>${t('activos')}</span></div>
+      <div class="stat"><b>${dl.desactivados}</b><span>${t('desact')}</span></div>
+      <div class="stat"><b>${dl.noDisp}</b><span>${t('noDisp')}</span></div>
     </div>`;
 }
 
-function tarjeta(dep) {
-  const d = datos[dep];
-  const cab = `<div class="cat">${esc(catName(perfil.cat))} · ${perfil.turno === 'P' ? 'Promoción interna' : 'Ordinario'}</div><div class="dep">${esc(depName(dep))}</div>`;
-  if (!d) return `<div class="card bolsa">${cab}<div class="note">Sin consultar todavía.</div></div>`;
+function tarjeta(b, dep) {
+  const k = clave(b, dep), d = datos[k];
+  const cab = `<div class="kicker">${esc(catCorta(b.cat))} · ${turnoTxt(b.turno)}</div><div class="dep">${esc(cap(depName(dep)))}</div>`;
+  if (!d) return `<div class="card res">${cab}<div class="note">${t('sinConsultar')}</div></div>`;
   if (!d.encontrado) {
-    const aviso = d.identificado
-      ? '<div class="err">No te encuentro en esta lista. Revisa cómo está escrito tu nombre en la GVA o tu número de puesto.</div>'
-      : '<div class="note">Resumen de la lista' + (d.tramo ? ' (tramo ' + esc(d.tramo) + ')' : '') + '. Añade tu nombre o tu puesto para ver quién tienes delante.</div>';
-    return `<div class="card bolsa">${cab}${aviso}${cifras(d.delante, '')}</div>`;
+    const aviso = d.identificado ? '<div class="err">' + t('noEncuentro') + '</div>' : '<div class="note">' + t('resumen', d.tramo ? ' (' + esc(d.tramo) + ')' : '') + '</div>';
+    return `<div class="card res">${cab}${aviso}${cifras(d.delante, false)}</div>`;
   }
   const dl = d.delante, prev = d.prev;
   let delta = '';
   if (dl && prev && typeof prev.activos === 'number') {
     const x = dl.activos - prev.activos;
-    delta = x > 0 ? `<div class="delta up">▲ ${x} persona${x > 1 ? 's' : ''} de delante han empezado a trabajar desde la última consulta</div>`
-      : x < 0 ? `<div class="delta">▼ ${-x} persona${-x > 1 ? 's' : ''} de delante han dejado de estar activas</div>` : '<div class="delta">Sin cambios delante de ti desde la última consulta</div>';
+    delta = x > 0 ? `<div class="delta up">${t('deltaUp', x, x > 1 ? t('empezadoN') : t('empezado1'))}</div>`
+      : x < 0 ? `<div class="delta">${t('deltaDown', -x, -x > 1 ? t('dejadoN') : t('dejado1'))}</div>` : `<div class="delta">${t('sinCambios')}</div>`;
   }
-  return `<div class="card bolsa">
-    <div class="top"><div>${cab}${tagSit(d.situacion)}${d.trabaja ? '<div class="note">Trabajando en: ' + esc(d.trabaja) + '</div>' : ''}</div>
-      <div class="puesto"><span>Tu puesto</span><b>#${d.puesto}</b></div></div>
-    ${cifras(dl, ' delante')}${delta}${estimacion(d.hist, dl)}${grafica(d.hist)}
-    ${d.tramo && !/^1\s*-/.test(d.tramo) ? `<div class="note">Recuentos del tramo ${esc(d.tramo)} de la lista.</div>` : ''}
+  const alc = dl && d.alcance === 'tramo' && d.tramo ? `<div class="note">${t('tramoSolo', esc(d.tramo))}</div>`
+    : dl && d.tramos ? `<div class="note">${t('todosDelante', esc(d.tramos))}</div>` : '';
+  return `<div class="card res">
+    <div class="top"><div style="min-width:0">${cab}${tagSit(d.situacion)}</div>
+      <div class="badge"><span>${t('tuPuesto')}</span><b>${d.puesto}</b></div></div>
+    ${d.perfil ? `<div class="perf">${t('perfiles')}: <b>${esc(d.perfil)}</b></div>` : ''}
+    ${d.trabaja ? `<div class="perf">${t('trabajaEn')}: <b>${esc(d.trabaja)}</b></div>` : ''}
+    ${cifras(dl, true)}${delta}${alc}${estimacion(d.hist, dl)}${grafica(d.hist)}
+    <div class="acciones"><button class="sec" data-share="${esc(k)}">↗︎ ${t('compartir')}</button></div>
   </div>`;
 }
 
+// ───────────────────────── Compartir «Mi situación» (imagen con tus datos) ─────────────────────────
+function imagenSituacion(b, dep) {
+  const d = datos[clave(b, dep)];
+  const c = document.createElement('canvas'); c.width = 1080; c.height = 1080;
+  const g = c.getContext('2d');
+  const gr = g.createLinearGradient(0, 0, 1080, 1080); gr.addColorStop(0, '#14b8a6'); gr.addColorStop(1, '#3b82f6');
+  g.fillStyle = gr; g.fillRect(0, 0, 1080, 1080);
+  const R = (x, y, w, h, r, col) => { g.fillStyle = col; g.beginPath(); g.roundRect ? g.roundRect(x, y, w, h, r) : g.rect(x, y, w, h); g.fill(); };
+  R(70, 70, 940, 940, 56, '#ffffff');
+  const F = (s, w) => { g.font = w + ' ' + s + 'px -apple-system, "Segoe UI", Roboto, sans-serif'; };
+  g.fillStyle = '#64748b'; F(36, '600'); g.fillText(catCorta(b.cat) + ' · ' + turnoTxt(b.turno), 130, 175);
+  g.fillStyle = '#1e293b'; F(64, '800'); g.fillText(cap(depName(dep)), 130, 255);
+  R(130, 300, 820, 210, 40, '#eef2f8');
+  g.fillStyle = '#64748b'; F(34, '600'); g.fillText(t('tuPuesto'), 170, 365);
+  g.fillStyle = '#0f766e'; F(120, '800'); g.fillText('#' + d.puesto, 170, 480);
+  g.fillStyle = '#1e293b'; F(38, '700'); g.textAlign = 'right'; g.fillText(sitCorta(d.situacion), 910, 365); g.textAlign = 'left';
+  if (d.delante) {
+    const it = [[d.delante.disponibles, t('disp'), '#e0eaff', '#1d4ed8'], [d.delante.activos, t('activos'), '#eef2f8', '#1e293b'], [d.delante.desactivados, t('desact'), '#eef2f8', '#1e293b'], [d.delante.noDisp, t('noDisp'), '#eef2f8', '#1e293b']];
+    g.fillStyle = '#64748b'; F(32, '600'); g.fillText(t('delante'), 130, 580);
+    it.forEach((x, i) => {
+      const X = 130 + (i % 2) * 420, Y = 610 + Math.floor(i / 2) * 170;
+      R(X, Y, 400, 150, 32, x[2]);
+      g.fillStyle = x[3]; F(72, '800'); g.fillText(String(x[0]), X + 34, Y + 85);
+      g.fillStyle = '#64748b'; F(30, '600'); g.fillText(x[1], X + 34, Y + 128);
+    });
+  }
+  g.fillStyle = '#94a3b8'; F(26, '500'); g.fillText('Mi Bolsa · ' + (lang === 'va' ? 'app no oficial' : 'app no oficial') + ' · ' + fechaTxt(d.pub), 130, 975);
+  return c.toDataURL('image/png');
+}
+async function compartir(k) {
+  const [cat, turno, dep] = k.split('|');
+  const b = perfil.bolsas.find(x => x.cat === cat && x.turno === turno);
+  if (!b || !datos[k] || !datos[k].encontrado) return;
+  const img = imagenSituacion(b, dep);
+  try {
+    if (NAV && NAV.compartir) await NAV.compartir({ imagen: img, texto: t('compTexto') });
+    else { const a = document.createElement('a'); a.href = img; a.download = 'mi-bolsa.png'; a.click(); }
+  } catch (e) {}
+}
+
+// ───────────────────────── Pantalla principal ─────────────────────────
 function pie() {
-  return `<footer>App no oficial. Datos de la consulta pública de las Listas de Empleo Temporal de la Conselleria de Sanidad.<br>
-  Tus datos y resultados se guardan solo en este móvil.</footer>`;
+  return `<footer>${t('pie1')}<br>${t('pie2')}</footer>`;
 }
 
 function pintar() {
+  document.getElementById('hSub').textContent = t('sub');
+  document.getElementById('bLang').textContent = lang === 'es' ? 'VAL' : 'CAS';
+  document.documentElement.lang = lang === 'va' ? 'ca' : 'es';
   if (!perfil) return pantallaPerfil();
-  const fechas = perfil.deps.map(d => datos[d] && datos[d].fecha).filter(Boolean);
-  const cuando = fechas.length ? new Date(Math.min(...fechas)).toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'nunca';
+  $app.onclick = null;
+  const fechas = [];
+  perfil.bolsas.forEach(b => b.deps.forEach(d => { const x = datos[clave(b, d)]; if (x && x.fecha) fechas.push(x.fecha); }));
+  const cuando = fechas.length ? new Date(Math.min(...fechas)).toLocaleString(lang === 'va' ? 'ca-ES' : 'es-ES', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' }) : t('nunca');
   const errores = store.get('errores', []);
   const reg = store.get('registro', []);
-  const pub = (perfil.deps.map(d => datos[d] && datos[d].pub).find(Boolean)) || '';
+  const pub = store.get('ultimaPub', '') || (Object.values(datos).find(x => x && x.pub) || {}).pub || '';
+  const varias = perfil.bolsas.length > 1;
   $app.innerHTML = `
-    <div class="bar"><span class="when">Actualizado: ${esc(cuando)}</span>
-      <span><button class="sec" id="bAct">Actualizar</button> <button class="sec" id="bEdit">Editar</button></span></div>
+    <div class="bar"><span class="when">${t('actualizado')}: ${esc(cuando)}</span>
+      <span><button class="sec" id="bAct">↻ ${t('bAct')}</button> <button class="sec" id="bEdit">${t('bEdit')}</button></span></div>
     ${errores.length ? '<div class="err">' + errores.map(esc).join('<br>') + '</div><br>' : ''}
     ${avisos()}
-    ${perfil.deps.map(tarjeta).join('')}
-    ${pub ? '<div class="note">' + esc(pub) + '</div>' : ''}
-    ${reg.length ? `<details class="card reg"><summary>Detalles de la última búsqueda</summary><pre>${reg.map(esc).join('\n')}</pre></details>` : ''}
+    ${perfil.bolsas.map(b => (varias ? `<div class="grupo">${esc(catCorta(b.cat))} · ${turnoTxt(b.turno)}</div>` : '') + b.deps.map(d => tarjeta(b, d)).join('')).join('')}
+    ${pub ? '<div class="note" style="padding:0 6px">' + t('pubT') + ': ' + esc(fechaTxt(pub) || pub) + '</div>' : ''}
+    ${reg.length ? `<details class="card reg" style="margin-top:16px"><summary>${t('detalles')}</summary><pre>${reg.map(esc).join('\n')}</pre></details>` : ''}
     ${pie()}`;
   document.getElementById('bAct').onclick = actualizar;
   document.getElementById('bEdit').onclick = pantallaPerfil;
   const bn = document.getElementById('bNov');
   if (bn) bn.onclick = () => { store.set('novedades', null); pintar(); };
+  $app.querySelectorAll('[data-share]').forEach(x => { x.onclick = () => compartir(x.dataset.share); });
 }
+
+document.getElementById('bLang').onclick = () => {
+  lang = lang === 'es' ? 'va' : 'es'; store.set('lang', lang);
+  if (document.getElementById('fOk')) pantallaPerfil(); else pintar();
+};
 
 verVisible = store.get('ver', false);
 pintar();
-// Al abrir la app (y al volver a ella) se actualiza sola si han pasado más de 6 horas
-const viejo = () => perfil && perfil.deps.some(d => !datos[d] || Date.now() - datos[d].fecha > 6 * 3600e3);
-if (viejo()) actualizar();
-document.addEventListener('visibilitychange', () => { if (!document.hidden && viejo()) actualizar(); });
+// Al abrir la app (y al volver a ella): si los datos tienen más de 6 horas se actualiza;
+// si no, se mira si la GVA ha sacado una publicación nueva y entonces se actualiza.
+const viejo = () => perfil && perfil.bolsas.some(b => b.deps.some(d => { const x = datos[clave(b, d)]; return !x || Date.now() - x.fecha > 6 * 3600e3; }));
+const alAbrir = () => { if (viejo()) actualizar(); else comprobarPublicacion(); };
+alAbrir();
+document.addEventListener('visibilitychange', () => { if (!document.hidden) alAbrir(); });
 </script>
 </body>
 </html>

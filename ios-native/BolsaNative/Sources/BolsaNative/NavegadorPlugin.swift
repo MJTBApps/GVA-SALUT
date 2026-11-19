@@ -15,7 +15,9 @@ public class NavegadorPlugin: CAPPlugin, CAPBridgedPlugin, WKNavigationDelegate 
         CAPPluginMethod(name: "ejecutar", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "mostrar", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "ocultar", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "cerrar", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "cerrar", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "widget", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "compartir", returnType: CAPPluginReturnPromise)
     ]
 
     private var capa: UIView?
@@ -140,6 +142,28 @@ public class NavegadorPlugin: CAPPlugin, CAPBridgedPlugin, WKNavigationDelegate 
             self.capa = nil; self.web = nil; self.titulo = nil
             self.pendienteAbrir?.reject("Cerrado"); self.pendienteAbrir = nil
             call.resolve()
+        }
+    }
+
+    /// En iPhone todavía no hay widget: se acepta la llamada sin hacer nada.
+    @objc func widget(_ call: CAPPluginCall) { call.resolve() }
+
+    /// Comparte la imagen de «Mi situación» con el menú de compartir de iOS.
+    @objc func compartir(_ call: CAPPluginCall) {
+        var b64 = call.getString("imagen") ?? ""
+        if let coma = b64.firstIndex(of: ",") { b64 = String(b64[b64.index(after: coma)...]) }
+        guard let datos = Data(base64Encoded: b64), let img = UIImage(data: datos) else {
+            call.reject("Imagen no válida"); return
+        }
+        let texto = call.getString("texto") ?? ""
+        DispatchQueue.main.async {
+            guard let vc = self.bridge?.viewController else { call.reject("Sin pantalla"); return }
+            let av = UIActivityViewController(activityItems: [img, texto], applicationActivities: nil)
+            if let pop = av.popoverPresentationController {
+                pop.sourceView = vc.view
+                pop.sourceRect = CGRect(x: vc.view.bounds.midX, y: vc.view.bounds.maxY - 40, width: 1, height: 1)
+            }
+            vc.present(av, animated: true) { call.resolve() }
         }
     }
 }
