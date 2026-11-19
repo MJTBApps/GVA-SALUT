@@ -116,6 +116,16 @@ function paginaGVA() {
       return ins.length;
     },
     verificado() { return !!window.turnstileToken; },
+    elegirRango(p) {
+      const s = [...document.querySelectorAll('select')].find(x => [...x.options].some(o => /^\d+\s*-\s*\d+$/.test(o.text.trim())));
+      if (!s) return 'sin-rango';
+      const o = [...s.options].find(o => { const m = o.text.trim().match(/^(\d+)\s*-\s*(\d+)$/); return m && p >= +m[1] && p <= +m[2]; });
+      if (!o) return 'fuera';
+      if (s.value === o.value) return 'ya';
+      const w = wOf(s);
+      try { if (w && w.selectValue) w.selectValue(o.value); else { s.value = o.value; jQuery(s).trigger('change'); } } catch (e) { return 'no: ' + e.message; }
+      return 'ok';
+    },
     marcar() { document.querySelectorAll('table').forEach(t => t.setAttribute('data-mb-viejo', '1')); return true; },
     enviar() { const b = document.getElementById('filToogle:formDynamicFilters:obtenerListado'); if (!b) return false; b.click(); return true; },
     leer() {
@@ -194,7 +204,23 @@ async function verificacion(etiqueta) {
   return ok;
 }
 
-async function consultarDep(url, dep, i, total) {
+// conNombre: filtra por tu nombre (para saber tu puesto). puesto: si se sabe, se pide la lista
+// completa y se salta al tramo donde estás, para contar quién tienes delante.
+async function esperarTabla(segundos) {
+  const fin = Date.now() + segundos * 1000;
+  let res = null;
+  await sleep(500);
+  while (Date.now() < fin) {
+    await sleep(500);
+    if (!await ev('window.__mb.listo()')) continue;
+    res = await ev('window.__mb.leer()');
+    if (res && (res.filas || res.error)) break;
+    if (res && res.captcha) break;
+  }
+  return res;
+}
+
+async function consultarDep(url, dep, i, total, conNombre = true, puesto = null) {
   const etiqueta = depName(dep) + ' (' + (i + 1) + '/' + total + ')';
   ov('Actualizando tus bolsas…', etiqueta);
   paso(etiqueta + ': abriendo la consulta');
@@ -206,21 +232,29 @@ async function consultarDep(url, dep, i, total) {
     if (r !== 'ok') throw new Error('No se pudo elegir ' + ['la categoría', 'el turno', 'el departamento'][n] + ' (' + r + ')');
     await esperar('window.__mb.listo()', 10000, 200);
   }
-  await ev('window.__mb.escribir(' + [perfil.ap1, perfil.ap2, perfil.nombre].map(x => JSON.stringify(x || '')).join(',') + ')');
-  paso('Formulario rellenado');
+  const nom = conNombre ? [perfil.ap1, perfil.ap2, perfil.nombre] : ['', '', ''];
+  await ev('window.__mb.escribir(' + nom.map(x => JSON.stringify(x || '')).join(',') + ')');
+  paso(conNombre ? 'Formulario rellenado (con tu nombre)' : 'Formulario rellenado (lista completa)');
   if (!await verificacion(etiqueta)) throw new Error('No se completó la verificación de Cloudflare');
   await ev('window.__mb.marcar()');
   await ev('window.__mb.enviar()');
   paso('Consulta enviada a la GVA');
-  let res = null;
-  const fin = Date.now() + 40000;
-  await sleep(500);
-  while (Date.now() < fin) {
-    await sleep(500);
-    if (!await ev('window.__mb.listo()')) continue;
-    res = await ev('window.__mb.leer()');
-    if (res && (res.filas || res.error)) break;
-    if (res && res.captcha) { paso('La GVA no aceptó la verificación'); break; }
+  let res = await esperarTabla(40);
+  if (res && !res.filas && res.captcha) paso('La GVA no aceptó la verificación');
+  // Saltar al tramo donde está tu puesto (1-200, 201-400…)
+  if (res && res.filas && puesto) {
+    const r = await ev('window.__mb.elegirRango(' + puesto + ')');
+    paso('Tramo de tu puesto: ' + r);
+    if (r === 'ok') {
+      await ev('window.__mb.marcar()');
+      let res2 = await esperarTabla(15);
+      if (!(res2 && res2.filas) && await verificacion(etiqueta)) {
+        await ev('window.__mb.marcar()');
+        await ev('window.__mb.elegirRango(' + puesto + ')');
+        res2 = await esperarTabla(20);
+      }
+      if (res2 && res2.filas) res = res2; else paso('No se pudo cambiar de tramo');
+    }
   }
   if (!res || !res.filas) throw new Error(res && (res.error || res.captcha) ? (res.error || res.captcha) : 'La GVA no ha devuelto la lista');
   paso('Lista recibida: ' + res.filas.length + ' filas' + (res.tramo ? ' (tramo ' + res.tramo + ')' : '') + ' · columnas: ' + (res.cab || []).join(', '));
@@ -228,14 +262,16 @@ async function consultarDep(url, dep, i, total) {
 }
 
 // De la lista solo se guarda TU fila y recuentos: nunca nombres de otras personas
-function resumir(res) {
+function resumir(res, puestoSabido = null) {
   const yo = [perfil.ap1, perfil.ap2, perfil.nombre].filter(Boolean).join(' ')
     .normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/\s+/g, ' ').trim();
   let mia = null;
-  if (perfil.puesto) mia = res.filas.find(f => f.pos === perfil.puesto);
   // La GVA escribe «APELLIDOS, NOMBRE»: se compara por palabras, sin comas ni tildes
   const pal = t => (t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z0-9Ñ ]+/g, ' ').split(/\s+/).filter(Boolean);
   const mias = pal(yo);
+  const esYo = f => !mias.length || mias.every(w => pal(f.nom).includes(w));
+  const p = perfil.puesto || puestoSabido;
+  if (p) mia = res.filas.find(f => f.pos === p && esYo(f)) || null;
   if (!mia && mias.length) mia = res.filas.find(f => { const p = pal(f.nom); return mias.every(w => p.includes(w)); });
   const cuenta = filas => {
     const c = { activos: 0, desactivados: 0, noDisp: 0, disponibles: 0, total: 0 };
@@ -275,10 +311,29 @@ async function actualizar() {
     for (let i = 0; i < perfil.deps.length; i++) {
       const dep = perfil.deps[i];
       try {
-        const r = resumir(await consultarDep(lista.url, dep, i, perfil.deps.length));
         const prev = datos[dep];
-        const hist = (prev && prev.hist || []).concat([{ f: Date.now(), act: r.delante.activos, des: r.delante.desactivados }]).slice(-24);
-        datos[dep] = Object.assign(r, { fecha: Date.now(), pub: lista.texto, hist, prev: prev ? prev.delante : null });
+        const conNombre = !!(perfil.ap1 || perfil.ap2 || perfil.nombre);
+        let sabido = perfil.puesto || (prev && prev.encontrado && prev.puesto) || null;
+        let rA = null;
+        // Paso 1 (solo si no sabemos tu puesto): buscar por tu nombre
+        if (conNombre && !sabido) {
+          rA = resumir(await consultarDep(lista.url, dep, i, perfil.deps.length, true));
+          sabido = rA.puesto;
+          paso(sabido ? 'Tu puesto: ' + sabido : 'No apareces con ese nombre');
+        }
+        let r = rA;
+        // Paso 2: lista completa en tu tramo, para contar quién tienes delante
+        if (sabido || !conNombre) {
+          const rB = resumir(await consultarDep(lista.url, dep, i, perfil.deps.length, false, sabido), sabido);
+          if (rB.encontrado || !conNombre) r = rB;
+          else if (!rA) { // el puesto guardado ya no es el tuyo: volver a buscar por nombre
+            rA = resumir(await consultarDep(lista.url, dep, i, perfil.deps.length, true));
+            r = rA;
+          }
+        }
+        if (r === rA && r && r.encontrado) r.delante = null; // con el filtro de nombre no se puede contar
+        const hist = r.delante ? (prev && prev.hist || []).concat([{ f: Date.now(), act: r.delante.activos, des: r.delante.desactivados }]).slice(-24) : (prev && prev.hist || []);
+        datos[dep] = Object.assign(r, { fecha: Date.now(), pub: lista.texto, hist, prev: prev && prev.delante ? prev.delante : null });
       } catch (e) { errores.push(depName(dep) + ': ' + e.message); paso('ERROR ' + depName(dep) + ': ' + e.message); }
     }
     store.set('datos', datos);
@@ -372,6 +427,7 @@ function tagSit(s) {
 }
 
 function cifras(dl, txt) {
+  if (!dl) return '<div class="note">No se ha podido contar quién tienes delante en esta consulta. Pulsa Actualizar para intentarlo de nuevo.</div>';
   return `<div class="stats">
       <div class="stat"><b>${dl.activos}</b><span>activos${txt}</span></div>
       <div class="stat"><b>${dl.desactivados}</b><span>desactivados</span></div>
@@ -392,7 +448,7 @@ function tarjeta(dep) {
   }
   const dl = d.delante, prev = d.prev;
   let delta = '';
-  if (prev && typeof prev.activos === 'number') {
+  if (dl && prev && typeof prev.activos === 'number') {
     const x = dl.activos - prev.activos;
     delta = x > 0 ? `<div class="delta up">▲ ${x} persona${x > 1 ? 's' : ''} de delante han empezado a trabajar desde la última consulta</div>`
       : x < 0 ? `<div class="delta">▼ ${-x} persona${-x > 1 ? 's' : ''} de delante han dejado de estar activas</div>` : '<div class="delta">Sin cambios delante de ti desde la última consulta</div>';
