@@ -102,8 +102,13 @@ function paginaGVA() {
       const w = s && wOf(s);
       if (!w) return 'sin-selector';
       if (![...s.options].some(o => o.value === valor)) return 'sin-opcion';
-      w.selectValue(valor);
-      return s.value === valor ? 'ok' : 'no';
+      let fallo = '';
+      try { w.selectValue(valor); } catch (e) { fallo = String(e && e.message || e); }
+      if (s.value !== valor) {
+        // Plan B: elegir la opción en el desplegable original y avisar a PrimeFaces del cambio
+        try { s.value = valor; jQuery(s).trigger('change'); } catch (e) { fallo += ' / ' + String(e && e.message || e); }
+      }
+      return s.value === valor ? 'ok' : ('no' + (fallo ? ': ' + fallo : ''));
     },
     escribir(ap1, ap2, nombre) {
       const ins = [...document.querySelectorAll('#filToogle input[type=text].ui-inputtext')].filter(x => !/_filter$|_focus$/.test(x.id));
@@ -135,9 +140,17 @@ function paginaGVA() {
   return true;
 }
 
+// Cada orden se ejecuta en la página de la GVA: si la página ha cambiado (navegación) se
+// vuelven a poner las funciones, y si algo falla se apunta el error en el registro.
 async function ev(expr) {
-  const r = await NAV.ejecutar({ js: expr });
-  try { return JSON.parse(r.valor); } catch (e) { return null; }
+  const js = '(function(){try{if(!window.__mb){(' + paginaGVA.toString() + ')()}return (' + expr + ');}' +
+    'catch(e){return {__err: String((e && e.message) || e)}}})()';
+  let r;
+  try { r = await NAV.ejecutar({ js }); } catch (e) { paso('Error del navegador: ' + (e.message || e)); return null; }
+  let v = null;
+  try { v = JSON.parse(r && r.valor); } catch (e) { v = null; }
+  if (v && v.__err) { paso('Error en la página: ' + v.__err + ' [' + expr.slice(0, 40) + ']'); return null; }
+  return v;
 }
 async function esperar(expr, ms, paso = 300) {
   const fin = Date.now() + ms;
@@ -151,6 +164,7 @@ async function prepararPagina() {
 // Registro de la última búsqueda (pasos y segundos), para ver dónde se atasca
 let registro = [], t0 = 0;
 function paso(msg) {
+  if (registro.length && registro[registro.length - 1].endsWith(' · ' + msg)) return; // sin repetir
   const s = ((Date.now() - t0) / 1000).toFixed(1);
   registro.push(s + ' s · ' + msg);
   document.getElementById('ovS').textContent = msg;
