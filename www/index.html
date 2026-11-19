@@ -177,7 +177,7 @@ const T = {
     menosDisp: '{0}: {1} disponible(s) menos delante de ti', masDisp: '{0}: {1} disponible(s) más delante de ti', empiezan: '{0}: {1} de delante empieza(n) a trabajar',
     detalles: 'Detalles de la última búsqueda', pie1: 'App no oficial. Datos de la consulta pública de las Listas de Empleo Temporal de la Conselleria de Sanidad.',
     pie2: 'Tus datos y resultados se guardan solo en este móvil.', pubT: 'Publicación', compTexto: 'Mi situación en la bolsa de Sanidad (app Mi Bolsa, no oficial)',
-    toca: 'Toca la casilla para continuar', cancelar2: 'Cancelar', fallo: 'Esta vez no se ha podido buscar en este departamento. Puede que la web de la GVA no respondiera.', reintentar: 'Intentar de nuevo', webGva: 'Búsqueda en la web de la GVA', paso: 'Paso {0} de {1}',
+    toca: 'Toca la casilla para continuar', cancelar2: 'Cancelar', fallo: 'La GVA no ha devuelto tu fila a tiempo. Puede que no estés inscrito/a en esta bolsa o en este departamento, que tu nombre esté escrito de otra forma, o que la web de la GVA fuera lenta.', reintentar: 'Intentar de nuevo', webGva: 'Búsqueda en la web de la GVA', paso: 'Paso {0} de {1}',
     actividad: 'Actividad de la bolsa', penal: 'Penalizaciones', penalNueva: '⚠️ Apareces en la lista de penalizaciones de la GVA',
     actT: '📈 Actividad de la bolsa', actMes: 'Nombramientos en {0}', actDep: '{0} en {1}', largos: 'largos (vacantes, interinidades)', cortos: 'cortos (sustituciones, eventuales…)', otros: 'otros',
     hastaPuesto: 'Llamaron hasta el puesto {0}', parcial: 'Solo se cuenta la primera página de la consulta.', rankT: 'Departamentos que más llaman',
@@ -229,7 +229,7 @@ const T = {
     menosDisp: '{0}: {1} disponible(s) menys davant de tu', masDisp: '{0}: {1} disponible(s) més davant de tu', empiezan: '{0}: {1} de davant comença(en) a treballar',
     detalles: 'Detalls de l\'última busca', pie1: 'App no oficial. Dades de la consulta pública de les Llistes d\'Ocupació Temporal de la Conselleria de Sanitat.',
     pie2: 'Les teues dades i resultats es guarden només en este mòbil.', pubT: 'Publicació', compTexto: 'La meua situació en la borsa de Sanitat (app Mi Bolsa, no oficial)',
-    toca: 'Toca la casella per a continuar', cancelar2: 'Cancel·lar', fallo: 'Esta vegada no s\'ha pogut buscar en este departament. Pot ser que la web de la GVA no responguera.', reintentar: 'Tornar a intentar', webGva: 'Busca en la web de la GVA', paso: 'Pas {0} de {1}',
+    toca: 'Toca la casella per a continuar', cancelar2: 'Cancel·lar', fallo: 'La GVA no ha tornat la teua fila a temps. Pot ser que no estigues inscrit/a en esta borsa o en este departament, que el teu nom estiga escrit d\'una altra manera, o que la web de la GVA anara lenta.', reintentar: 'Tornar a intentar', webGva: 'Busca en la web de la GVA', paso: 'Pas {0} de {1}',
     actividad: 'Activitat de la borsa', penal: 'Penalitzacions', penalNueva: '⚠️ Apareixes en la llista de penalitzacions de la GVA',
     actT: '📈 Activitat de la borsa', actMes: 'Nomenaments en {0}', actDep: '{0} en {1}', largos: 'llargs (vacants, interinitats)', cortos: 'curts (substitucions, eventuals…)', otros: 'altres',
     hastaPuesto: 'Van cridar fins al lloc {0}', parcial: 'Només es compta la primera pàgina de la consulta.', rankT: 'Departaments que més criden',
@@ -404,11 +404,12 @@ function paginaGVA() {
 // Cada orden se ejecuta en la página de la GVA: si la página ha cambiado (navegación) se
 // vuelven a poner las funciones, y si algo falla se apunta el error en el registro.
 // Límite de tiempo para cada orden al navegador y botón «Cancelar»: la búsqueda nunca se queda colgada
-let cancelado = false, limiteBusqueda = 0;
+let cancelado = false, limiteBusqueda = 0, limiteDep = 0;
 const conTiempo = (p, ms, msg) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(new Error(msg)), ms))]);
 function revisarCancel() {
   if (cancelado) throw new Error('Búsqueda cancelada');
   if (limiteBusqueda && Date.now() > limiteBusqueda) { cancelado = true; throw new Error('La búsqueda ha tardado demasiado'); }
+  if (limiteDep && Date.now() > limiteDep) { limiteDep = 0; throw new Error('TIEMPO'); }
 }
 async function abrirNav(url) { revisarCancel(); await conTiempo(NAV.abrir({ url }), 30000, 'La web de la GVA no responde'); }
 async function ev(expr) {
@@ -451,6 +452,7 @@ async function verificacion(etiqueta) {
   await ev('(function(){var t=document.getElementById("turnstileTarget");if(t)t.scrollIntoView({block:"center"});return true})()');
   if (!verVisible) await NAV.mostrar({ titulo: t('toca') });
   ovOff();
+  if (limiteDep) limiteDep += 120000;
   const fin = Date.now() + 120000;
   let ok = false;
   while (Date.now() < fin && !cerrado && !cancelado) { if (await ev('window.__mb.verificado()')) { ok = true; break; } await sleep(400); }
@@ -721,10 +723,14 @@ async function actualizar(forzar = false) {
         const k = clave(b, dep), prev = datos[k];
         // La lista es una foto del día de publicación: si ya la tenemos de esta publicación, no se vuelve a pedir
         if (prev && prev.pub === lista.texto && (prev.encontrado || prev.identificado) && !forzar) { paso(etiqueta + ': sin cambios desde la última publicación'); continue; }
+        limiteDep = Date.now() + 60000;
         const r = await consultarBolsa(lista, b, dep, etiqueta);
+        limiteDep = 0;
         novedades.push(...cambios(depName(dep), prev, r));
         datos[k] = Object.assign(r, { fecha: Date.now(), pub: lista.texto, hist: sumarHist(prev && prev.hist, r, lista.texto), prev: prev && prev.delante ? prev.delante : null });
       } catch (e) {
+        limiteDep = 0;
+        if (e.message === 'TIEMPO') e.message = 'la GVA no ha contestado en 1 minuto';
         errores.push(etiqueta + ': ' + e.message); paso('ERROR ' + etiqueta + ': ' + e.message);
         // Se apunta el fallo para no repetir la búsqueda sola cada vez que se abre la app
         const k = clave(b, dep), prev = datos[k];
@@ -1054,8 +1060,8 @@ function tarjeta(b, dep) {
   const k = clave(b, dep), d = datos[k];
   const cab = `<div class="kicker">${esc(catCorta(b.cat))} · ${turnoTxt(b.turno)}</div><div class="dep">${esc(cap(depName(dep)))}</div>`;
   if (!d) return `<div class="card res">${cab}<div class="note">${t('sinConsultar')}</div></div>`;
-  if (d.fallo) return `<div class="card res">${cab}<div class="err">${t('fallo')}</div>
-    <div class="acciones"><button class="sec" data-reintentar="1">↻ ${t('reintentar')}</button></div></div>`;
+  if (d.fallo) return `<div class="card res off">${cab}<div class="nf"><b>${t('nfT')}</b>${t('fallo')}</div>
+    <div class="acciones"><button class="sec" data-revisar="1">✏️ ${t('revisar')}</button><button class="sec" data-reintentar="1">↻ ${t('reintentar')}</button></div></div>`;
   if (!d.encontrado) {
     if (d.identificado) return `<div class="card res off">${cab}<div class="nf"><b>${t('nfT')}</b>${t('nfTxt')}</div>
       <div class="acciones"><button class="sec" data-revisar="1">✏️ ${t('revisar')}</button></div></div>`;
