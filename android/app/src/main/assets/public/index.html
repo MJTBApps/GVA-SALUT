@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <title>Mi Bolsa</title>
 <style>
@@ -20,7 +20,8 @@
     --green:#4ade80; --green2:#0f2f1d; --shadow:0 6px 24px rgba(0,0,0,.35);
   }
 }
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif}
 header{background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;padding:calc(env(safe-area-inset-top) + 18px) 20px 22px;border-radius:0 0 28px 28px}
 header .fila{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -193,6 +194,7 @@ const T = {
     barDoc: 'Doctorado relacionado', barDocNo: 'No', barDocSi: 'Sí', barDocCum: 'Sí, cum laude', barMas: 'Másteres oficiales relacionados', barProp: 'Títulos propios relacionados', barIdi: 'Otro idioma de la UE (nivel)',
     barCur: 'Cursos de formación continua (nº de cursos por horas)', barCurNota: 'Según la Orden 4/2019 solo puntúan en uno de los turnos: compruébalo en tu convocatoria.', barDocencia: 'Horas de docencia impartidas',
     barDis: 'Diversidad funcional igual o superior al 33 %', barTotal: 'Total aproximado', barNota: 'Cálculo orientativo con el baremo publicado en el DOGV. Los méritos que cuentan son los que tenías en la fecha de corte de la edición y la puntuación oficial es la de la GVA. No incluye puestos de difícil cobertura.',
+    extraBtn: 'Consultar actividad y penalizaciones', extraNota: 'La actividad de la bolsa (nombramientos) y las penalizaciones se consultan aparte para que la búsqueda principal sea rápida.', extraNota2: 'Pulsa para actualizar la actividad y las penalizaciones.',
     tInicio: 'Inicio', tEvol: 'Evolución', tBolsa: 'Bolsa', tAjustes: 'Ajustes', nfT: '😕 No te encontramos en esta bolsa',
     nfTxt: 'Puede que no estés inscrito/a en esta categoría, turno o departamento, o que tu nombre esté escrito de otra forma en la lista de la GVA (por ejemplo, con los dos apellidos o con tilde).', revisar: 'Revisar mis datos',
     evolVacia: 'Aquí verás la evolución cuando la app te haya encontrado en alguna bolsa.', idioma: 'Idioma', ajustesT: 'Ajustes', verWebC: 'Ver la web de la GVA mientras busca',
@@ -244,6 +246,7 @@ const T = {
     barDoc: 'Doctorat relacionat', barDocNo: 'No', barDocSi: 'Sí', barDocCum: 'Sí, cum laude', barMas: 'Màsters oficials relacionats', barProp: 'Títols propis relacionats', barIdi: 'Altre idioma de la UE (nivell)',
     barCur: 'Cursos de formació contínua (nre. de cursos per hores)', barCurNota: 'Segons l\'Ordre 4/2019 només puntuen en un dels torns: comprova-ho en la teua convocatòria.', barDocencia: 'Hores de docència impartides',
     barDis: 'Diversitat funcional igual o superior al 33 %', barTotal: 'Total aproximat', barNota: 'Càlcul orientatiu amb el barem publicat en el DOGV. Els mèrits que compten són els que tenies en la data de tall de l\'edició i la puntuació oficial és la de la GVA. No inclou llocs de difícil cobertura.',
+    extraBtn: 'Consultar activitat i penalitzacions', extraNota: 'L\'activitat de la borsa (nomenaments) i les penalitzacions es consulten a banda perquè la busca principal siga ràpida.', extraNota2: 'Prem per a actualitzar l\'activitat i les penalitzacions.',
     tInicio: 'Inici', tEvol: 'Evolució', tBolsa: 'Borsa', tAjustes: 'Ajustos', nfT: '😕 No t\'hem trobat en esta borsa',
     nfTxt: 'Pot ser que no estigues inscrit/a en esta categoria, torn o departament, o que el teu nom estiga escrit d\'una altra manera en la llista de la GVA (per exemple, amb els dos cognoms o amb accent).', revisar: 'Revisar les meues dades',
     evolVacia: 'Ací voràs l\'evolució quan l\'app t\'haja trobat en alguna borsa.', idioma: 'Idioma', ajustesT: 'Ajustos', verWebC: 'Vore la web de la GVA mentre busca',
@@ -373,7 +376,13 @@ function paginaGVA() {
       const visibles = sel => [...document.querySelectorAll(sel)].filter(e => e.offsetParent !== null).map(e => e.innerText.trim()).filter(Boolean).join(' ');
       const err = visibles('.ui-messages-error, .ui-message-error, .ui-growl-message');
       const captcha = visibles('#messageErrorCaptchaOffline');
-      if (!tabla) return { filas: null, error: err, captcha };
+      if (!tabla) {
+        // La GVA a veces responde con un mensaje en lugar de una tabla vacía: eso también es «no hay nadie»
+        const z = document.getElementById('formData');
+        const txt = z && z.offsetParent !== null ? z.innerText : '';
+        if (/no se (han )?encontrado|no hay (resultados|registros|datos)|sin resultados|no existen|ning[uú]n (resultado|registro)/i.test(txt + ' ' + err)) return { filas: [], cab: [], vacia: true, error: '' };
+        return { filas: null, error: err, captcha };
+      }
       const cab = [...tabla.querySelectorAll('thead th, tr:first-child th')].map(th => norm(th.innerText));
       const col = re => cab.findIndex(h => re.test(h));
       const ix = { pos: col(/^(LLOC|PUESTO|ORDEN|N)/), nom: col(/^NOM/), sit: col(/SITUA/), per: col(/PERFIL/), cat: col(/CATEG/), dep: col(/DEPART/) };
@@ -507,7 +516,7 @@ async function consultarDep(url, b, dep, etiqueta, conNombre = true, puesto = nu
   await ev('window.__mb.marcar()');
   await ev('window.__mb.enviar()');
   paso('Consulta enviada a la GVA');
-  let res = await esperarTabla(40);
+  let res = await esperarTabla(25);
   if (res && !res.filas && res.captcha) paso('La GVA no aceptó la verificación');
   if (!res || !res.filas) throw new Error(res && (res.error || res.captcha) ? (res.error || res.captcha) : 'La GVA no ha devuelto la lista');
   paso('Lista recibida: ' + res.filas.length + ' filas' + (res.tramo ? ' (tramo ' + res.tramo + ')' : '') + ' · columnas: ' + (res.cab || []).join(', '));
@@ -673,7 +682,8 @@ async function consultarBolsa(lista, b, dep, etiqueta) {
 }
 
 let actualizando = false;
-async function actualizar() {
+async function actualizar(forzar = false) {
+  if (forzar && forzar.type) forzar = false; // llamado desde un botón
   if (actualizando || !perfil) return;
   if (!NAV) { demo(); return; }
   actualizando = true;
@@ -699,39 +709,14 @@ async function actualizar() {
       progreso((i + 0.2) / tareas.length, t('paso', i + 1, tareas.length) + ' · ' + etiqueta);
       try {
         const k = clave(b, dep), prev = datos[k];
+        // La lista es una foto del día de publicación: si ya la tenemos de esta publicación, no se vuelve a pedir
+        if (prev && prev.pub === lista.texto && (prev.encontrado || prev.identificado) && !forzar) { paso(etiqueta + ': sin cambios desde la última publicación'); continue; }
         const r = await consultarBolsa(lista, b, dep, etiqueta);
         novedades.push(...cambios(depName(dep), prev, r));
         datos[k] = Object.assign(r, { fecha: Date.now(), pub: lista.texto, hist: sumarHist(prev && prev.hist, r, lista.texto), prev: prev && prev.delante ? prev.delante : null });
       } catch (e) { errores.push(etiqueta + ': ' + e.message); paso('ERROR ' + etiqueta + ': ' + e.message); }
     }
     store.set('datos', datos);
-    // Actividad de la bolsa: una consulta por categoría, solo si hay mes nuevo o han pasado 7 días
-    const act = store.get('actividad', {});
-    if (lista.nomb) for (const cat of [...new Set(perfil.bolsas.map(b => b.cat))]) {
-      const a = act[cat];
-      if (a && Date.now() - a.fecha < 7 * 86400e3 && a.pubNomb === lista.nomb.texto) continue;
-      try {
-        progreso(0.92, t('actividad') + ' · ' + catCorta(cat));
-        const r = await consultarNombramientos(lista, cat);
-        const hist = (a && a.hist || []).filter(h => h.mes !== r.mes).concat([{ mes: r.mes, total: r.total, porDep: Object.fromEntries(Object.entries(r.porDep).map(([k, v]) => [k, v.n])) }]).slice(-12);
-        act[cat] = Object.assign(r, { pubNomb: lista.nomb.texto, hist });
-        store.set('actividad', act);
-      } catch (e) { paso('Actividad ' + catCorta(cat) + ': ' + e.message); }
-    }
-    // Penalizaciones: solo si has puesto tu nombre, una vez por publicación y por dirección territorial
-    if (lista.pen && conNombreP()) {
-      const pen = store.get('penal', {});
-      for (const terr of [...new Set(perfil.bolsas.flatMap(b => b.deps.map(territorio)))]) {
-        if (pen[terr] && pen[terr].pub === lista.pen.texto) continue;
-        try {
-          progreso(0.96, t('penal'));
-          const r = await consultarPenalizaciones(lista, terr);
-          if (r.yo && !(pen[terr] && pen[terr].yo)) novedades.push(t('penalNueva'));
-          pen[terr] = Object.assign(r, { pub: lista.pen.texto });
-          store.set('penal', pen);
-        } catch (e) { paso('Penalizaciones ' + terr + ': ' + e.message); }
-      }
-    }
     store.set('oficial', { pub: lista.pub || '', sit: lista.texto, nomb: lista.nomb && lista.nomb.texto, pen: lista.pen && lista.pen.texto });
     store.set('ultimaPub', lista.texto);
     store.set('comprobado', Date.now());
@@ -745,6 +730,59 @@ async function actualizar() {
     store.set('registro', registro);
     pintar();
     actualizarWidget();
+  }
+}
+
+// Actividad de la bolsa y penalizaciones: consultas aparte, solo desde la pestaña Bolsa
+async function actualizarExtras(forzarExtra = true) {
+  if (actualizando || !perfil || !NAV) return;
+  actualizando = true;
+  registro = []; t0 = Date.now();
+  const novedades = [];
+  try {
+    ov(t('act'), '', 0.05);
+    await NAV.abrir({ url: INDEX_URL });
+    if (verVisible) await NAV.mostrar({ titulo: t('webGva') });
+    await prepararPagina();
+    await esperar('!!window.__mb.lista()', 15000);
+    const lista = await ev('window.__mb.lista()');
+    if (!lista) throw new Error('No encuentro las consultas en la web de la GVA');
+    // Actividad de la bolsa: una consulta por categoría, solo si hay mes nuevo o han pasado 7 días
+    const act = store.get('actividad', {});
+    if (lista.nomb) for (const cat of [...new Set(perfil.bolsas.map(b => b.cat))]) {
+      const a = act[cat];
+      if (!forzarExtra && a && a.pubNomb === lista.nomb.texto && Date.now() - a.fecha < 86400e3) continue;
+      try {
+        progreso(0.92, t('actividad') + ' · ' + catCorta(cat));
+        const r = await consultarNombramientos(lista, cat);
+        const hist = (a && a.hist || []).filter(h => h.mes !== r.mes).concat([{ mes: r.mes, total: r.total, porDep: Object.fromEntries(Object.entries(r.porDep).map(([k, v]) => [k, v.n])) }]).slice(-12);
+        act[cat] = Object.assign(r, { pubNomb: lista.nomb.texto, hist });
+        store.set('actividad', act);
+      } catch (e) { paso('Actividad ' + catCorta(cat) + ': ' + e.message); }
+    }
+    // Penalizaciones: solo si has puesto tu nombre, una vez por publicación y por dirección territorial
+    if (lista.pen && conNombreP()) {
+      const pen = store.get('penal', {});
+      for (const terr of [...new Set(perfil.bolsas.flatMap(b => b.deps.map(territorio)))]) {
+        if (!forzarExtra && pen[terr] && pen[terr].pub === lista.pen.texto) continue;
+        try {
+          progreso(0.96, t('penal'));
+          const r = await consultarPenalizaciones(lista, terr);
+          if (r.yo && !(pen[terr] && pen[terr].yo)) novedades.push(t('penalNueva'));
+          pen[terr] = Object.assign(r, { pub: lista.pen.texto });
+          store.set('penal', pen);
+        } catch (e) { paso('Penalizaciones ' + terr + ': ' + e.message); }
+      }
+    }
+    store.set('oficial', { pub: lista.pub || '', sit: lista.texto, nomb: lista.nomb && lista.nomb.texto, pen: lista.pen && lista.pen.texto });
+    if (novedades.length) store.set('novedades', { fecha: Date.now(), items: novedades });
+  } catch (e) { paso('ERROR: ' + e.message); }
+  finally {
+    paso('Fin');
+    try { await NAV.cerrar(); } catch (e) {}
+    actualizando = false; ovOff();
+    store.set('registro', registro);
+    pintar();
   }
 }
 
@@ -899,7 +937,7 @@ function pantallaPerfil() {
       if (p.bolsas.some(b => !b.deps.length)) { document.getElementById('fErr').innerHTML = '<div class="err">' + t('faltaDep') + '</div>'; return; }
       // Si cambia el nombre, los puestos guardados ya no valen
       if (perfil && [perfil.ap1, perfil.ap2, perfil.nombre].join('|') !== [p.ap1, p.ap2, p.nombre].join('|'))
-        for (const k in datos) { datos[k].encontrado = false; datos[k].puesto = null; }
+        for (const k in datos) { datos[k].encontrado = false; datos[k].puesto = null; datos[k].pub = null; }
       const ver = document.getElementById('fVer').checked;
       store.set('ver', ver); verVisible = ver;
       perfil = p; store.set('perfil', perfil); store.set('datos', datos);
@@ -1247,7 +1285,9 @@ function pintar() {
     const partes = perfil.bolsas.map(b => { const x = b.deps.map(d => evolucionCard(b, d)).join('') + comparar(b); return x ? grupo(b) + x : ''; }).join('');
     html = partes || `<div class="card"><div class="note" style="margin:0">${t('evolVacia')}</div></div>`;
   } else if (pestana === 'bolsa') {
-    html = [...new Set(perfil.bolsas.map(b => b.cat))].map(actividadCard).join('') + penalCard() + oficialCard();
+    const hay = Object.keys(store.get('actividad', {})).length || Object.keys(store.get('penal', {})).length;
+    html = `<div class="card"><div class="note" style="margin:0 0 10px">${t(hay ? 'extraNota2' : 'extraNota')}</div><button class="main" style="margin:0" id="bExtra">↻ ${t('extraBtn')}</button></div>`
+      + [...new Set(perfil.bolsas.map(b => b.cat))].map(actividadCard).join('') + penalCard() + oficialCard();
   } else if (pestana === 'ajustes') {
     const reg = store.get('registro', []);
     html = `<div class="card"><h2>${t('ajustesT')}</h2>
@@ -1274,7 +1314,8 @@ function pintar() {
   }
   $app.innerHTML = html + pie();
   const on = (id, f) => { const e = document.getElementById(id); if (e) e.onclick = f; };
-  on('bAct', actualizar);
+  on('bAct', () => actualizar());
+  on('bExtra', () => actualizarExtras(true));
   on('aBolsas', pantallaPerfil);
   on('aBar', pantallaBaremo);
   on('bNov', () => { store.set('novedades', null); pintar(); });
