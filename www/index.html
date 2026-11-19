@@ -26,8 +26,17 @@ header{background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;p
 header .fila{display:flex;align-items:center;justify-content:space-between;gap:10px}
 header h1{margin:0;font-size:26px;letter-spacing:-.02em}
 header p{margin:4px 0 0;color:rgba(255,255,255,.85);font-size:14px}
-.lang{background:rgba(255,255,255,.18);border:0;color:#fff;border-radius:999px;padding:6px 12px;font:600 13px inherit}
-main{padding:18px 16px;max-width:640px;margin:0 auto;padding-bottom:calc(env(safe-area-inset-bottom) + 40px)}
+.lang{background:rgba(255,255,255,.18);border:0;color:#fff;border-radius:999px;padding:6px 12px;font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+main{padding:18px 16px;max-width:640px;margin:0 auto;padding-bottom:calc(env(safe-area-inset-bottom) + 96px)}
+#tabs{position:fixed;left:0;right:0;bottom:0;z-index:15;display:none;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:6px 6px calc(env(safe-area-inset-bottom) + 6px)}
+#tabs .in{max-width:640px;margin:0 auto;display:flex}
+#tabs button{flex:1;border:0;background:none;color:var(--muted);font:600 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:4px 0;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+#tabs button span{font-size:22px;line-height:1.1;filter:grayscale(1);opacity:.7}
+#tabs button.on{color:var(--acc-ink)}#tabs button.on span{filter:none;opacity:1}
+.res.off{opacity:.78}
+.nf{background:var(--warn2);color:var(--warn);border-radius:16px;padding:14px;margin-top:12px;font-size:15px}.nf b{display:block;font-size:17px;margin-bottom:4px}
+.ajuste{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;background:none;color:var(--ink);font:600 16px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:15px 2px;border-top:1px solid var(--line);cursor:pointer;text-align:left}
+.ajuste:first-of-type{border-top:0}.ajuste i{font-style:normal;color:var(--muted)}
 .card{background:var(--card);border-radius:22px;padding:18px;margin-bottom:16px;box-shadow:var(--shadow)}
 h2{font-size:20px;margin:0 0 6px;letter-spacing:-.01em}
 h3{font-size:16px;margin:0 0 8px}
@@ -38,15 +47,15 @@ input:focus{border-color:var(--acc)}
 .picker{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;font:inherit;padding:13px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);cursor:pointer}
 .picker span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.picker i{font-style:normal;color:var(--muted)}
 .seg{display:flex;background:var(--soft);border-radius:14px;padding:4px;gap:4px}
-.seg button{flex:1;border:0;border-radius:11px;padding:10px;font:600 15px inherit;background:transparent;color:var(--muted);cursor:pointer}
+.seg button{flex:1;border:0;border-radius:11px;padding:10px;font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:transparent;color:var(--muted);cursor:pointer}
 .seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.chip{border:0;border-radius:999px;padding:8px 12px;font:600 14px inherit;background:var(--acc2);color:var(--acc-ink);cursor:pointer}
+.chip{border:0;border-radius:999px;padding:8px 12px;font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--acc2);color:var(--acc-ink);cursor:pointer}
 .chip.add{background:var(--soft);color:var(--ink)}
-button.main{width:100%;border:0;border-radius:16px;padding:16px;font:700 17px inherit;background:var(--acc);color:#fff;margin-top:18px;cursor:pointer}
+button.main{width:100%;border:0;border-radius:16px;padding:16px;font:700 17px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--acc);color:#fff;margin-top:18px;cursor:pointer}
 @media (prefers-color-scheme: dark){button.main{color:#06201d}}
-button.sec{border:0;border-radius:999px;padding:9px 14px;background:var(--soft);font:600 14px inherit;color:var(--ink);cursor:pointer}
-button.link{border:0;background:none;color:var(--acc-ink);font:600 15px inherit;padding:8px 0;cursor:pointer}
+button.sec{border:0;border-radius:999px;padding:9px 14px;background:var(--soft);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--ink);cursor:pointer}
+button.link{border:0;background:none;color:var(--acc-ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:8px 0;cursor:pointer}
 .note{font-size:14px;color:var(--muted);margin-top:8px}
 .bolsa-ed{border:1.5px solid var(--line);border-radius:18px;padding:14px;margin-top:12px}
 .bolsa-ed .cab{display:flex;justify-content:space-between;align-items:center}
@@ -117,6 +126,7 @@ a{color:var(--acc-ink)}
 <body>
 <header><div class="fila"><div><h1>Mi Bolsa</h1><p id="hSub"></p></div><button class="lang" id="bLang">VAL</button></div></header>
 <main id="app"></main>
+<nav id="tabs"><div class="in"></div></nav>
 <div id="hoja"><div class="h"><div class="tira"></div><div class="hc"><h3 id="hojaT"></h3><button class="sec" id="hojaX">✕</button></div>
   <input id="hojaQ" type="search" autocomplete="off"><div class="lista" id="hojaL"></div></div></div>
 <div id="overlay"><div class="box"><div class="lupa"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></div>
@@ -183,6 +193,9 @@ const T = {
     barDoc: 'Doctorado relacionado', barDocNo: 'No', barDocSi: 'Sí', barDocCum: 'Sí, cum laude', barMas: 'Másteres oficiales relacionados', barProp: 'Títulos propios relacionados', barIdi: 'Otro idioma de la UE (nivel)',
     barCur: 'Cursos de formación continua (nº de cursos por horas)', barCurNota: 'Según la Orden 4/2019 solo puntúan en uno de los turnos: compruébalo en tu convocatoria.', barDocencia: 'Horas de docencia impartidas',
     barDis: 'Diversidad funcional igual o superior al 33 %', barTotal: 'Total aproximado', barNota: 'Cálculo orientativo con el baremo publicado en el DOGV. Los méritos que cuentan son los que tenías en la fecha de corte de la edición y la puntuación oficial es la de la GVA. No incluye puestos de difícil cobertura.',
+    tInicio: 'Inicio', tEvol: 'Evolución', tBolsa: 'Bolsa', tAjustes: 'Ajustes', nfT: '😕 No te encontramos en esta bolsa',
+    nfTxt: 'Puede que no estés inscrito/a en esta categoría, turno o departamento, o que tu nombre esté escrito de otra forma en la lista de la GVA (por ejemplo, con los dos apellidos o con tilde).', revisar: 'Revisar mis datos',
+    evolVacia: 'Aquí verás la evolución cuando la app te haya encontrado en alguna bolsa.', idioma: 'Idioma', ajustesT: 'Ajustes', verWebC: 'Ver la web de la GVA mientras busca',
     barVolver: 'Volver', puntos: 'puntos', barServT: 'Servicios', barOpoT: 'Oposición', barFormT: 'Formación', barValT: 'Valenciano', barOtrosT: 'Otros'
   },
   va: {
@@ -231,6 +244,9 @@ const T = {
     barDoc: 'Doctorat relacionat', barDocNo: 'No', barDocSi: 'Sí', barDocCum: 'Sí, cum laude', barMas: 'Màsters oficials relacionats', barProp: 'Títols propis relacionats', barIdi: 'Altre idioma de la UE (nivell)',
     barCur: 'Cursos de formació contínua (nre. de cursos per hores)', barCurNota: 'Segons l\'Ordre 4/2019 només puntuen en un dels torns: comprova-ho en la teua convocatòria.', barDocencia: 'Hores de docència impartides',
     barDis: 'Diversitat funcional igual o superior al 33 %', barTotal: 'Total aproximat', barNota: 'Càlcul orientatiu amb el barem publicat en el DOGV. Els mèrits que compten són els que tenies en la data de tall de l\'edició i la puntuació oficial és la de la GVA. No inclou llocs de difícil cobertura.',
+    tInicio: 'Inici', tEvol: 'Evolució', tBolsa: 'Borsa', tAjustes: 'Ajustos', nfT: '😕 No t\'hem trobat en esta borsa',
+    nfTxt: 'Pot ser que no estigues inscrit/a en esta categoria, torn o departament, o que el teu nom estiga escrit d\'una altra manera en la llista de la GVA (per exemple, amb els dos cognoms o amb accent).', revisar: 'Revisar les meues dades',
+    evolVacia: 'Ací voràs l\'evolució quan l\'app t\'haja trobat en alguna borsa.', idioma: 'Idioma', ajustesT: 'Ajustos', verWebC: 'Vore la web de la GVA mentre busca',
     barVolver: 'Tornar', puntos: 'punts', barServT: 'Serveis', barOpoT: 'Oposició', barFormT: 'Formació', barValT: 'Valencià', barOtrosT: 'Altres'
   }
 };
@@ -982,8 +998,9 @@ function tarjeta(b, dep) {
   const cab = `<div class="kicker">${esc(catCorta(b.cat))} · ${turnoTxt(b.turno)}</div><div class="dep">${esc(cap(depName(dep)))}</div>`;
   if (!d) return `<div class="card res">${cab}<div class="note">${t('sinConsultar')}</div></div>`;
   if (!d.encontrado) {
-    const aviso = d.identificado ? '<div class="err">' + t('noEncuentro') + '</div>' : '<div class="note">' + t('resumen', d.tramo ? ' (' + esc(d.tramo) + ')' : '') + '</div>';
-    return `<div class="card res">${cab}${aviso}${cifras(d.delante, false)}</div>`;
+    if (d.identificado) return `<div class="card res off">${cab}<div class="nf"><b>${t('nfT')}</b>${t('nfTxt')}</div>
+      <div class="acciones"><button class="sec" data-revisar="1">✏️ ${t('revisar')}</button></div></div>`;
+    return `<div class="card res">${cab}<div class="note">${t('resumen', d.tramo ? ' (' + esc(d.tramo) + ')' : '')}</div>${cifras(d.delante, false)}</div>`;
   }
   const dl = d.delante, prev = d.prev;
   let delta = '';
@@ -999,9 +1016,18 @@ function tarjeta(b, dep) {
       <div class="badge"><span>${t('tuPuesto')}</span><b>${d.puesto}</b></div></div>
     ${d.perfil ? `<div class="perf">${t('perfiles')}: <b>${esc(d.perfil)}</b></div>` : ''}
     ${d.trabaja ? `<div class="perf">${t('trabajaEn')}: <b>${esc(d.trabaja)}</b></div>` : ''}
-    ${cifras(dl, true)}${delta}${alc}${estimacion(d.hist, dl)}${prediccion(b, dep, dl)}${grafica(d.hist)}
+    ${cifras(dl, true)}${delta}${alc}
     <div class="acciones"><button class="sec" data-share="${esc(k)}">↗︎ ${t('compartir')}</button></div>
   </div>`;
+}
+
+// Pestaña Evolución: estimación, predicción y gráfica de cada bolsa donde te ha encontrado
+function evolucionCard(b, dep) {
+  const d = datos[clave(b, dep)];
+  if (!d || !d.encontrado) return '';
+  return `<div class="card res"><div class="top"><div style="min-width:0"><div class="kicker">${esc(catCorta(b.cat))} · ${turnoTxt(b.turno)}</div><div class="dep">${esc(cap(depName(dep)))}</div></div>
+    <div class="badge"><span>${t('tuPuesto')}</span><b>${d.puesto}</b></div></div>
+    ${estimacion(d.hist, d.delante)}${prediccion(b, dep, d.delante)}${grafica(d.hist)}</div>`;
 }
 
 // ───────────────────────── Actividad, predicción, comparación, penalizaciones, calendario ─────────────────────────
@@ -1198,37 +1224,66 @@ function pie() {
   return `<footer>${t('pie1')}<br>${t('pie2')}</footer>`;
 }
 
+let pestana = store.get('tab', 'inicio');
+const PESTANAS = [['inicio', '🏠', 'tInicio'], ['evol', '📊', 'tEvol'], ['bolsa', '📈', 'tBolsa'], ['ajustes', '⚙️', 'tAjustes']];
+function barraPestanas(visible) {
+  const nav = document.getElementById('tabs');
+  nav.style.display = visible ? 'block' : 'none';
+  nav.querySelector('.in').innerHTML = PESTANAS.map(p => `<button data-tab="${p[0]}" class="${p[0] === pestana ? 'on' : ''}"><span>${p[1]}</span>${t(p[2])}</button>`).join('');
+  nav.onclick = e => { const b = e.target.closest('button'); if (!b) return; pestana = b.dataset.tab; store.set('tab', pestana); pintar(); window.scrollTo(0, 0); };
+}
+
 function pintar() {
   document.getElementById('hSub').textContent = t('sub');
   document.getElementById('bLang').textContent = lang === 'es' ? 'VAL' : 'CAS';
   document.documentElement.lang = lang === 'va' ? 'ca' : 'es';
-  if (!perfil) return pantallaPerfil();
+  if (!perfil) { barraPestanas(false); return pantallaPerfil(); }
   $app.onclick = null; $app.oninput = null; $app.onchange = null;
-  const fechas = [];
-  perfil.bolsas.forEach(b => b.deps.forEach(d => { const x = datos[clave(b, d)]; if (x && x.fecha) fechas.push(x.fecha); }));
-  const cuando = fechas.length ? new Date(Math.min(...fechas)).toLocaleString(lang === 'va' ? 'ca-ES' : 'es-ES', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' }) : t('nunca');
-  const errores = store.get('errores', []);
-  const reg = store.get('registro', []);
-  const pub = store.get('ultimaPub', '') || (Object.values(datos).find(x => x && x.pub) || {}).pub || '';
+  barraPestanas(true);
   const varias = perfil.bolsas.length > 1;
-  $app.innerHTML = `
-    <div class="bar"><span class="when">${t('actualizado')}: ${esc(cuando)}</span>
-      <span><button class="sec" id="bAct">↻ ${t('bAct')}</button> <button class="sec" id="bEdit">${t('bEdit')}</button></span></div>
-    <div style="margin:-4px 0 14px"><button class="sec" id="bBar">${t('bBaremo')}</button></div>
-    ${errores.length ? '<div class="err">' + errores.map(esc).join('<br>') + '</div><br>' : ''}
-    ${avisos()}
-    ${perfil.bolsas.map(b => (varias ? `<div class="grupo">${esc(catCorta(b.cat))} · ${turnoTxt(b.turno)}</div>` : '') + b.deps.map(d => tarjeta(b, d)).join('') + comparar(b)).join('')}
-    ${[...new Set(perfil.bolsas.map(b => b.cat))].map(actividadCard).join('')}
-    ${penalCard()}${calendarioCard()}${oficialCard()}
-    ${pub ? '<div class="note" style="padding:0 6px">' + t('pubT') + ': ' + esc(fechaTxt(pub) || pub) + '</div>' : ''}
-    ${reg.length ? `<details class="card reg" style="margin-top:16px"><summary>${t('detalles')}</summary><pre>${reg.map(esc).join('\n')}</pre></details>` : ''}
-    ${pie()}`;
-  document.getElementById('bAct').onclick = actualizar;
-  document.getElementById('bEdit').onclick = pantallaPerfil;
-  document.getElementById('bBar').onclick = pantallaBaremo;
-  const bn = document.getElementById('bNov');
-  if (bn) bn.onclick = () => { store.set('novedades', null); pintar(); };
+  const grupo = b => varias ? `<div class="grupo">${esc(catCorta(b.cat))} · ${turnoTxt(b.turno)}</div>` : '';
+  let html = '';
+  if (pestana === 'evol') {
+    const partes = perfil.bolsas.map(b => { const x = b.deps.map(d => evolucionCard(b, d)).join('') + comparar(b); return x ? grupo(b) + x : ''; }).join('');
+    html = partes || `<div class="card"><div class="note" style="margin:0">${t('evolVacia')}</div></div>`;
+  } else if (pestana === 'bolsa') {
+    html = [...new Set(perfil.bolsas.map(b => b.cat))].map(actividadCard).join('') + penalCard() + oficialCard();
+  } else if (pestana === 'ajustes') {
+    const reg = store.get('registro', []);
+    html = `<div class="card"><h2>${t('ajustesT')}</h2>
+        <button class="ajuste" id="aBolsas">📋 ${t('bEdit')}<i>›</i></button>
+        <button class="ajuste" id="aBar">${t('bBaremo')}<i>›</i></button>
+        <div class="ajuste" style="cursor:default">🌐 ${t('idioma')}<div class="seg" id="aLang" style="width:150px"><button data-v="es" class="${lang === 'es' ? 'on' : ''}">CAS</button><button data-v="va" class="${lang === 'va' ? 'on' : ''}">VAL</button></div></div>
+        <label class="check" style="margin-top:6px"><input type="checkbox" id="aVer" ${store.get('ver', false) ? 'checked' : ''}> ${t('verWebC')}</label></div>
+      ${reg.length ? `<details class="card reg"><summary>${t('detalles')}</summary><pre>${reg.map(esc).join('\n')}</pre></details>` : ''}`;
+  } else {
+    pestana = 'inicio';
+    const fechas = [];
+    perfil.bolsas.forEach(b => b.deps.forEach(d => { const x = datos[clave(b, d)]; if (x && x.fecha) fechas.push(x.fecha); }));
+    const cuando = fechas.length ? new Date(Math.min(...fechas)).toLocaleString(lang === 'va' ? 'ca-ES' : 'es-ES', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' }) : t('nunca');
+    const errores = store.get('errores', []);
+    const pub = store.get('ultimaPub', '') || (Object.values(datos).find(x => x && x.pub) || {}).pub || '';
+    // Primero las bolsas donde te ha encontrado; las que no, al final
+    const orden = (b, d) => { const x = datos[clave(b, d)]; return x && x.identificado && !x.encontrado ? 1 : 0; };
+    html = `<div class="bar"><span class="when">${t('actualizado')}: ${esc(cuando)}</span><span><button class="sec" id="bAct">↻ ${t('bAct')}</button></span></div>
+      ${errores.length ? '<div class="err">' + errores.map(esc).join('<br>') + '</div><br>' : ''}
+      ${avisos()}
+      ${perfil.bolsas.map(b => grupo(b) + b.deps.slice().sort((x, y) => orden(b, x) - orden(b, y)).map(d => tarjeta(b, d)).join('')).join('')}
+      ${calendarioCard()}
+      ${pub ? '<div class="note" style="padding:0 6px">' + t('pubT') + ': ' + esc(fechaTxt(pub) || pub) + '</div>' : ''}`;
+  }
+  $app.innerHTML = html + pie();
+  const on = (id, f) => { const e = document.getElementById(id); if (e) e.onclick = f; };
+  on('bAct', actualizar);
+  on('aBolsas', pantallaPerfil);
+  on('aBar', pantallaBaremo);
+  on('bNov', () => { store.set('novedades', null); pintar(); });
+  const al = document.getElementById('aLang');
+  if (al) al.onclick = e => { const b = e.target.closest('button'); if (b) { lang = b.dataset.v; store.set('lang', lang); pintar(); } };
+  const av = document.getElementById('aVer');
+  if (av) av.onchange = () => { verVisible = av.checked; store.set('ver', verVisible); };
   $app.querySelectorAll('[data-share]').forEach(x => { x.onclick = () => compartir(x.dataset.share); });
+  $app.querySelectorAll('[data-revisar]').forEach(x => { x.onclick = pantallaPerfil; });
 }
 
 document.getElementById('bLang').onclick = () => {
