@@ -647,8 +647,9 @@ const TNOM = { A: 'Acumulación de tareas', C: 'ATC/Guardias', I: 'Interinidad (
 const JORN = { A: 'ATC', N: 'Jornada ordinaria', P: 'Tiempo parcial' };
 const sinTitulo = x => String(x || '').replace(/^[A-Za-zÀ-ÿ. ]{1,20}:\s*/, '').trim();
 // Nombre completo de un tipo o jornada (también arregla los guardados como «Tnom: s»)
-const nomTipo = k => { const c = sinTitulo(k).toUpperCase(); return TNOM[c] || cap(sinTitulo(k)); };
-const nomJor = k => { const c = sinTitulo(k).toUpperCase(); return JORN[c] || cap(sinTitulo(k)); };
+const nombreDe = (tabla, k) => { const x = sinTitulo(k), c = x.toUpperCase(); return tabla[c] || Object.values(tabla).find(v => v.toUpperCase() === c) || cap(x); };
+const nomTipo = k => nombreDe(TNOM, k);
+const nomJor = k => nombreDe(JORN, k);
 const juntar = (o, f) => Object.entries(o || {}).reduce((m, [k, n]) => { const x = f(k); m[x] = (m[x] || 0) + n; return m; }, {});
 const tipoLargo = x => x === 'I' || /VACANT|INTERIN/.test(x);
 const tipoCorto = x => /^[ACS]$/.test(x) || /SUSTIT|EVENTUAL|ACUMUL|REFUER|PROGRAM|TEMPORAL|CORTA|ATC|GUARD/.test(x);
