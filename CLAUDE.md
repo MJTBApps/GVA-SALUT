@@ -75,6 +75,11 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 - «¿No está tu categoría? Pídelo»: correo a mjtbapps@gmail.com (`pedirUrl`) en la hoja de búsqueda y en Ajustes.
 - Pendiente de comprobar en móvil: columnas de inicio/fin/jornada de nombramientos y el filtro de la consulta NO LOCALIZABLE (salen en «Detalles de la última búsqueda»).
 
+## Vacantes (20/11/2026)
+
+- Tabla de nombramientos de la GVA con letras: Turno O/P, TNom A/C/I/S (I = interinidad, vacante), B (breve), Jor A/N/P (`TNOM`, `JORN`). La columna TNom ya no se quita como si fuera un nombre.
+- `consultarNombramientos` devuelve `vac {O, P, otro, lista:[{dep, turno, pos, ini}]}` y `porDep[d].vac`; `vacBloque()` en la tarjeta de actividad: vacantes por turno ordinario / promoción interna y posición más alta con vacante en tus departamentos.
+
 ## Google Play (20/11/2026)
 
 - App creada en Play Console (cuenta MJTB Apps, id de app 4974091835764455131), «Mi Bolsa Salut», categoría Economía, 18+, PEGI 3. Declaraciones hechas (anuncios, ID de publicidad, seguridad de datos: datos de AdMob + nombre, que se envía solo en la consulta y es opcional).
