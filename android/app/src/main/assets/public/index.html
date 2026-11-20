@@ -510,7 +510,7 @@ async function ev(expr) {
   if (v && v.__err) { paso('Error en la página: ' + v.__err + ' [' + expr.slice(0, 40) + ']'); return null; }
   return v;
 }
-async function esperar(expr, ms, paso = 300) {
+async function esperar(expr, ms, paso = 150) {
   const fin = Date.now() + ms;
   while (Date.now() < fin) { revisarCancel(); if (await ev(expr)) return true; await sleep(paso); }
   return false;
@@ -553,9 +553,9 @@ async function verificacion(etiqueta) {
 async function esperarTabla(segundos) {
   const fin = Date.now() + segundos * 1000;
   let res = null;
-  await sleep(500);
+  await sleep(200);
   while (Date.now() < fin) {
-    await sleep(500); revisarCancel();
+    await sleep(250); revisarCancel();
     if (!await ev('window.__mb.listo()')) continue;
     res = await ev('window.__mb.leer()');
     if (res && (res.filas || res.error)) break;
@@ -614,7 +614,7 @@ async function consultarDep(url, b, dep, etiqueta, conNombre = true, puesto = nu
   for (const [n, v] of [[0, b.cat], [1, b.turno], [2, dep]]) {
     const r = await ev('window.__mb.elegir(' + n + ',' + JSON.stringify(v) + ')');
     if (r !== 'ok') throw new Error('No se pudo elegir ' + ['la categoría', 'el turno', 'el departamento'][n] + ' (' + r + ')');
-    await esperar('window.__mb.listo()', 10000, 200);
+    await esperar('window.__mb.listo()', 10000, 100);
   }
   const nom = conNombre ? [perfil.ap1, perfil.ap2, perfil.nombre] : ['', '', ''];
   await ev('window.__mb.escribir(' + nom.map(x => JSON.stringify(x || '')).join(',') + ')');
@@ -685,7 +685,7 @@ async function consultarNombramientos(lista, cat) {
     if (meses.length) {
       if (!meses[iMes]) return null;
       const r = await ev('window.__mb.elegirMes(' + iMes + ')');
-      if (r === 'ok') { await sleep(800); await prepararPagina(); await esperar('window.__mb.quieto()', 15000, 300); }
+      if (r === 'ok') { await sleep(400); await prepararPagina(); await esperar('window.__mb.quieto()', 15000, 150); }
     } else if (iMes > 0) return null;
     const r = await ev('window.__mb.elegir(0,' + JSON.stringify(cat) + ')');
     if (r !== 'ok') throw new Error('No se pudo elegir la categoría (' + r + ')');
@@ -699,7 +699,7 @@ async function consultarNombramientos(lista, cat) {
     const fin = Date.now() + 40000;
     let res = null;
     while (Date.now() < fin) {
-      await sleep(600);
+      await sleep(300);
       if (!await ev('window.__mb.quieto()')) continue;
       res = await ev('window.__mb.tablaSinNombres()');
       if (res && (res.filas || res.error || res.captcha)) break;
@@ -793,7 +793,7 @@ async function consultarPenalizaciones(lista, terr, enl = lista.pen, nombre = t(
   const fin = Date.now() + 40000;
   let res = null;
   while (Date.now() < fin) {
-    await sleep(600);
+    await sleep(300);
     if (!await ev('window.__mb.quieto()')) continue;
     res = await ev('window.__mb.buscarYo(' + pals + ')');
     if (res && (res.hecho || res.error || res.captcha)) break;
