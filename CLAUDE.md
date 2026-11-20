@@ -84,6 +84,10 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 
 - Pestañas: Inicio · Bolsa · Evolución · Mi zona · Ajustes (`PESTANAS`). Mi zona: Mis bolsas, Baremo, Mis puntos, Plazos. Ajustes: idioma, apariencia (`store 'tema'` auto/light/dark → `data-theme`, `ponerTema()`), avisos, información oficial, registro.
 
+## Actividad por turno (20/11/2026)
+
+- La consulta de nombramientos solo tiene el desplegable de categoría: trae los dos turnos juntos (columna TURNO O/P). Se consultan los últimos meses que ofrece la GVA (hasta 3, `__mb.elegirMes(i)`), una consulta por mes. `resumirNomb()` da el último mes y `act[cat].tres` (los 3 juntos). Tarjeta: botones «Último mes» / «Últimos 3 meses» (`store 'actPer'`), fichas por turno (`fichasTurno`) y una caja por departamento.
+
 ## Premium (20/11/2026)
 
 - Pago único **3,99 €** que quita los anuncios (sin más funciones por ahora). Producto `mibolsa_premium` (no consumible / producto integrado único) en App Store Connect y Play Console.
