@@ -88,6 +88,12 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 
 - La consulta de nombramientos solo tiene el desplegable de categoría: trae los dos turnos juntos (columna TURNO O/P). Se consultan los últimos meses que ofrece la GVA (hasta 3, `__mb.elegirMes(i)`), una consulta por mes. `resumirNomb()` da el último mes y `act[cat].tres` (los 3 juntos). Tarjeta: botones «Último mes» / «Últimos 3 meses» (`store 'actPer'`), fichas por turno (`fichasTurno`) y una caja por departamento.
 
+## Situaciones y Mi zona (21/11/2026)
+
+- `grupoSit()` según la lámina de situaciones (Orden 4/2019): disponibles; activos (trabajando); `oferta` = bloqueados/reservados; desactivados (también de oficio); noDisp = no disponible, penalizado, suspendido, no localizable. `especial` cuenta aparte a quien lleva «ESPECIAL» (también está en su grupo). «Delante de ti»: 6 casillas y botón ⓘ (`explicarTodas()`); `clavesSit()` explica la situación propia.
+- Mi zona: `misDatosCard()` con los datos de búsqueda a la vista. Tras guardar datos o acabar una búsqueda se vuelve a Inicio. El buscador `hoja()` se abre a pantalla completa desde arriba (el teclado no tapa la lista).
+- Pendiente: confirmar si existe «disponible especial» en promoción interna; si no, ocultar ⭐ en bolsas de turno P.
+
 ## Premium (20/11/2026)
 
 - Pago único **3,99 €** que quita los anuncios (sin más funciones por ahora). Producto `mibolsa_premium` (no consumible / producto integrado único) en App Store Connect y Play Console.

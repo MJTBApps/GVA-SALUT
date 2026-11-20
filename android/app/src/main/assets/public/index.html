@@ -97,9 +97,12 @@ button.link{border:0;background:none;color:var(--acc-ink);font:600 15px -apple-s
 .tag{display:inline-block;font-size:13px;font-weight:700;padding:5px 10px;border-radius:999px;margin-top:10px}
 .t-act{background:var(--green2);color:var(--green)}.t-des{background:var(--warn2);color:var(--warn)}
 .t-no{background:var(--red2);color:var(--red)}.t-dis{background:var(--blue2);color:var(--blue)}
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
-.stat{background:var(--soft);border-radius:16px;padding:12px 14px}
-.stat b{display:block;font-size:26px;line-height:1.1}.stat span{font-size:13px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.stat.esp{background:var(--acc2)}.stat.esp b{color:var(--acc-ink)}
+.deltit{display:flex;align-items:center;justify-content:space-between;margin-top:16px;font-size:14px;font-weight:700;color:var(--muted)}
+.ibtn{border:0;background:var(--soft);color:var(--acc-ink);width:30px;height:30px;border-radius:50%;font-size:17px;font-weight:700;cursor:pointer;line-height:1}
+.stat{background:var(--soft);border-radius:14px;padding:10px 10px}
+.stat b{display:block;font-size:24px;line-height:1.1}.stat span{font-size:12px;color:var(--muted);line-height:1.2;display:block}
 .stat.hl{background:var(--blue2)}.stat.hl b{color:var(--blue)}
 .delta{font-size:14px;margin-top:12px;color:var(--muted)}.delta.up{color:var(--green)}
 .est{background:var(--acc2);color:var(--acc-ink);border-radius:16px;padding:12px 14px;font-size:15px;margin-top:12px}
@@ -132,9 +135,10 @@ select{font:inherit;padding:12px;border:1.5px solid var(--line);border-radius:14
 footer{font-size:13px;color:var(--muted);text-align:center;margin-top:26px;line-height:1.5}
 a{color:var(--acc-ink)}
 /* Buscador de categorías y departamentos */
-#hoja{position:fixed;inset:0;background:rgba(2,6,23,.45);display:none;z-index:30;align-items:flex-end;justify-content:center}
-#hoja .h{background:var(--card);width:100%;max-width:640px;max-height:88vh;border-radius:26px 26px 0 0;display:flex;flex-direction:column;padding:14px 16px calc(env(safe-area-inset-bottom) + 10px)}
-#hoja .tira{width:40px;height:5px;border-radius:5px;background:var(--line);margin:0 auto 10px}
+#hoja{position:fixed;inset:0;background:rgba(2,6,23,.45);display:none;z-index:30;align-items:flex-start;justify-content:center}
+#hoja .h{background:var(--card);width:100%;max-width:640px;height:100%;max-height:100%;border-radius:0 0 26px 26px;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 10px)}
+#hoja .lista{flex:1;min-height:0}
+#hoja .tira{display:none}
 #hoja .hc{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 #hoja .lista{overflow:auto;margin-top:10px;-webkit-overflow-scrolling:touch}
 #hoja .op{display:block;width:100%;text-align:left;border:0;background:none;color:var(--ink);font:inherit;padding:13px 6px;border-bottom:1px solid var(--line);cursor:pointer}
@@ -205,7 +209,7 @@ const T = {
     escribe: 'Escribe para buscar…', ses: 'SES · Emergencias', todas: 'Todas las categorías', depsT: 'Departamentos', sinRes: 'Sin resultados',
     sinConsultar: 'Todavía sin buscar.', noEncuentro: 'No te encuentro en esta lista. Revisa cómo está escrito tu nombre en la GVA o tu número de puesto.',
     resumen: 'Resumen de la lista{0}. Añade tu nombre o tu puesto para ver quién tienes delante.', tuPuesto: 'Tu puesto',
-    activos: 'trabajando', desact: 'desactivados', noDisp: 'no disponibles', disp: 'disponibles', delante: 'Delante de ti',
+    activos: 'trabajando', desact: 'desactivados', noDisp: 'no disponibles', disp: 'disponibles', oferta: 'bloqueados / reservados', enLista: 'En la lista', ofertaT: 'Bloqueados / reservados', especial: 'disp. especial', sitTodas: 'Qué significa cada situación', delante: 'Delante de ti',
     sinCuenta: 'Esta vez no se ha podido contar quién tienes delante. Pulsa «Actualizar» para intentarlo de nuevo.',
     tramoSolo: 'Cuenta solo tu tramo ({0}) de la lista.', todosDelante: 'Cuenta a todas las personas de delante (tramos {0}).',
     deltaUp: '▲ {0} de delante {1} a trabajar desde la última vez', deltaDown: '▼ {0} de delante {1} de estar activas', sinCambios: 'Sin cambios delante de ti desde la última vez',
@@ -227,6 +231,7 @@ const T = {
     sitAct: '<p><b>Activo/a</b>: estás trabajando con un nombramiento de esta lista. Mientras dure, normalmente no recibes otras ofertas (salvo las de mejora de empleo, si te corresponden).</p><p>Cuando termine el contrato vuelves a quedar disponible en tu mismo puesto de la lista.</p>',
     sitNo: '<p><b>No disponible</b>: no recibes ofertas durante un tiempo. Suele ser porque lo has pedido tú o por una causa justificada (por ejemplo, enfermedad, maternidad o paternidad, cuidado de familiares o estar trabajando en otro sitio).</p><p>Para volver a recibir ofertas tienes que pedir el paso a disponible como indique la Conselleria. Mientras tanto no pierdes tu puesto.</p>',
     sitDes: '<p><b>Desactivado/a</b>: ahora no te ofrecen nombramientos en esta lista o departamento. Puede ser porque no tienes marcada esa opción en tu inscripción, por haber rechazado una oferta o no haberte presentado sin causa justificada, o por otro motivo administrativo.</p><p>Revisa tu inscripción y, si no sabes el motivo, pregunta en personal de tu departamento. Mira también la pestaña Bolsa → Penalizaciones.</p>',
+    sitBloq: '<p><b>Bloqueado/a</b>: eres candidato/a de una oferta de trabajo. Mientras dura (unos 10 días; en el plan de vacaciones, hasta 30) no puedes recibir otras ofertas.</p>', sitRes: '<p><b>Reservado/a</b>: te han ofrecido un puesto y estás a la espera de firmar el contrato. Mientras tanto no puedes recibir otras ofertas.</p>', sitEsp: '<p><b>Disponible especial</b>: aunque estés activo/a, bloqueado/a o reservado/a, puedes recibir ofertas de <b>vacantes</b> (interinidades). Se pone de oficio.</p><p>En «Delante de ti» esta cifra va aparte: esas personas también cuentan en su grupo (trabajando, bloqueados / reservados…).</p>', sitPen: '<p><b>Penalizado/a</b>: no aceptaste un nombramiento o, tras aceptarlo, no firmaste el contrato. Suele durar 6 meses (hay excepciones).</p>', sitSus: '<p><b>Suspendido/a</b>: no formalizaste contrato en la tercera propuesta u oferta seguida de la misma categoría, o no superaste el periodo de prueba. Como máximo, 1 año.</p>', sitNoloc: '<p><b>No localizable</b>: no te han podido contactar para ofrecerte un puesto. Se revisa cada 15 días. Para volver a disponible tienes que avisar por escrito en los 10 días siguientes a la publicación.</p>', sitDesOf: '<p><b>Desactivado/a de oficio</b>: rechazaste, renunciaste o no tomaste posesión sin justificar en la cuarta oferta seguida de tu categoría, o hubo 3 activaciones y desactivaciones seguidas, o no te localizaron. Como máximo, 2 años.</p>',
     sitOtra: '<p>Esta es la situación que aparece en la lista pública de la GVA. Si no sabes qué significa, pregunta en personal de tu departamento.</p>',
     plazT: '📅 Plazos y recordatorios', plazNota: 'Apunta fechas importantes (entregar méritos, cambio de departamentos, una cita…) y te aviso el día antes y el mismo día.',
     plazQue: '¿Qué tienes que hacer?', plazAdd: '+ Añadir plazo', plazPub: 'Próxima publicación de las listas', plazHoy: 'hoy', plazManana: 'mañana', plazEn: 'dentro de {0} días', plazHace: 'ya pasó', plazFalta: 'Escribe qué es y elige una fecha.',
@@ -257,7 +262,7 @@ const T = {
     barCur: 'Cursos de formación continua (nº de cursos por horas)', barCurNota: 'Según la Orden 4/2019 solo puntúan en uno de los turnos: compruébalo en tu convocatoria.', barDocencia: 'Horas de docencia impartidas',
     barDis: 'Diversidad funcional igual o superior al 33 %', barTotal: 'Total aproximado', barNota: 'Cálculo orientativo con el baremo publicado en el DOGV. Los méritos que cuentan son los que tenías en la fecha de corte de la edición y la puntuación oficial es la de la GVA. No incluye puestos de difícil cobertura.',
     extraBtn: 'Actualizar ahora', extraNota: 'La actividad de la bolsa (nombramientos) y las penalizaciones se cargan solas al entrar aquí (como mucho cada 12 horas).', extraNota2: 'Actualizado: {0}. Se vuelve a cargar solo cada 12 horas.',
-    tInicio: 'Inicio', tEvol: 'Evolución', tBolsa: 'Bolsa', tAjustes: 'Ajustes', tZona: 'Mi zona', premT: '⭐ Premium', premTxt: 'Quita todos los anuncios para siempre. Pago único, sin suscripción.', premBtn: 'Quitar anuncios · {0}', premRest: 'Ya lo compré: restaurar', premSi: '⭐ Eres premium: sin anuncios. ¡Gracias por apoyar la app!', premOk: '¡Listo! Ya no verás anuncios.', premPend: 'La compra está pendiente de confirmar. Cuando se confirme se quitarán los anuncios.', premNo: 'No hemos encontrado ninguna compra con esta cuenta.', premErr: 'No se pudo completar: {0}', zonaT: 'Mi zona', apar: '🎨 Apariencia', aAuto: 'Auto', aClaro: 'Claro', aOscuro: 'Oscuro', nfT: '😕 No te encontramos en esta bolsa',
+    tInicio: 'Inicio', tEvol: 'Evolución', tBolsa: 'Bolsa', tAjustes: 'Ajustes', tZona: 'Mi zona', premT: '⭐ Premium', premTxt: 'Quita todos los anuncios para siempre. Pago único, sin suscripción.', premBtn: 'Quitar anuncios · {0}', premRest: 'Ya lo compré: restaurar', premSi: '⭐ Eres premium: sin anuncios. ¡Gracias por apoyar la app!', premOk: '¡Listo! Ya no verás anuncios.', premPend: 'La compra está pendiente de confirmar. Cuando se confirme se quitarán los anuncios.', premNo: 'No hemos encontrado ninguna compra con esta cuenta.', premErr: 'No se pudo completar: {0}', zonaT: 'Mi zona', datosT: '🔎 Tus datos de búsqueda', sinNombre: 'Sin nombre: se busca por tu número de puesto', sinDeps: 'Sin departamentos', cambiarDatos: 'Cambiar datos o añadir bolsas', apar: '🎨 Apariencia', aAuto: 'Auto', aClaro: 'Claro', aOscuro: 'Oscuro', nfT: '😕 No te encontramos en esta bolsa',
     nfTxt: 'Puede que no estés inscrito/a en esta categoría, turno o departamento, o que tu nombre esté escrito de otra forma en la lista de la GVA (por ejemplo, con los dos apellidos o con tilde).', revisar: 'Revisar mis datos',
     evolVacia: 'Aquí verás la evolución cuando la app te haya encontrado en alguna bolsa.', idioma: 'Idioma', ajustesT: 'Ajustes', verWebC: 'Ver la web de la GVA mientras busca',
     barVolver: 'Volver', puntos: 'puntos', barServT: 'Servicios', barOpoT: 'Oposición', barFormT: 'Formación', barValT: 'Valenciano', barOtrosT: 'Otros'
@@ -275,7 +280,7 @@ const T = {
     escribe: 'Escriu per a buscar…', ses: 'SES · Emergències', todas: 'Totes les categories', depsT: 'Departaments', sinRes: 'Sense resultats',
     sinConsultar: 'Encara sense buscar.', noEncuentro: 'No et trobe en esta llista. Revisa com està escrit el teu nom en la GVA o el teu número de lloc.',
     resumen: 'Resum de la llista{0}. Afig el teu nom o el teu lloc per a vore qui tens davant.', tuPuesto: 'El teu lloc',
-    activos: 'treballant', desact: 'desactivats', noDisp: 'no disponibles', disp: 'disponibles', delante: 'Davant de tu',
+    activos: 'treballant', desact: 'desactivats', noDisp: 'no disponibles', disp: 'disponibles', oferta: 'bloquejats / reservats', enLista: 'En la llista', ofertaT: 'Bloquejats / reservats', especial: 'disp. especial', sitTodas: 'Què vol dir cada situació', delante: 'Davant de tu',
     sinCuenta: 'Esta vegada no s\'ha pogut comptar qui tens davant. Prem «Actualitzar» per a tornar-ho a intentar.',
     tramoSolo: 'Compta només el teu tram ({0}) de la llista.', todosDelante: 'Compta totes les persones de davant (trams {0}).',
     deltaUp: '▲ {0} de davant {1} a treballar des de l\'última vegada', deltaDown: '▼ {0} de davant {1} d\'estar actives', sinCambios: 'Sense canvis davant de tu des de l\'última vegada',
@@ -297,6 +302,7 @@ const T = {
     sitAct: '<p><b>Actiu/va</b>: estàs treballant amb un nomenament d\'esta llista. Mentre dure, normalment no reps altres ofertes (excepte les de millora d\'ocupació, si et corresponen).</p><p>Quan acabe el contracte tornes a quedar disponible en el teu mateix lloc de la llista.</p>',
     sitNo: '<p><b>No disponible</b>: no reps ofertes durant un temps. Sol ser perquè ho has demanat tu o per una causa justificada (per exemple, malaltia, maternitat o paternitat, cura de familiars o estar treballant en un altre lloc).</p><p>Per a tornar a rebre ofertes has de demanar el pas a disponible com indique la Conselleria. Mentrestant no perds el teu lloc.</p>',
     sitDes: '<p><b>Desactivat/da</b>: ara no t\'oferixen nomenaments en esta llista o departament. Pot ser perquè no tens marcada eixa opció en la inscripció, per haver rebutjat una oferta o no haver-te presentat sense causa justificada, o per un altre motiu administratiu.</p><p>Revisa la teua inscripció i, si no saps el motiu, pregunta en personal del teu departament. Mira també la pestanya Borsa → Penalitzacions.</p>',
+    sitBloq: '<p><b>Bloquejat/da</b>: eres candidat/a d\'una oferta de treball. Mentre dura (uns 10 dies; en el pla de vacances, fins a 30) no pots rebre altres ofertes.</p>', sitRes: '<p><b>Reservat/da</b>: t\'han oferit un lloc i estàs a l\'espera de signar el contracte. Mentrestant no pots rebre altres ofertes.</p>', sitEsp: '<p><b>Disponible especial</b>: encara que estigues actiu/va, bloquejat/da o reservat/da, pots rebre ofertes de <b>vacants</b> (interinitats). Es posa d\'ofici.</p><p>En «Davant de tu» esta xifra va a banda: eixes persones també compten en el seu grup (treballant, bloquejats / reservats…).</p>', sitPen: '<p><b>Penalitzat/da</b>: no vas acceptar un nomenament o, després d\'acceptar-lo, no vas signar el contracte. Sol durar 6 mesos (hi ha excepcions).</p>', sitSus: '<p><b>Suspés/sa</b>: no vas formalitzar contracte en la tercera proposta o oferta seguida de la mateixa categoria, o no vas superar el període de prova. Com a màxim, 1 any.</p>', sitNoloc: '<p><b>No localitzable</b>: no t\'han pogut contactar per a oferir-te un lloc. Es revisa cada 15 dies. Per a tornar a disponible has d\'avisar per escrit en els 10 dies següents a la publicació.</p>', sitDesOf: '<p><b>Desactivat/da d\'ofici</b>: vas rebutjar, renunciar o no vas prendre possessió sense justificar en la quarta oferta seguida de la teua categoria, o hi va haver 3 activacions i desactivacions seguides, o no et van localitzar. Com a màxim, 2 anys.</p>',
     sitOtra: '<p>Esta és la situació que apareix en la llista pública de la GVA. Si no saps què vol dir, pregunta en personal del teu departament.</p>',
     plazT: '📅 Terminis i recordatoris', plazNota: 'Apunta dates importants (entregar mèrits, canvi de departaments, una cita…) i t\'avise el dia abans i el mateix dia.',
     plazQue: 'Què has de fer?', plazAdd: '+ Afegir termini', plazPub: 'Pròxima publicació de les llistes', plazHoy: 'hui', plazManana: 'demà', plazEn: 'd\'ací a {0} dies', plazHace: 'ja ha passat', plazFalta: 'Escriu què és i tria una data.',
@@ -327,7 +333,7 @@ const T = {
     barCur: 'Cursos de formació contínua (nre. de cursos per hores)', barCurNota: 'Segons l\'Ordre 4/2019 només puntuen en un dels torns: comprova-ho en la teua convocatòria.', barDocencia: 'Hores de docència impartides',
     barDis: 'Diversitat funcional igual o superior al 33 %', barTotal: 'Total aproximat', barNota: 'Càlcul orientatiu amb el barem publicat en el DOGV. Els mèrits que compten són els que tenies en la data de tall de l\'edició i la puntuació oficial és la de la GVA. No inclou llocs de difícil cobertura.',
     extraBtn: 'Actualitzar ara', extraNota: 'L\'activitat de la borsa (nomenaments) i les penalitzacions es carreguen soles en entrar ací (com a molt cada 12 hores).', extraNota2: 'Actualitzat: {0}. Es torna a carregar sol cada 12 hores.',
-    tInicio: 'Inici', tEvol: 'Evolució', tBolsa: 'Borsa', tAjustes: 'Ajustos', tZona: 'La meua zona', premT: '⭐ Prèmium', premTxt: 'Lleva tots els anuncis per sempre. Pagament únic, sense subscripció.', premBtn: 'Llevar anuncis · {0}', premRest: 'Ja el vaig comprar: restaurar', premSi: '⭐ Eres prèmium: sense anuncis. Gràcies per donar suport a l\'app!', premOk: 'Fet! Ja no voràs anuncis.', premPend: 'La compra està pendent de confirmar. Quan es confirme es llevaran els anuncis.', premNo: 'No hem trobat cap compra amb este compte.', premErr: 'No s\'ha pogut completar: {0}', zonaT: 'La meua zona', apar: '🎨 Aparença', aAuto: 'Auto', aClaro: 'Clar', aOscuro: 'Fosc', nfT: '😕 No t\'hem trobat en esta borsa',
+    tInicio: 'Inici', tEvol: 'Evolució', tBolsa: 'Borsa', tAjustes: 'Ajustos', tZona: 'La meua zona', premT: '⭐ Prèmium', premTxt: 'Lleva tots els anuncis per sempre. Pagament únic, sense subscripció.', premBtn: 'Llevar anuncis · {0}', premRest: 'Ja el vaig comprar: restaurar', premSi: '⭐ Eres prèmium: sense anuncis. Gràcies per donar suport a l\'app!', premOk: 'Fet! Ja no voràs anuncis.', premPend: 'La compra està pendent de confirmar. Quan es confirme es llevaran els anuncis.', premNo: 'No hem trobat cap compra amb este compte.', premErr: 'No s\'ha pogut completar: {0}', zonaT: 'La meua zona', datosT: '🔎 Les teues dades de cerca', sinNombre: 'Sense nom: es busca pel teu número de lloc', sinDeps: 'Sense departaments', cambiarDatos: 'Canviar dades o afegir borses', apar: '🎨 Aparença', aAuto: 'Auto', aClaro: 'Clar', aOscuro: 'Fosc', nfT: '😕 No t\'hem trobat en esta borsa',
     nfTxt: 'Pot ser que no estigues inscrit/a en esta categoria, torn o departament, o que el teu nom estiga escrit d\'una altra manera en la llista de la GVA (per exemple, amb els dos cognoms o amb accent).', revisar: 'Revisar les meues dades',
     evolVacia: 'Ací voràs l\'evolució quan l\'app t\'haja trobat en alguna borsa.', idioma: 'Idioma', ajustesT: 'Ajustos', verWebC: 'Vore la web de la GVA mentre busca',
     barVolver: 'Tornar', puntos: 'punts', barServT: 'Serveis', barOpoT: 'Oposició', barFormT: 'Formació', barValT: 'Valencià', barOtrosT: 'Altres'
@@ -559,18 +565,27 @@ async function esperarTabla(segundos) {
 }
 
 // Recuentos de una lista (solo números: nunca se guardan nombres de otras personas)
+// Grupo de cada situación de la GVA (lámina de situaciones de la Orden 4/2019)
+function grupoSit(s) {
+  s = (s || '').toUpperCase();
+  if (/DESACTIV/.test(s)) return 'desactivados';
+  if (/NO DISPONIBLE|PENALIZ|SUSPEN|LOCALIZ/.test(s)) return 'noDisp';
+  if (/BLOQUE|RESERV/.test(s)) return 'oferta';
+  if (/ACTIV/.test(s)) return 'activos';
+  if (/DISPONIBLE/.test(s)) return 'disponibles';
+  return '';
+}
 function contar(filas) {
-  const c = { activos: 0, desactivados: 0, noDisp: 0, disponibles: 0, total: 0 };
+  const c = { activos: 0, desactivados: 0, noDisp: 0, disponibles: 0, oferta: 0, especial: 0, total: 0 };
   for (const f of filas) {
     c.total++;
-    if (/DESACTIV/.test(f.sit)) c.desactivados++;
-    else if (/NO DISPONIBLE/.test(f.sit)) c.noDisp++;
-    else if (/ACTI/.test(f.sit)) c.activos++;
-    else if (/DISPONIBLE/.test(f.sit)) c.disponibles++;
+    const g = grupoSit(f.sit);
+    if (g) c[g]++;
+    if (/ESPECIAL/.test(f.sit || '')) c.especial++;  // puede recibir ofertas de vacante aunque esté activo, bloqueado o reservado
   }
   return c;
 }
-const sumar = (a, b) => ({ activos: a.activos + b.activos, desactivados: a.desactivados + b.desactivados, noDisp: a.noDisp + b.noDisp, disponibles: a.disponibles + b.disponibles, total: a.total + b.total });
+const sumar = (a, b) => ({ activos: a.activos + b.activos, desactivados: a.desactivados + b.desactivados, noDisp: a.noDisp + b.noDisp, disponibles: a.disponibles + b.disponibles, oferta: (a.oferta || 0) + (b.oferta || 0), especial: (a.especial || 0) + (b.especial || 0), total: a.total + b.total });
 const inicioTramo = tx => { const m = (tx || '').match(/^(\d+)/); return m ? +m[1] : 1; };
 
 // Cambia de tramo (1-200, 201-400…) y espera la tabla nueva; si la GVA pide verificación, se enseña
@@ -626,7 +641,7 @@ async function consultarDep(url, b, dep, etiqueta, conNombre = true, puesto = nu
     res = r2;
   }
   // Tramos anteriores al tuyo: toda esa gente también está delante
-  let antes = { activos: 0, desactivados: 0, noDisp: 0, disponibles: 0, total: 0 }, completos = true;
+  let antes = { activos: 0, desactivados: 0, noDisp: 0, disponibles: 0, oferta: 0, especial: 0, total: 0 }, completos = true;
   const previos = rangos.filter(r => mio && r[1] < mio[0]);
   for (const r of previos) {
     if (!vistos[r[0]]) {
@@ -899,7 +914,8 @@ async function actualizar(forzar = false) {
     setTimeout(() => { anuncioCadaTanto(); extrasAuto(); }, 600);
     programarAvisos();
     store.set('registro', registro);
-    pintar();
+    pestana = 'inicio'; store.set('tab', pestana);
+    pintar(); window.scrollTo(0, 0);
     actualizarWidget();
   }
 }
@@ -1006,7 +1022,7 @@ function demo() {
   for (const b of perfil.bolsas) for (const d of b.deps) {
     datos[clave(b, d)] = { identificado: true, encontrado: true, puesto: 237 + i * 12, situacion: i ? 'DESACTIVADO' : 'DISPONIBLE', perfil: i ? '' : 'UCI, Urgencias', trabaja: '',
       tramo: '201 - 400', alcance: 'todo', tramos: '1-400',
-      delante: { activos: 118 - i, desactivados: 52 + i, noDisp: 14, disponibles: 6 + i, total: 236 + i * 12 }, fecha: Date.now(),
+      delante: { activos: 110 - i, oferta: 8, especial: 23, desactivados: 52 + i, noDisp: 14, disponibles: 6 + i, total: 236 + i * 12 }, fecha: Date.now(),
       pub: 'DATOS DE EJEMPLO (15/11/2026)', prev: { activos: 115 - i, disponibles: 8 + i },
       hist: [14, 13, 12, 11, 9, 8, 6].map((v, k) => ({ fp: Date.now() - (6 - k) * 15 * 86400000, pub: 'ej' + k + ' (' + new Date(Date.now() - (6 - k) * 15 * 86400000).toLocaleDateString('es-ES') + ')', disp: v + i, act: 100 + k * 3, puesto: 240 - k + i * 12, alc: 'todo' })) };
     i++;
@@ -1140,7 +1156,7 @@ function pantallaPerfil() {
       store.set('ver', ver); verVisible = ver;
       perfil = p; store.set('perfil', perfil); store.set('datos', datos);
       $app.onclick = null;
-      pintar(); actualizar();
+      pestana = 'inicio'; store.set('tab', pestana); pintar(); window.scrollTo(0, 0); actualizar();
     }
   };
 }
@@ -1215,17 +1231,19 @@ function avisos() {
 
 function tagSit(s) {
   if (!s) return '';
-  const c = /DESACTIV/.test(s) ? 't-des' : /NO DISPONIBLE/.test(s) ? 't-no' : /ACTI/.test(s) ? 't-act' : 't-dis';
+  const g = grupoSit(s), c = g === 'desactivados' ? 't-des' : g === 'noDisp' ? 't-no' : g === 'activos' || g === 'oferta' ? 't-act' : 't-dis';
   return '<span class="tag ' + c + '" data-sit="' + esc(s) + '">' + esc(sitCorta(s)) + '</span>';
 }
 
 function cifras(dl, conTitulo) {
   if (!dl) return '<div class="note">' + t('sinCuenta') + '</div>';
-  return `${conTitulo ? '<div class="note" style="margin-top:16px;font-weight:600">' + t('delante') + '</div>' : ''}<div class="stats" style="${conTitulo ? 'margin-top:8px' : ''}">
+  return `<div class="deltit" style="${conTitulo ? '' : 'margin-top:14px'}"><span>${conTitulo ? t('delante') : t('enLista')}</span><button class="ibtn" data-sitinfo="1" aria-label="${t('sitTodas')}">ⓘ</button></div><div class="stats">
       <div class="stat hl"><b>${dl.disponibles}</b><span>${t('disp')}</span></div>
       <div class="stat"><b>${dl.activos}</b><span>${t('activos')}</span></div>
+      <div class="stat"><b>${dl.oferta || 0}</b><span>${t('oferta')}</span></div>
       <div class="stat"><b>${dl.desactivados}</b><span>${t('desact')}</span></div>
       <div class="stat"><b>${dl.noDisp}</b><span>${t('noDisp')}</span></div>
+      <div class="stat esp"><b>${dl.especial || 0}</b><span>${t('especial')}</span></div>
     </div>`;
 }
 
@@ -1601,9 +1619,21 @@ function info(titulo, html) {
   I.onclick = e => { if (e.target === I) cerrar(); };
   I.style.display = 'flex';
 }
+function clavesSit(s) {
+  s = (s || '').toUpperCase();
+  const k = /DESACTIV.*OFICIO/.test(s) ? 'sitDesOf' : /DESACTIV/.test(s) ? 'sitDes' : /PENALIZ/.test(s) ? 'sitPen' : /SUSPEN/.test(s) ? 'sitSus' : /LOCALIZ/.test(s) ? 'sitNoloc'
+    : /NO DISPONIBLE/.test(s) ? 'sitNo' : /BLOQUE/.test(s) ? 'sitBloq' : /RESERV/.test(s) ? 'sitRes' : /ACTIV/.test(s) ? 'sitAct' : /DISPONIBLE/.test(s) ? 'sitDisp' : 'sitOtra';
+  return /ESPECIAL/.test(s) && k !== 'sitDisp' ? [k, 'sitEsp'] : /ESPECIAL/.test(s) ? ['sitEsp'] : [k];
+}
 function explicarSit(s) {
-  const k = /DESACTIV/.test(s) ? 'sitDes' : /NO DISPONIBLE/.test(s) ? 'sitNo' : /ACTI/.test(s) ? 'sitAct' : /DISPONIBLE/.test(s) ? 'sitDisp' : 'sitOtra';
-  info(sitCorta(s) || t('sitQue'), t(k) + '<div class="note">' + t('sitNota') + '</div>');
+  info(sitCorta(s) || t('sitQue'), clavesSit(s).map(k => t(k)).join('') + '<div class="note">' + t('sitNota') + '</div>');
+}
+// Todas las situaciones, agrupadas como se cuentan en «Delante de ti»
+function explicarTodas() {
+  const g = (tit, ks) => `<h4 style="margin:16px 0 4px">${tit}</h4>` + ks.map(k => t(k)).join('');
+  info(t('sitTodas'), g('🔵 ' + cap(t('disp')), ['sitDisp']) + g('💼 ' + cap(t('activos')), ['sitAct']) + g('⏳ ' + t('ofertaT'), ['sitBloq', 'sitRes'])
+    + g('⏸️ ' + cap(t('desact')), ['sitDes', 'sitDesOf']) + g('🚫 ' + cap(t('noDisp')), ['sitNo', 'sitPen', 'sitSus', 'sitNoloc']) + g('⭐ ' + cap(t('especial')), ['sitEsp'])
+    + '<div class="note">' + t('sitNota') + '</div>');
 }
 
 // ── Plazos que apunta la persona + próxima publicación ──
@@ -1720,9 +1750,7 @@ function pintar() {
     html = `<div class="card"><div class="note" style="margin:0 0 10px">${hay && fx ? t('extraNota2', esc(fxTxt)) : t('extraNota')}</div><button class="sec" id="bExtra">↻ ${t('extraBtn')}</button></div>`
       + penalCard() + [...new Set(perfil.bolsas.map(b => b.cat))].map(c => actividadCard(c) + rankingCard(c)).join('');
   } else if (pestana === 'zona') {
-    html = `<div class="card"><h2>${t('zonaT')}</h2>
-        <button class="ajuste" id="aBolsas">📋 ${t('bEdit')}<i>›</i></button>
-        <button class="ajuste" id="aBar">${t('bBaremo')}<i>›</i></button></div>`
+    html = misDatosCard() + `<div class="card"><button class="ajuste" id="aBar" style="border:0">${t('bBaremo')}<i>›</i></button></div>`
       + puntosCard() + plazosCard();
   } else if (pestana === 'ajustes') {
     const reg = store.get('registro', []);
@@ -1772,6 +1800,7 @@ function pintar() {
   $app.querySelectorAll('[data-reintentar]').forEach(x => { x.onclick = () => actualizar(); });
   $app.querySelectorAll('[data-per]').forEach(x => { x.onclick = () => { store.set('actPer', x.dataset.per); const y = scrollY; pintar(); scrollTo(0, y); }; });
   $app.querySelectorAll('[data-sit]').forEach(x => { x.onclick = () => explicarSit(x.dataset.sit); });
+  $app.querySelectorAll('[data-sitinfo]').forEach(x => { x.onclick = explicarTodas; });
   const aa = document.getElementById('aAv');
   if (aa) aa.onchange = () => { store.set('avisosOn', aa.checked); programarAvisos(); };
   on('bPrem', () => premiumAccion(false));
@@ -1781,6 +1810,17 @@ function pintar() {
 }
 // ── Premium: pago único (3,99 €) que quita los anuncios. Producto «mibolsa_premium» en App Store Connect y Play Console ──
 const premiumNativo = () => !!(NAV && NAV.premiumEstado);
+// Mi zona: los datos con los que se busca, a la vista, y un botón para cambiarlos
+function misDatosCard() {
+  const nom = [perfil.nombre, perfil.ap1, perfil.ap2].filter(Boolean).join(' ');
+  return `<div class="card"><h3>${t('datosT')}</h3>
+    <div class="mini" style="margin-top:4px"><span>👤 ${nom ? esc(nom) : t('sinNombre')}</span></div>
+    ${perfil.bolsas.map(b => `<div class="depbox">
+      <div class="dt">${esc(catCorta(b.cat))} <span>${turnoTxt(b.turno)}</span></div>
+      <div class="chips" style="margin:0">${b.deps.map(d => `<span class="chip">📍 ${esc(cap(depName(d)))}</span>`).join('') || `<span class="note" style="margin:0">${t('sinDeps')}</span>`}</div>
+      ${b.puesto ? `<div class="note" style="margin:8px 0 0">${t('tuPuesto')}: <b>${b.puesto}</b></div>` : ''}</div>`).join('')}
+    <button class="main" data-revisar="1" style="margin-top:14px">✏️ ${t('cambiarDatos')}</button></div>`;
+}
 function premiumCard() {
   if (!premiumNativo()) return '';
   if (store.get('premium', false)) return `<div class="card"><h3>${t('premT')}</h3><div class="note" style="margin:0">${t('premSi')}</div></div>`;
