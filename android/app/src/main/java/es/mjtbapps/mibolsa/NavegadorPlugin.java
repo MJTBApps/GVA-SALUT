@@ -24,6 +24,18 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.PendingPurchasesParams;
+import com.android.billingclient.api.ProductDetails;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.QueryProductDetailsParams;
+import com.android.billingclient.api.QueryPurchasesParams;
+import java.util.Collections;
+import java.util.List;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -224,4 +236,106 @@ public class NavegadorPlugin extends Plugin {
             JSObject r = new JSObject(); r.put("programados", n); call.resolve(r);
         } catch (Exception e) { call.reject("No se pudieron programar los avisos: " + e.getMessage()); }
     }
+
+    // ── Premium (pago único que quita los anuncios) con Google Play Billing ──
+    static final String PREMIUM = "mibolsa_premium";
+    private BillingClient pago;
+    private PluginCall compraPendiente;
+
+    private interface Listo { void ok(); void error(String e); }
+
+    private void conectar(Listo l) {
+        if (pago != null && pago.isReady()) { l.ok(); return; }
+        if (pago == null) {
+            pago = BillingClient.newBuilder(getContext())
+                .setListener((res, compras) -> {
+                    PluginCall c = compraPendiente; compraPendiente = null;
+                    if (c == null) { if (compras != null) for (Purchase p : compras) reconocer(p); return; }
+                    JSObject r = new JSObject();
+                    if (res.getResponseCode() == BillingClient.BillingResponseCode.OK && compras != null) {
+                        boolean ok = false;
+                        for (Purchase p : compras) if (p.getProducts().contains(PREMIUM)) {
+                            if (p.getPurchaseState() == Purchase.PurchaseState.PURCHASED) { ok = true; reconocer(p); }
+                            else r.put("pendiente", true);
+                        }
+                        r.put("premium", ok); c.resolve(r);
+                    } else if (res.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
+                        r.put("premium", false); r.put("cancelado", true); c.resolve(r);
+                    } else if (res.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
+                        r.put("premium", true); c.resolve(r);
+                    } else c.reject("Compra no completada (" + res.getResponseCode() + "): " + res.getDebugMessage());
+                })
+                .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
+                .build();
+        }
+        pago.startConnection(new BillingClientStateListener() {
+            @Override public void onBillingSetupFinished(BillingResult r) {
+                if (r.getResponseCode() == BillingClient.BillingResponseCode.OK) l.ok(); else l.error("Google Play no disponible (" + r.getResponseCode() + ")");
+            }
+            @Override public void onBillingServiceDisconnected() { }
+        });
+    }
+
+    private void reconocer(Purchase p) {
+        if (p.getPurchaseState() != Purchase.PurchaseState.PURCHASED || p.isAcknowledged()) return;
+        pago.acknowledgePurchase(AcknowledgePurchaseParams.newBuilder().setPurchaseToken(p.getPurchaseToken()).build(), r -> { });
+    }
+
+    private void producto(Listo l, ProductDetails[] out) {
+        QueryProductDetailsParams q = QueryProductDetailsParams.newBuilder().setProductList(Collections.singletonList(
+            QueryProductDetailsParams.Product.newBuilder().setProductId(PREMIUM).setProductType(BillingClient.ProductType.INAPP).build())).build();
+        pago.queryProductDetailsAsync(q, (r, lista) -> {
+            if (lista != null && !lista.isEmpty()) { out[0] = lista.get(0); l.ok(); } else l.error("Producto no encontrado (" + r.getResponseCode() + ")");
+        });
+    }
+
+    /** {premium, precio}: si ya está comprado (también sirve de «restaurar») y el precio de la tienda. */
+    @PluginMethod
+    public void premiumEstado(PluginCall call) {
+        conectar(new Listo() {
+            public void ok() {
+                pago.queryPurchasesAsync(QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.INAPP).build(), (r, compras) -> {
+                    boolean prem = false;
+                    if (compras != null) for (Purchase p : compras) if (p.getProducts().contains(PREMIUM) && p.getPurchaseState() == Purchase.PurchaseState.PURCHASED) { prem = true; reconocer(p); }
+                    final boolean premium = prem;
+                    final boolean fiable = r.getResponseCode() == BillingClient.BillingResponseCode.OK;
+                    ProductDetails[] pd = new ProductDetails[1];
+                    producto(new Listo() {
+                        public void ok() { JSObject o = new JSObject(); o.put("premium", premium); o.put("fiable", fiable); ProductDetails.OneTimePurchaseOfferDetails d = pd[0].getOneTimePurchaseOfferDetails(); o.put("precio", d != null ? d.getFormattedPrice() : ""); call.resolve(o); }
+                        public void error(String e) { JSObject o = new JSObject(); o.put("premium", premium); o.put("fiable", fiable); o.put("precio", ""); call.resolve(o); }
+                    }, pd);
+                });
+            }
+            public void error(String e) { call.reject(e); }
+        });
+    }
+
+    @PluginMethod
+    public void premiumComprar(PluginCall call) {
+        conectar(new Listo() {
+            public void ok() {
+                ProductDetails[] pd = new ProductDetails[1];
+                producto(new Listo() {
+                    public void ok() {
+                        getActivity().runOnUiThread(() -> {
+                            compraPendiente = call;
+                            BillingFlowParams f = BillingFlowParams.newBuilder().setProductDetailsParamsList(Collections.singletonList(
+                                BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(pd[0]).build())).build();
+                            BillingResult r = pago.launchBillingFlow(getActivity(), f);
+                            if (r.getResponseCode() != BillingClient.BillingResponseCode.OK && compraPendiente == call) {
+                                compraPendiente = null;
+                                if (r.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) { JSObject o = new JSObject(); o.put("premium", true); call.resolve(o); }
+                                else call.reject("No se pudo abrir la compra (" + r.getResponseCode() + ")");
+                            }
+                        });
+                    }
+                    public void error(String e) { call.reject(e); }
+                }, pd);
+            }
+            public void error(String e) { call.reject(e); }
+        });
+    }
+
+    @PluginMethod
+    public void premiumRestaurar(PluginCall call) { premiumEstado(call); }
 }

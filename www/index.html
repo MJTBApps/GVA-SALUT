@@ -240,7 +240,7 @@ const T = {
     barCur: 'Cursos de formación continua (nº de cursos por horas)', barCurNota: 'Según la Orden 4/2019 solo puntúan en uno de los turnos: compruébalo en tu convocatoria.', barDocencia: 'Horas de docencia impartidas',
     barDis: 'Diversidad funcional igual o superior al 33 %', barTotal: 'Total aproximado', barNota: 'Cálculo orientativo con el baremo publicado en el DOGV. Los méritos que cuentan son los que tenías en la fecha de corte de la edición y la puntuación oficial es la de la GVA. No incluye puestos de difícil cobertura.',
     extraBtn: 'Actualizar ahora', extraNota: 'La actividad de la bolsa (nombramientos) y las penalizaciones se cargan solas al entrar aquí (como mucho cada 12 horas).', extraNota2: 'Actualizado: {0}. Se vuelve a cargar solo cada 12 horas.',
-    tInicio: 'Inicio', tEvol: 'Evolución', tBolsa: 'Bolsa', tAjustes: 'Ajustes', tZona: 'Mi zona', zonaT: 'Mi zona', apar: '🎨 Apariencia', aAuto: 'Auto', aClaro: 'Claro', aOscuro: 'Oscuro', nfT: '😕 No te encontramos en esta bolsa',
+    tInicio: 'Inicio', tEvol: 'Evolución', tBolsa: 'Bolsa', tAjustes: 'Ajustes', tZona: 'Mi zona', premT: '⭐ Premium', premTxt: 'Quita todos los anuncios para siempre. Pago único, sin suscripción.', premBtn: 'Quitar anuncios · {0}', premRest: 'Ya lo compré: restaurar', premSi: '⭐ Eres premium: sin anuncios. ¡Gracias por apoyar la app!', premOk: '¡Listo! Ya no verás anuncios.', premPend: 'La compra está pendiente de confirmar. Cuando se confirme se quitarán los anuncios.', premNo: 'No hemos encontrado ninguna compra con esta cuenta.', premErr: 'No se pudo completar: {0}', zonaT: 'Mi zona', apar: '🎨 Apariencia', aAuto: 'Auto', aClaro: 'Claro', aOscuro: 'Oscuro', nfT: '😕 No te encontramos en esta bolsa',
     nfTxt: 'Puede que no estés inscrito/a en esta categoría, turno o departamento, o que tu nombre esté escrito de otra forma en la lista de la GVA (por ejemplo, con los dos apellidos o con tilde).', revisar: 'Revisar mis datos',
     evolVacia: 'Aquí verás la evolución cuando la app te haya encontrado en alguna bolsa.', idioma: 'Idioma', ajustesT: 'Ajustes', verWebC: 'Ver la web de la GVA mientras busca',
     barVolver: 'Volver', puntos: 'puntos', barServT: 'Servicios', barOpoT: 'Oposición', barFormT: 'Formación', barValT: 'Valenciano', barOtrosT: 'Otros'
@@ -310,7 +310,7 @@ const T = {
     barCur: 'Cursos de formació contínua (nre. de cursos per hores)', barCurNota: 'Segons l\'Ordre 4/2019 només puntuen en un dels torns: comprova-ho en la teua convocatòria.', barDocencia: 'Hores de docència impartides',
     barDis: 'Diversitat funcional igual o superior al 33 %', barTotal: 'Total aproximat', barNota: 'Càlcul orientatiu amb el barem publicat en el DOGV. Els mèrits que compten són els que tenies en la data de tall de l\'edició i la puntuació oficial és la de la GVA. No inclou llocs de difícil cobertura.',
     extraBtn: 'Actualitzar ara', extraNota: 'L\'activitat de la borsa (nomenaments) i les penalitzacions es carreguen soles en entrar ací (com a molt cada 12 hores).', extraNota2: 'Actualitzat: {0}. Es torna a carregar sol cada 12 hores.',
-    tInicio: 'Inici', tEvol: 'Evolució', tBolsa: 'Borsa', tAjustes: 'Ajustos', tZona: 'La meua zona', zonaT: 'La meua zona', apar: '🎨 Aparença', aAuto: 'Auto', aClaro: 'Clar', aOscuro: 'Fosc', nfT: '😕 No t\'hem trobat en esta borsa',
+    tInicio: 'Inici', tEvol: 'Evolució', tBolsa: 'Borsa', tAjustes: 'Ajustos', tZona: 'La meua zona', premT: '⭐ Prèmium', premTxt: 'Lleva tots els anuncis per sempre. Pagament únic, sense subscripció.', premBtn: 'Llevar anuncis · {0}', premRest: 'Ja el vaig comprar: restaurar', premSi: '⭐ Eres prèmium: sense anuncis. Gràcies per donar suport a l\'app!', premOk: 'Fet! Ja no voràs anuncis.', premPend: 'La compra està pendent de confirmar. Quan es confirme es llevaran els anuncis.', premNo: 'No hem trobat cap compra amb este compte.', premErr: 'No s\'ha pogut completar: {0}', zonaT: 'La meua zona', apar: '🎨 Aparença', aAuto: 'Auto', aClaro: 'Clar', aOscuro: 'Fosc', nfT: '😕 No t\'hem trobat en esta borsa',
     nfTxt: 'Pot ser que no estigues inscrit/a en esta categoria, torn o departament, o que el teu nom estiga escrit d\'una altra manera en la llista de la GVA (per exemple, amb els dos cognoms o amb accent).', revisar: 'Revisar les meues dades',
     evolVacia: 'Ací voràs l\'evolució quan l\'app t\'haja trobat en alguna borsa.', idioma: 'Idioma', ajustesT: 'Ajustos', verWebC: 'Vore la web de la GVA mentre busca',
     barVolver: 'Tornar', puntos: 'punts', barServT: 'Serveis', barOpoT: 'Oposició', barFormT: 'Formació', barValT: 'Valencià', barOtrosT: 'Altres'
@@ -1686,6 +1686,7 @@ function pintar() {
         <a class="ajuste" href="https://mjtbapps.github.io/GVA-SALUT/privacidad.html" target="_blank" rel="noopener">📄 ${t('privPol')}<i>↗︎</i></a>
         <label class="check" style="margin-top:6px"><input type="checkbox" id="aAv" ${store.get('avisosOn', true) ? 'checked' : ''}> ${t('avTxt')}</label>
         <label class="check" style="margin-top:6px"><input type="checkbox" id="aVer" ${store.get('ver', false) ? 'checked' : ''}> ${t('verWebC')}</label></div>
+      ${premiumCard()}
       ${oficialCard()}
       ${reg.length ? `<details class="card reg"><summary>${t('detalles')}</summary><pre>${reg.map(esc).join('\n')}</pre></details>` : ''}`;
   } else {
@@ -1724,8 +1725,46 @@ function pintar() {
   $app.querySelectorAll('[data-sit]').forEach(x => { x.onclick = () => explicarSit(x.dataset.sit); });
   const aa = document.getElementById('aAv');
   if (aa) aa.onchange = () => { store.set('avisosOn', aa.checked); programarAvisos(); };
+  on('bPrem', () => premiumAccion(false));
+  on('bPremR', () => premiumAccion(true));
   on('aPriv', () => { const A = ADMOB(); if (A) A.showPrivacyOptionsForm().catch(() => {}); });
   enlazarPlazos(); enlazarSimulador(); enlazarPuntos();
+}
+// ── Premium: pago único (3,99 €) que quita los anuncios. Producto «mibolsa_premium» en App Store Connect y Play Console ──
+const premiumNativo = () => !!(NAV && NAV.premiumEstado);
+function premiumCard() {
+  if (!premiumNativo()) return '';
+  if (store.get('premium', false)) return `<div class="card"><h3>${t('premT')}</h3><div class="note" style="margin:0">${t('premSi')}</div></div>`;
+  const precio = store.get('premPrecio', '') || '3,99 €';
+  return `<div class="card"><h3>${t('premT')}</h3><div class="note" style="margin:0 0 12px">${t('premTxt')}</div>
+    <button class="main" id="bPrem">${t('premBtn', esc(precio))}</button>
+    <button class="link" id="bPremR" style="display:block;margin:6px auto 0">${t('premRest')}</button></div>`;
+}
+function quitarAnuncios() {
+  const A = ADMOB();
+  document.body.classList.remove('con-anuncio');
+  adsListos = false;
+  if (A) { A.removeBanner().catch(() => {}); }
+}
+async function premiumComprobar() {
+  if (!premiumNativo()) return;
+  try {
+    const r = await Promise.race([NAV.premiumEstado(), sleep(4000).then(() => null)]);
+    if (!r) return;
+    if (r.precio) store.set('premPrecio', r.precio);
+    if (r.premium) { store.set('premium', true); quitarAnuncios(); }
+    else if (r.fiable && store.get('premium', false)) store.set('premium', false);  // reembolsada
+  } catch (e) {}
+}
+async function premiumAccion(restaurar) {
+  try {
+    const r = restaurar ? await NAV.premiumRestaurar() : await NAV.premiumComprar();
+    if (r.precio) store.set('premPrecio', r.precio);
+    if (r.premium) { store.set('premium', true); quitarAnuncios(); alert(t('premOk')); }
+    else if (r.pendiente) alert(t('premPend'));
+    else if (restaurar) alert(t('premNo'));
+  } catch (e) { alert(t('premErr', (e && e.message) || e)); }
+  pintar();
 }
 const pedirUrl = () => 'mailto:mjtbapps@gmail.com?subject=' + encodeURIComponent(t('pedirAsunto')) + '&body=' + encodeURIComponent('Categoría / Categoria:\nDepartamento / Departament:\nTurno / Torn:\n');
 
@@ -1743,7 +1782,7 @@ document.getElementById('ovX').onclick = () => { cancelado = true; paso('Cancela
 const alAbrir = () => { if (viejo()) actualizar(); else comprobarPublicacion(); };
 programarAvisos();
 // Primero el consentimiento y el anuncio de apertura; después la búsqueda
-anunciosIniciar().finally(() => { alAbrir(); extrasAuto(); });
+premiumComprobar().then(anunciosIniciar).finally(() => { alAbrir(); extrasAuto(); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden) alAbrir(); });
 </script>
 </body>

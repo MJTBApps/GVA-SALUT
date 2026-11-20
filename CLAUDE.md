@@ -84,6 +84,12 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 
 - Pestañas: Inicio · Bolsa · Evolución · Mi zona · Ajustes (`PESTANAS`). Mi zona: Mis bolsas, Baremo, Mis puntos, Plazos. Ajustes: idioma, apariencia (`store 'tema'` auto/light/dark → `data-theme`, `ponerTema()`), avisos, información oficial, registro.
 
+## Premium (20/11/2026)
+
+- Pago único **3,99 €** que quita los anuncios (sin más funciones por ahora). Producto `mibolsa_premium` (no consumible / producto integrado único) en App Store Connect y Play Console.
+- Compras propias en el complemento Navegador, sin librerías de terceros: `premiumEstado` ({premium, fiable, precio}), `premiumComprar`, `premiumRestaurar`. Android: Play Billing 7.1.1 (`app/build.gradle`); iPhone: StoreKit 2.
+- JS: `premiumCard()` en Ajustes, `premiumComprobar()` al abrir antes de los anuncios (si Google dice que ya no está comprada, quita `store 'premium'`), `quitarAnuncios()`.
+
 ## Google Play (20/11/2026)
 
 - App creada en Play Console (cuenta MJTB Apps, id de app 4974091835764455131), «Mi Bolsa Salut», categoría Economía, 18+, PEGI 3. Declaraciones hechas (anuncios, ID de publicidad, seguridad de datos: datos de AdMob + nombre, que se envía solo en la consulta y es opcional).

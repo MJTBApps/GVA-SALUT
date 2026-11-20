@@ -4,6 +4,7 @@ import UIKit
 import WebKit
 import WidgetKit
 import UserNotifications
+import StoreKit
 
 /// Mismo puente que NavegadorPlugin.java: navegador real del sistema (WKWebView), oculto
 /// detrás de la app, para la consulta pública de la GVA. No se toca el User-Agent.
@@ -20,7 +21,10 @@ public class NavegadorPlugin: CAPPlugin, CAPBridgedPlugin, WKNavigationDelegate 
         CAPPluginMethod(name: "cerrar", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "widget", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "compartir", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "avisos", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "avisos", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "premiumEstado", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "premiumComprar", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "premiumRestaurar", returnType: CAPPluginReturnPromise)
     ]
 
     private var capa: UIView?
@@ -201,6 +205,56 @@ public class NavegadorPlugin: CAPPlugin, CAPBridgedPlugin, WKNavigationDelegate 
                     n += 1
                 }
                 call.resolve(["permiso": true, "programados": n])
+            }
+        }
+    }
+
+    // MARK: Premium (pago único que quita los anuncios) con StoreKit 2
+    static let premiumId = "mibolsa_premium"
+
+    private func tienePremium() async -> Bool {
+        for await r in Transaction.currentEntitlements {
+            if case .verified(let t) = r, t.productID == Self.premiumId, t.revocationDate == nil { return true }
+        }
+        return false
+    }
+
+    private func estado(_ call: CAPPluginCall) async {
+        let premium = await tienePremium()
+        var precio = ""
+        if let p = try? await Product.products(for: [Self.premiumId]).first { precio = p.displayPrice }
+        call.resolve(["premium": premium, "fiable": true, "precio": precio])
+    }
+
+    @objc func premiumEstado(_ call: CAPPluginCall) {
+        Task { await estado(call) }
+    }
+
+    @objc func premiumRestaurar(_ call: CAPPluginCall) {
+        Task {
+            try? await AppStore.sync()
+            await estado(call)
+        }
+    }
+
+    @objc func premiumComprar(_ call: CAPPluginCall) {
+        Task {
+            do {
+                guard let p = try await Product.products(for: [Self.premiumId]).first else { call.reject("Producto no encontrado"); return }
+                let r = try await p.purchase()
+                switch r {
+                case .success(let v):
+                    if case .verified(let t) = v { await t.finish(); call.resolve(["premium": true]) }
+                    else { call.reject("No se pudo verificar la compra") }
+                case .userCancelled:
+                    call.resolve(["premium": false, "cancelado": true])
+                case .pending:
+                    call.resolve(["premium": false, "pendiente": true])
+                @unknown default:
+                    call.resolve(["premium": false])
+                }
+            } catch {
+                call.reject("Compra no completada: \(error.localizedDescription)")
             }
         }
     }
