@@ -1540,7 +1540,7 @@ function barraPestanas(visible) {
   const nav = document.getElementById('tabs');
   nav.style.display = visible ? 'block' : 'none';
   nav.querySelector('.in').innerHTML = PESTANAS.map(p => `<button data-tab="${p[0]}" class="${p[0] === pestana ? 'on' : ''}"><span>${p[1]}</span>${t(p[2])}</button>`).join('');
-  nav.onclick = e => { const b = e.target.closest('button'); if (!b) return; pestana = b.dataset.tab; store.set('tab', pestana); pintar(); window.scrollTo(0, 0); extrasAuto(); };
+  nav.onclick = e => { const b = e.target.closest('button'); if (!b) return; const otra = b.dataset.tab !== pestana; pestana = b.dataset.tab; store.set('tab', pestana); pintar(); window.scrollTo(0, 0); extrasAuto(); if (otra) anuncioCadaTanto(); };
 }
 
 // ── Hoja de información: qué significa cada situación ──
@@ -1614,12 +1614,12 @@ function programarAvisos() {
 
 // ── Anuncios (AdMob, complemento @capacitor-community/admob) ──
 // Banner abajo (encima de las pestañas), uno de «carga de aplicación» siempre al abrir la app y un
-// intersticial como mucho cada `cadaMin` minutos al acabar una búsqueda. Con «premium» no sale ninguno.
+// intersticial como mucho cada `cadaMin` minutos al acabar una búsqueda o al cambiar de pestaña. Con «premium» no sale ninguno.
 // Antes se pide el consentimiento que exige la UE (formulario de Google) y, en iPhone, el permiso de seguimiento.
 const ES_IOS = !!(window.Capacitor && Capacitor.getPlatform && Capacitor.getPlatform() === 'ios');
 const ADS = ES_IOS
-  ? { activo: true, banner: 'ca-app-pub-1535697166232113/9848585686', inicio: 'ca-app-pub-1535697166232113/8846048090', inter: 'ca-app-pub-1535697166232113/6212593004', cadaMin: 4 }
-  : { activo: true, banner: 'ca-app-pub-1535697166232113/3454120610', inicio: 'ca-app-pub-1535697166232113/6709793163', inter: 'ca-app-pub-1535697166232113/1732798652', cadaMin: 4 };
+  ? { activo: true, banner: 'ca-app-pub-1535697166232113/9848585686', inicio: 'ca-app-pub-1535697166232113/8846048090', inter: 'ca-app-pub-1535697166232113/6212593004', cadaMin: 2 }
+  : { activo: true, banner: 'ca-app-pub-1535697166232113/3454120610', inicio: 'ca-app-pub-1535697166232113/6709793163', inter: 'ca-app-pub-1535697166232113/1732798652', cadaMin: 2 };
 const ADMOB = () => window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform() && Capacitor.Plugins && Capacitor.Plugins.AdMob;
 const conAnuncios = () => ADS.activo && !store.get('premium', false) && !!ADMOB();
 let ultimoInter = 0, adsListos = false;
