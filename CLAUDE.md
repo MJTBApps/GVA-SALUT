@@ -68,6 +68,13 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
   - Falta: mensaje de consentimiento (RGPD) creado en AdMob → Privacidad y mensajes; añadir las tiendas cuando se publique.
 - Búsqueda: 1 minuto por departamento (+2 si sale la casilla de Cloudflare), 4 minutos en total, botón Cancelar; si falla se guarda `fallo` y no se repite sola.
 
+## Versión 5 (20/11/2026)
+
+- Inicio: «Tu quincena» (`quincenaCard`, compara los dos últimos puntos de `hist`). Evolución: simulador (`simuladorCard`/`enlazarSimulador`).
+- Bolsa, en este orden: penalizaciones + NO LOCALIZABLE (`lista.noloc`, store `noloc`, reutiliza `consultarPenalizaciones`), actividad con duración/tipos/jornada de los contratos (`dur`, `tipos`, `jor`), ranking de departamentos (`rankingCard`, media de `actividad.hist`), «Mis puntos» (store `puntosOf`, los apunta la persona: la consulta pública no da puntos), plazos, información oficial.
+- «¿No está tu categoría? Pídelo»: correo a mjtbapps@gmail.com (`pedirUrl`) en la hoja de búsqueda y en Ajustes.
+- Pendiente de comprobar en móvil: columnas de inicio/fin/jornada de nombramientos y el filtro de la consulta NO LOCALIZABLE (salen en «Detalles de la última búsqueda»).
+
 ## Pendiente
 
 - Contar también a la gente de tramos anteriores (puestos > 200): una consulta más por tramo.
