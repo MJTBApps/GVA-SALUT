@@ -82,7 +82,7 @@ button.link{border:0;background:none;color:var(--acc-ink);font:600 15px -apple-s
 .depbox{border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:10px}
 .depbox .dt{font-weight:700;color:var(--acc-ink);margin-bottom:8px;display:flex;justify-content:space-between;gap:8px}
 .depbox .dt span{font-weight:600;color:var(--muted);font-size:13px}
-details.mas{margin-top:14px}details.mas summary{cursor:pointer;color:var(--acc-ink);font-weight:600;font-size:14px}
+.mas{margin-top:6px;padding-top:6px;border-top:1px solid var(--line)}
 .bolsa-ed{border:1.5px solid var(--line);border-radius:18px;padding:14px;margin-top:12px}
 .bolsa-ed .cab{display:flex;justify-content:space-between;align-items:center}
 .bolsa-ed .cab b{font-size:15px}
@@ -1344,7 +1344,7 @@ function actividadCard(cat) {
     <p class="actres">${resumen}</p>
     ${general}
     ${porDep ? `<div class="note" style="margin-top:16px;font-weight:600">${t('tusDeps')}</div>${porDep}` : ''}
-    ${mas ? `<details class="mas"><summary>${t('masDet')}</summary>${mas}</details>` : ''}
+    ${mas ? `<div class="mas">${mas}</div>` : ''}
     ${a.parcial ? `<div class="note">${t('parcial')}</div>` : ''}</div>`;
 }
 function penalCard() {
