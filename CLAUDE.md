@@ -110,6 +110,8 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 
 ## Pendiente
 
+- **Android congelado (21/11/2026):** no subir más versiones a Play hasta que Google apruebe la 1008 (cada envío reinicia la revisión). Los cambios se prueban en iPhone y se juntan en una sola versión de Android después.
+
 - Contar también a la gente de tramos anteriores (puestos > 200): una consulta más por tramo.
 - Varias bolsas (categorías/turnos), widget, valenciano.
 - Icono y nombre definitivos; página de privacidad y fichas para publicar.
