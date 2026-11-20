@@ -284,7 +284,8 @@ public class NavegadorPlugin extends Plugin {
     private void producto(Listo l, ProductDetails[] out) {
         QueryProductDetailsParams q = QueryProductDetailsParams.newBuilder().setProductList(Collections.singletonList(
             QueryProductDetailsParams.Product.newBuilder().setProductId(PREMIUM).setProductType(BillingClient.ProductType.INAPP).build())).build();
-        pago.queryProductDetailsAsync(q, (r, lista) -> {
+        pago.queryProductDetailsAsync(q, (r, res) -> {
+            List<ProductDetails> lista = res != null ? res.getProductDetailsList() : null;
             if (lista != null && !lista.isEmpty()) { out[0] = lista.get(0); l.ok(); } else l.error("Producto no encontrado (" + r.getResponseCode() + ")");
         });
     }

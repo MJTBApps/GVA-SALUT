@@ -87,7 +87,7 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 ## Premium (20/11/2026)
 
 - Pago único **3,99 €** que quita los anuncios (sin más funciones por ahora). Producto `mibolsa_premium` (no consumible / producto integrado único) en App Store Connect y Play Console.
-- Compras propias en el complemento Navegador, sin librerías de terceros: `premiumEstado` ({premium, fiable, precio}), `premiumComprar`, `premiumRestaurar`. Android: Play Billing 7.1.1 (`app/build.gradle`); iPhone: StoreKit 2.
+- Compras propias en el complemento Navegador, sin librerías de terceros: `premiumEstado` ({premium, fiable, precio}), `premiumComprar`, `premiumRestaurar`. Android: Play Billing 8.0.0 (Play exige 8 o más) (`app/build.gradle`); iPhone: StoreKit 2.
 - JS: `premiumCard()` en Ajustes, `premiumComprobar()` al abrir antes de los anuncios (si Google dice que ya no está comprada, quita `store 'premium'`), `quitarAnuncios()`.
 
 ## Google Play (20/11/2026)
