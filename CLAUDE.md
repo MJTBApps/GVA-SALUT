@@ -88,6 +88,8 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 
 - Pago único **3,99 €** que quita los anuncios (sin más funciones por ahora). Producto `mibolsa_premium` (no consumible / producto integrado único) en App Store Connect y Play Console.
 - Compras propias en el complemento Navegador, sin librerías de terceros: `premiumEstado` ({premium, fiable, precio}), `premiumComprar`, `premiumRestaurar`. Android: Play Billing 8.0.0 (Play exige 8 o más) (`app/build.gradle`); iPhone: StoreKit 2.
+- Play Console: producto único `mibolsa_premium` (opción de compra `sin-anuncios`) activo, 3,99 € en España (base 3,30 + IVA). Play exige Play Billing ≥ 8.
+- App Store Connect: no consumible `mibolsa_premium` (id Apple 6837285314), 3,99 € base España, todos los países, nombre «Sin anuncios para siempre». La primera compra se revisa junto con una versión de la app («Añadir a revisión»). Captura de revisión: `tienda/premium-revision.png`.
 - JS: `premiumCard()` en Ajustes, `premiumComprobar()` al abrir antes de los anuncios (si Google dice que ya no está comprada, quita `store 'premium'`), `quitarAnuncios()`.
 
 ## Google Play (20/11/2026)
