@@ -75,6 +75,12 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 - «¿No está tu categoría? Pídelo»: correo a mjtbapps@gmail.com (`pedirUrl`) en la hoja de búsqueda y en Ajustes.
 - Pendiente de comprobar en móvil: columnas de inicio/fin/jornada de nombramientos y el filtro de la consulta NO LOCALIZABLE (salen en «Detalles de la última búsqueda»).
 
+## Google Play (20/11/2026)
+
+- App creada en Play Console (cuenta MJTB Apps, id de app 4974091835764455131), «Mi Bolsa Salut», categoría Economía, 18+, PEGI 3. Declaraciones hechas (anuncios, ID de publicidad, seguridad de datos: datos de AdMob + nombre, que se envía solo en la consulta y es opcional).
+- Prueba cerrada «Alpha»: España, lista «Testers OpoAlert», versión 1001 (1.0.1) enviada a revisión el 20/11/2026. Después: 12 testers durante 14 días y pedir producción.
+- Gráficos de la ficha: icono 512, gráfico 1024×500 y capturas 1080×1920 hechas con Chrome sin ventana sobre `demo()` (ancho mínimo de Chrome sin ventana: 500 px CSS).
+
 ## Pendiente
 
 - Contar también a la gente de tramos anteriores (puestos > 200): una consulta más por tramo.
