@@ -223,7 +223,7 @@ const T = {
     perfiles: 'Perfiles', trabajaEn: 'Trabajando en', compartir: 'Compartir', novT: 'Novedades', entendido: 'Entendido',
     nuevaPub: '📢 Nueva publicación de la GVA ({0})', cambioSit: '{0}: tu situación ha cambiado de «{1}» a «{2}»', cambioPuesto: '{0}: tu puesto ha pasado del {1} al {2}',
     menosDisp: '{0}: {1} disponible(s) menos delante de ti', masDisp: '{0}: {1} disponible(s) más delante de ti', empiezan: '{0}: {1} de delante empieza(n) a trabajar',
-    detalles: 'Detalles de la última búsqueda', pie1: 'App no oficial. Datos de la consulta pública de las Listas de Empleo Temporal de la Conselleria de Sanidad.',
+    detalles: 'Detalles de la última búsqueda', detallesB: 'Detalles de la última actualización de Bolsa', pie1: 'App no oficial. Datos de la consulta pública de las Listas de Empleo Temporal de la Conselleria de Sanidad.',
     pie2: 'Tus datos y resultados se guardan solo en este móvil.', pubT: 'Publicación', compTexto: 'Mi situación en la bolsa de Sanidad (app Mi Bolsa Salut, no oficial)',
     toca: 'Solo toca la casilla «Verifica que eres un ser humano». No escribas nada: la app sigue sola',
     sitQue: '¿Qué significa?', sitNota: 'Explicación orientativa. Lo que vale es la normativa de la Conselleria y lo que te diga tu departamento.',
@@ -294,7 +294,7 @@ const T = {
     perfiles: 'Perfils', trabajaEn: 'Treballant en', compartir: 'Compartir', novT: 'Novetats', entendido: 'Entesos',
     nuevaPub: '📢 Nova publicació de la GVA ({0})', cambioSit: '{0}: la teua situació ha canviat de «{1}» a «{2}»', cambioPuesto: '{0}: el teu lloc ha passat del {1} al {2}',
     menosDisp: '{0}: {1} disponible(s) menys davant de tu', masDisp: '{0}: {1} disponible(s) més davant de tu', empiezan: '{0}: {1} de davant comença(en) a treballar',
-    detalles: 'Detalls de l\'última busca', pie1: 'App no oficial. Dades de la consulta pública de les Llistes d\'Ocupació Temporal de la Conselleria de Sanitat.',
+    detalles: 'Detalls de l\'última busca', detallesB: 'Detalls de l\'última actualització de Borsa', pie1: 'App no oficial. Dades de la consulta pública de les Llistes d\'Ocupació Temporal de la Conselleria de Sanitat.',
     pie2: 'Les teues dades i resultats es guarden només en este mòbil.', pubT: 'Publicació', compTexto: 'La meua situació en la borsa de Sanitat (app Mi Bolsa Salut, no oficial)',
     toca: 'Només toca la casella «Verifica que eres un ser humà». No escrigues res: l\'app continua sola',
     sitQue: 'Què vol dir?', sitNota: 'Explicació orientativa. El que val és la normativa de la Conselleria i el que et diga el teu departament.',
@@ -984,7 +984,7 @@ async function actualizarExtras(forzarExtra = true) {
     limiteBusqueda = 0; cancelado = false;
     try { await conTiempo(NAV.cerrar(), 5000, ''); } catch (e) {}
     actualizando = false; ovOff();
-    store.set('registro', registro);
+    store.set('registroBolsa', registro);  // aparte: no borra el registro de la búsqueda de tu puesto
     pintar();
   }
 }
@@ -1753,7 +1753,7 @@ function pintar() {
     html = misDatosCard() + `<div class="card"><button class="ajuste" id="aBar" style="border:0">${t('bBaremo')}<i>›</i></button></div>`
       + puntosCard() + plazosCard();
   } else if (pestana === 'ajustes') {
-    const reg = store.get('registro', []);
+    const reg = store.get('registro', []), regB = store.get('registroBolsa', []);
     html = `<div class="card"><h2>${t('ajustesT')}</h2>
         <div class="ajuste" style="cursor:default">🌐 ${t('idioma')}<div class="seg" id="aLang" style="width:150px"><button data-v="es" class="${lang === 'es' ? 'on' : ''}">CAS</button><button data-v="va" class="${lang === 'va' ? 'on' : ''}">VAL</button></div></div>
         <div class="ajuste" style="cursor:default">${t('apar')}<div class="seg" id="aTema" style="width:190px">${['auto', 'light', 'dark'].map((v, i) => `<button data-v="${v}" class="${store.get('tema', 'auto') === v ? 'on' : ''}">${t(['aAuto', 'aClaro', 'aOscuro'][i])}</button>`).join('')}</div></div>
@@ -1764,7 +1764,8 @@ function pintar() {
         <label class="check" style="margin-top:6px"><input type="checkbox" id="aVer" ${store.get('ver', false) ? 'checked' : ''}> ${t('verWebC')}</label></div>
       ${premiumCard()}
       ${oficialCard()}
-      ${reg.length ? `<details class="card reg"><summary>${t('detalles')}</summary><pre>${reg.map(esc).join('\n')}</pre></details>` : ''}`;
+      ${reg.length ? `<details class="card reg"><summary>${t('detalles')}</summary><pre>${reg.map(esc).join('\n')}</pre></details>` : ''}
+      ${regB.length ? `<details class="card reg"><summary>${t('detallesB')}</summary><pre>${regB.map(esc).join('\n')}</pre></details>` : ''}`;
   } else {
     pestana = 'inicio';
     const fechas = [];
