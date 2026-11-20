@@ -195,7 +195,7 @@ const T = {
     menosDisp: '{0}: {1} disponible(s) menos delante de ti', masDisp: '{0}: {1} disponible(s) más delante de ti', empiezan: '{0}: {1} de delante empieza(n) a trabajar',
     detalles: 'Detalles de la última búsqueda', pie1: 'App no oficial. Datos de la consulta pública de las Listas de Empleo Temporal de la Conselleria de Sanidad.',
     pie2: 'Tus datos y resultados se guardan solo en este móvil.', pubT: 'Publicación', compTexto: 'Mi situación en la bolsa de Sanidad (app Mi Bolsa Salut, no oficial)',
-    toca: 'Toca la casilla para continuar',
+    toca: 'Solo toca la casilla «Verifica que eres un ser humano». No escribas nada: la app sigue sola',
     sitQue: '¿Qué significa?', sitNota: 'Explicación orientativa. Lo que vale es la normativa de la Conselleria y lo que te diga tu departamento.',
     sitDisp: '<p><b>Disponible</b>: estás en la lista y puedes recibir ofertas de trabajo. Te llamarán por orden de puesto cuando haya un nombramiento para tu categoría y departamento.</p><p>Ten el teléfono y el correo al día en tu inscripción: si no te localizan, pueden pasar a la siguiente persona.</p>',
     sitAct: '<p><b>Activo/a</b>: estás trabajando con un nombramiento de esta lista. Mientras dure, normalmente no recibes otras ofertas (salvo las de mejora de empleo, si te corresponden).</p><p>Cuando termine el contrato vuelves a quedar disponible en tu mismo puesto de la lista.</p>',
@@ -265,7 +265,7 @@ const T = {
     menosDisp: '{0}: {1} disponible(s) menys davant de tu', masDisp: '{0}: {1} disponible(s) més davant de tu', empiezan: '{0}: {1} de davant comença(en) a treballar',
     detalles: 'Detalls de l\'última busca', pie1: 'App no oficial. Dades de la consulta pública de les Llistes d\'Ocupació Temporal de la Conselleria de Sanitat.',
     pie2: 'Les teues dades i resultats es guarden només en este mòbil.', pubT: 'Publicació', compTexto: 'La meua situació en la borsa de Sanitat (app Mi Bolsa Salut, no oficial)',
-    toca: 'Toca la casella per a continuar',
+    toca: 'Només toca la casella «Verifica que eres un ser humà». No escrigues res: l\'app continua sola',
     sitQue: 'Què vol dir?', sitNota: 'Explicació orientativa. El que val és la normativa de la Conselleria i el que et diga el teu departament.',
     sitDisp: '<p><b>Disponible</b>: estàs en la llista i pots rebre ofertes de treball. Et cridaran per orde de lloc quan hi haja un nomenament per a la teua categoria i departament.</p><p>Tin el telèfon i el correu al dia en la teua inscripció: si no et localitzen, poden passar a la persona següent.</p>',
     sitAct: '<p><b>Actiu/va</b>: estàs treballant amb un nomenament d\'esta llista. Mentre dure, normalment no reps altres ofertes (excepte les de millora d\'ocupació, si et corresponen).</p><p>Quan acabe el contracte tornes a quedar disponible en el teu mateix lloc de la llista.</p>',
@@ -499,7 +499,7 @@ function paso(msg) {
 // GVA para que la persona toque la casilla (nunca se intenta saltar ni resolver por ella).
 let verVisible = false;
 async function verificacion(etiqueta) {
-  if (await esperar('window.__mb.verificado()', 3000)) { paso('Verificación superada sola'); return true; }
+  if (await esperar('window.__mb.verificado()', 10000)) { paso('Verificación superada sola'); return true; }
   paso('Cloudflare pide verificación: se enseña la casilla');
   let cerrado = false;
   const h = await NAV.addListener('cerrado', () => { cerrado = true; });
@@ -619,6 +619,11 @@ async function consultarDep(url, b, dep, etiqueta, conNombre = true, puesto = nu
 // La tabla de la GVA usa letras: TNom A acumulación, C ATC/guardias, I interinidad (vacante), S sustitución; Jor A ATC, N ordinaria, P parcial
 const TNOM = { A: 'Acumulación de tareas', C: 'ATC/Guardias', I: 'Interinidad (vacante)', S: 'Sustitución' };
 const JORN = { A: 'ATC', N: 'Jornada ordinaria', P: 'Tiempo parcial' };
+const sinTitulo = x => String(x || '').replace(/^[A-Za-zÀ-ÿ. ]{1,20}:\s*/, '').trim();
+// Nombre completo de un tipo o jornada (también arregla los guardados como «Tnom: s»)
+const nomTipo = k => { const c = sinTitulo(k).toUpperCase(); return TNOM[c] || cap(sinTitulo(k)); };
+const nomJor = k => { const c = sinTitulo(k).toUpperCase(); return JORN[c] || cap(sinTitulo(k)); };
+const juntar = (o, f) => Object.entries(o || {}).reduce((m, [k, n]) => { const x = f(k); m[x] = (m[x] || 0) + n; return m; }, {});
 const tipoLargo = x => x === 'I' || /VACANT|INTERIN/.test(x);
 const tipoCorto = x => /^[ACS]$/.test(x) || /SUSTIT|EVENTUAL|ACUMUL|REFUER|PROGRAM|TEMPORAL|CORTA|ATC|GUARD/.test(x);
 async function abrirConsulta(url, etiqueta) {
@@ -654,6 +659,7 @@ async function consultarNombramientos(lista, cat) {
     if (res && (res.filas || res.error || res.captcha)) break;
   }
   if (!res || !res.filas) throw new Error(res && (res.error || res.captcha) || 'La GVA no ha devuelto los nombramientos');
+  res.filas = res.filas.map(f => f.map(sinTitulo));
   paso('Nombramientos: ' + res.filas.length + ' filas · columnas: ' + res.cab.join(', '));
   // Recuento por departamento y tipo (y el puesto más alto llamado, si la tabla lo trae)
   const col = re => res.cab.findIndex(h => re.test(String(h).toUpperCase().trim()));
@@ -1282,8 +1288,8 @@ function actividadCard(cat) {
     ${deps.map(d => a.porDep[d] ? `<div class="mini"><span style="font-weight:700;color:var(--acc-ink)">${esc(cap(depName(d)))}</span><span>${a.porDep[d].n}</span></div>` : '').join('')}
     ${vacBloque(a, deps)}
     ${a.dur ? `<div class="note" style="margin-top:14px;font-weight:600">${t('durT')}</div>${barras([[t('dur1'), a.dur.d1], [t('dur2'), a.dur.d2], [t('dur3'), a.dur.d3], [t('dur4'), a.dur.d4], [t('dur5'), a.dur.d5]])}` : ''}
-    ${a.tipos && Object.keys(a.tipos).length > 1 ? `<div class="note" style="margin-top:14px;font-weight:600">${t('tiposT')}</div>${barras(Object.entries(a.tipos).sort((x, y) => y[1] - x[1]).slice(0, 6))}` : ''}
-    ${a.jor && Object.keys(a.jor).length > 1 ? `<div class="note" style="margin-top:14px;font-weight:600">${t('jorT')}</div>${barras(Object.entries(a.jor).sort((x, y) => y[1] - x[1]).slice(0, 4))}` : ''}
+    ${a.tipos && Object.keys(a.tipos).length > 1 ? `<div class="note" style="margin-top:14px;font-weight:600">${t('tiposT')}</div>${barras(Object.entries(juntar(a.tipos, nomTipo)).sort((x, y) => y[1] - x[1]).slice(0, 6))}` : ''}
+    ${a.jor && Object.keys(a.jor).length > 1 ? `<div class="note" style="margin-top:14px;font-weight:600">${t('jorT')}</div>${barras(Object.entries(juntar(a.jor, nomJor)).sort((x, y) => y[1] - x[1]).slice(0, 4))}` : ''}
     ${a.parcial ? `<div class="note">${t('parcial')}</div>` : ''}</div>`;
 }
 function penalCard() {
