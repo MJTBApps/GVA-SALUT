@@ -1,0 +1,26 @@
+⚠️ AVISO: Mi Bolsa Salut es una app NO OFICIAL. No representa ni está relacionada con la Generalitat Valenciana, la Conselleria de Sanidad ni ningún organismo público.
+
+FUENTES OFICIALES DE LOS DATOS
+Toda la información sale de las páginas públicas de la Conselleria de Sanidad (Generalitat Valenciana):
+• Consulta pública de las Listas de Empleo Temporal (situación de candidatos, nombramientos y penalizaciones): https://svsiscv.san.gva.es/btt-consulta/pages/index.xhtml?idioma=es&version=0
+• Información oficial de las listas en la web de Recursos Humanos de la Conselleria: https://www.san.gva.es/es/web/recursos-humans/lista-definitiva-2025
+La app también incluye estos enlaces en el apartado «Información oficial». Ante cualquier duda, lo que vale es la información oficial de la Conselleria.
+
+QUÉ HACE
+Mi Bolsa Salut te dice en qué puesto estás en las Listas de Empleo Temporal de la Conselleria de Sanidad de la Comunitat Valenciana y cuántas personas tienes delante. La consulta la hace tu propio móvil en la web pública de la Conselleria.
+• Busca tu puesto en cada departamento de tu bolsa.
+• Cuenta quién tienes delante: disponibles, trabajando, bloqueados/reservados, desactivados y no disponibles, con la explicación de cada situación.
+• Tu quincena: tras cada publicación (días 1 y 15), qué ha cambiado y a cuántos has adelantado.
+• Evolución con gráfica, estimación orientativa y simulador «¿qué pasaría si…?».
+• Actividad de la bolsa: nombramientos y vacantes por turno (ordinario y promoción interna), último mes o últimos 3 meses, y ranking de departamentos.
+• Comprueba si apareces en penalizaciones o como «no localizable».
+• Varias bolsas a la vez: categorías, turnos y departamentos.
+• Incluye el SES: Locutor C.I.C.U., Técnico en Emergencias Sanitarias, Enfermería y Medicina SAMU.
+• Calculadora de baremo orientativa y apartado para apuntar tus puntos.
+• Plazos y recordatorios, y aviso de cada nueva publicación.
+• Widget, modo oscuro, castellano y valenciano.
+
+TU PRIVACIDAD
+Tus datos y resultados se guardan solo en tu móvil. La app no tiene servidores ni cuentas. Solo consulta tu propia situación: no permite buscar a otras personas ni guarda nombres de nadie más.
+
+¿No está tu categoría o departamento? Escríbenos desde la app y lo añadimos.
