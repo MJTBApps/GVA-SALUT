@@ -132,6 +132,7 @@ select{font:inherit;padding:12px;border:1.5px solid var(--line);border-radius:14
 .guia{counter-reset:p;padding:0;margin:10px 0 0;list-style:none}
 .guia li{counter-increment:p;display:flex;gap:10px;margin:10px 0;font-size:15px}
 .guia li::before{content:counter(p);flex:0 0 26px;height:26px;border-radius:50%;background:var(--acc2);color:var(--acc-ink);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px}
+.fuente{background:var(--warn2);border-radius:16px;padding:12px 14px;margin-top:22px;font-size:13px;line-height:1.45;color:var(--ink)}.fuente b{color:var(--warn)}.fuente .enl{font-size:14px;padding:6px 0}
 footer{font-size:13px;color:var(--muted);text-align:center;margin-top:26px;line-height:1.5}
 a{color:var(--acc-ink)}
 /* Buscador de categorías y departamentos */
@@ -223,6 +224,7 @@ const T = {
     perfiles: 'Perfiles', trabajaEn: 'Trabajando en', compartir: 'Compartir', novT: 'Novedades', entendido: 'Entendido',
     nuevaPub: '📢 Nueva publicación de la GVA ({0})', cambioSit: '{0}: tu situación ha cambiado de «{1}» a «{2}»', cambioPuesto: '{0}: tu puesto ha pasado del {1} al {2}',
     menosDisp: '{0}: {1} disponible(s) menos delante de ti', masDisp: '{0}: {1} disponible(s) más delante de ti', empiezan: '{0}: {1} de delante empieza(n) a trabajar',
+    noOfiT: 'App no oficial', noOfiTxt: 'Mi Bolsa Salut no representa ni está relacionada con la Generalitat Valenciana ni con la Conselleria de Sanidad. Los datos salen de la consulta pública de la Conselleria.', fuenteT: 'Fuente oficial de los datos:',
     detalles: 'Detalles de la última búsqueda', detallesB: 'Detalles de la última actualización de Bolsa', pie1: 'App no oficial. Datos de la consulta pública de las Listas de Empleo Temporal de la Conselleria de Sanidad.',
     pie2: 'Tus datos y resultados se guardan solo en este móvil.', pubT: 'Publicación', compTexto: 'Mi situación en la bolsa de Sanidad (app Mi Bolsa Salut, no oficial)',
     toca: 'Solo toca la casilla «Verifica que eres un ser humano». No escribas nada: la app sigue sola',
@@ -294,6 +296,7 @@ const T = {
     perfiles: 'Perfils', trabajaEn: 'Treballant en', compartir: 'Compartir', novT: 'Novetats', entendido: 'Entesos',
     nuevaPub: '📢 Nova publicació de la GVA ({0})', cambioSit: '{0}: la teua situació ha canviat de «{1}» a «{2}»', cambioPuesto: '{0}: el teu lloc ha passat del {1} al {2}',
     menosDisp: '{0}: {1} disponible(s) menys davant de tu', masDisp: '{0}: {1} disponible(s) més davant de tu', empiezan: '{0}: {1} de davant comença(en) a treballar',
+    noOfiT: 'App no oficial', noOfiTxt: 'Mi Bolsa Salut no representa ni està relacionada amb la Generalitat Valenciana ni amb la Conselleria de Sanitat. Les dades isquen de la consulta pública de la Conselleria.', fuenteT: 'Font oficial de les dades:',
     detalles: 'Detalls de l\'última busca', detallesB: 'Detalls de l\'última actualització de Borsa', pie1: 'App no oficial. Dades de la consulta pública de les Llistes d\'Ocupació Temporal de la Conselleria de Sanitat.',
     pie2: 'Les teues dades i resultats es guarden només en este mòbil.', pubT: 'Publicació', compTexto: 'La meua situació en la borsa de Sanitat (app Mi Bolsa Salut, no oficial)',
     toca: 'Només toca la casella «Verifica que eres un ser humà». No escrigues res: l\'app continua sola',
@@ -1462,7 +1465,7 @@ function puntosCard() {
     <div class="inl"><label for="pAct">${t('ptsAct')}</label><input id="pAct" type="number" inputmode="decimal" step="0.001" min="0" value="${p.act || ''}" placeholder="0"></div>
     <div id="pRes">${dif != null ? `<div class="est">${t('ptsDif', (dif >= 0 ? '+' : '') + f(dif))}</div>` : ''}</div>
     ${bar ? `<div class="note">${t('ptsCalc', f(calcBaremo(Object.assign({ norma: 'O', s1: 0, s2: 0, s3: 0, s4: 0, opo: 0, opoN: 1, res: 0 }, bar)).total))}</div>` : ''}
-    <a class="enl" style="margin-top:10px" href="https://www.san.gva.es/es/web/recursos-humans/lista-definitiva-2025" target="_blank" rel="noopener">${t('ptsWeb')} ↗︎</a></div>`;
+    <a class="enl" style="margin-top:10px" href="${OFI_WEB}" target="_blank" rel="noopener">${t('ptsWeb')} ↗︎</a></div>`;
 }
 function enlazarPuntos() {
   ['pAnt', 'pAct'].forEach(id => { const e = document.getElementById(id); if (e) e.onchange = () => { const p = store.get('puntosOf', {}); p[id === 'pAnt' ? 'ant' : 'act'] = e.value; store.set('puntosOf', p); pintar(); }; });
@@ -1487,7 +1490,7 @@ function oficialCard() {
     ${o && o.pub ? `<div style="font-size:15px">${esc(o.pub)}</div>` : ''}
     ${o && o.nomb ? `<div class="note">${t('ofiNomb')}: ${esc(o.nomb)}</div>` : ''}
     ${o && o.pen ? `<div class="note">${t('ofiPen')}: ${esc(o.pen)}</div>` : ''}
-    <a class="enl" style="margin-top:10px" href="https://www.san.gva.es/es/web/recursos-humans/lista-definitiva-2025" target="_blank" rel="noopener">${t('ofiWeb')} ↗︎</a>
+    <a class="enl" style="margin-top:10px" href="${OFI_WEB}" target="_blank" rel="noopener">${t('ofiWeb')} ↗︎</a>
     <a class="enl" href="${INDEX_URL}" target="_blank" rel="noopener">${t('ofiCons')} ↗︎</a></div>`;
 }
 
@@ -1594,8 +1597,16 @@ async function compartir(k) {
 }
 
 // ───────────────────────── Pantalla principal ─────────────────────────
+// Aviso de app no oficial y enlaces a la fuente oficial, visibles en todas las pantallas (política de Google Play)
+const OFI_WEB = 'https://www.san.gva.es/es/web/recursos-humans/lista-definitiva-2025';
+function fuenteOficial() {
+  return `<div class="fuente"><b>⚠️ ${t('noOfiT')}</b><div>${t('noOfiTxt')}</div>
+    <div style="margin-top:8px;font-weight:600">${t('fuenteT')}</div>
+    <a class="enl" href="${INDEX_URL}" target="_blank" rel="noopener">${t('ofiCons')} ↗︎<small style="display:block;font-weight:400;color:var(--muted)">svsiscv.san.gva.es</small></a>
+    <a class="enl" href="${OFI_WEB}" target="_blank" rel="noopener">${t('ofiWeb')} ↗︎<small style="display:block;font-weight:400;color:var(--muted)">www.san.gva.es</small></a></div>`;
+}
 function pie() {
-  return `<footer>${t('pie1')}<br>${t('pie2')}</footer>`;
+  return `${fuenteOficial()}<footer>${t('pie2')}</footer>`;
 }
 
 let pestana = store.get('tab', 'inicio');

@@ -110,6 +110,7 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 
 ## Pendiente
 
+- **Play rechazó la 1008 dos veces (22 y 24/11/2026) por «Misleading Claims»: falta el enlace a la fuente oficial.** Arreglado: descripción con aviso y fuentes (`tienda/play-descripcion.txt`) y, dentro de la app, `fuenteOficial()` en el pie de todas las pantallas (aviso de no oficial + enlaces a svsiscv.san.gva.es y san.gva.es). Hay que subir una versión nueva (1009).
 - **Android congelado (21/11/2026):** no subir más versiones a Play hasta que Google apruebe la 1008 (cada envío reinicia la revisión). Los cambios se prueban en iPhone y se juntan en una sola versión de Android después.
 
 - Contar también a la gente de tramos anteriores (puestos > 200): una consulta más por tramo.
