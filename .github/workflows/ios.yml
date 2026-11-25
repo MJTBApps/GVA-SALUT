@@ -106,7 +106,7 @@ jobs:
             -destination 'generic/platform=iOS' -archivePath build/App.xcarchive \
             DEVELOPMENT_TEAM="$TEAM_ID" \
             CODE_SIGN_STYLE=Automatic CODE_SIGNING_ALLOWED=NO \
-            MARKETING_VERSION=1.0 CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
+            MARKETING_VERSION=1.0.1 CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
             archive | tail -n 60
           # Archivado sin firmar: se marca con sus permisos (grupo de apps del widget) para que la exportación los vea
           APP=build/App.xcarchive/Products/Applications/App.app

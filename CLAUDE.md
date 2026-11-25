@@ -126,3 +126,8 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 - Contar también a la gente de tramos anteriores (puestos > 200): una consulta más por tramo.
 - Varias bolsas (categorías/turnos), widget, valenciano.
 - Icono y nombre definitivos; página de privacidad y fichas para publicar.
+
+## AdMob iOS (25/11/2026)
+
+- App publicada en la App Store. En AdMob ya está enlazada con la tienda, pero no se ha podido verificar porque la ficha no tenía web de desarrollador. `app-ads.txt` está bien en `mjtbapps.github.io`. Versión **1.0.1** (`MARKETING_VERSION`) preparada: al enviarla, poner como URL de marketing `https://mjtbapps.github.io/GVA-SALUT/privacidad.html`; cuando esté publicada, pulsar «Buscar actualizaciones» en AdMob.
+- El repo no se renombra de momento (las URL de Pages no redirigen).

@@ -3,6 +3,7 @@ SUBTÍTULO (30): Tu puesto en bolsas de Sanidad
 CATEGORÍA: Productividad (secundaria: Utilidades)
 URL DE SOPORTE: https://mjtbapps.github.io/GVA-SALUT/privacidad.html
 URL DE PRIVACIDAD: https://mjtbapps.github.io/GVA-SALUT/privacidad.html
+URL DE MARKETING: https://mjtbapps.github.io/GVA-SALUT/privacidad.html  (desde 1.0.1: AdMob lee mjtbapps.github.io/app-ads.txt)
 COPYRIGHT: 2026 MJTB Apps
 VERSIÓN: 1.0
 
