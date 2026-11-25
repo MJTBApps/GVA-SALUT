@@ -112,6 +112,7 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 
 - App «Mi Bolsa Salut» (id Apple 6836445682), versión 1.0 (`MARKETING_VERSION=1.0` en ios.yml y codemagic.yaml). Gratis, 175 países, 4+, Productividad/Utilidades, publicación automática tras aprobarse.
 - Ficha, notas para el revisor y capturas 1290×2796 en `tienda/appstore/`. La descripción no puede llevar emojis (no se guarda). Privacidad de la app publicada (nombre: funcionalidad; AdMob: ubicación aproximada, ID del dispositivo y datos de publicidad con seguimiento, interacción, errores y rendimiento).
+- Disponible en 174 países (sin China continental: pide documentos de seguridad y AIGC). Capturas de iPad 13" (2064×2752) en `tienda/appstore/ipad/`, obligatorias porque la app es universal.
 - AdMob: mensaje RGPD «Mi Bolsa - RGPD» publicado (19/11).
 - En App Store Connect, escribir con el teclado y pulsar Guardar de verdad: los valores puestos por JavaScript no se guardan.
 
