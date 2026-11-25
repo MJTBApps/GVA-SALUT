@@ -108,6 +108,13 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 - Prueba cerrada «Alpha»: España, lista «Testers OpoAlert», versión 1001 (1.0.1) enviada a revisión el 20/11/2026. Después: 12 testers durante 14 días y pedir producción.
 - Gráficos de la ficha: icono 512, gráfico 1024×500 y capturas 1080×1920 hechas con Chrome sin ventana sobre `demo()` (ancho mínimo de Chrome sin ventana: 500 px CSS).
 
+## App Store (25/11/2026)
+
+- App «Mi Bolsa Salut» (id Apple 6836445682), versión 1.0 (`MARKETING_VERSION=1.0` en ios.yml y codemagic.yaml). Gratis, 175 países, 4+, Productividad/Utilidades, publicación automática tras aprobarse.
+- Ficha, notas para el revisor y capturas 1290×2796 en `tienda/appstore/`. La descripción no puede llevar emojis (no se guarda). Privacidad de la app publicada (nombre: funcionalidad; AdMob: ubicación aproximada, ID del dispositivo y datos de publicidad con seguimiento, interacción, errores y rendimiento).
+- AdMob: mensaje RGPD «Mi Bolsa - RGPD» publicado (19/11).
+- En App Store Connect, escribir con el teclado y pulsar Guardar de verdad: los valores puestos por JavaScript no se guardan.
+
 ## Pendiente
 
 - **Play rechazó la 1008 dos veces (22 y 24/11/2026) por «Misleading Claims»: falta el enlace a la fuente oficial.** Arreglado: descripción con aviso y fuentes (`tienda/play-descripcion.txt`) y, dentro de la app, `fuenteOficial()` en el pie de todas las pantallas (aviso de no oficial + enlaces a svsiscv.san.gva.es y san.gva.es). Hay que subir una versión nueva (1009). **25/11/2026: Play rechazó la 1009 citando la descripción antigua (la ficha nueva no estaba aprobada aún). El usuario quitó «(GVA)» de la descripción breve y reenvió los 15 cambios. Si vuelve a pasar: apelación (5–8 días).**

@@ -12,8 +12,8 @@ bolsa,sanidad,empleo temporal,enfermera,TCAE,SES,SAMU,celador,oposiciones,listas
 TEXTO PROMOCIONAL (170):
 Mira tu puesto en las listas de empleo temporal de Sanidad de la Comunitat Valenciana y cuánta gente tienes delante. App no oficial, datos de la consulta pública.
 
-DESCRIPCIÓN:
-⚠️ AVISO: Mi Bolsa Salut es una app NO OFICIAL. No representa ni está relacionada con la Generalitat Valenciana, la Conselleria de Sanidad ni ningún organismo público.
+DESCRIPCIÓN (sin emojis: App Store Connect no guarda la descripción si lleva ⚠️):
+AVISO: Mi Bolsa Salut es una app NO OFICIAL. No representa ni está relacionada con la Generalitat Valenciana, la Conselleria de Sanidad ni ningún organismo público.
 
 FUENTES OFICIALES DE LOS DATOS
 Toda la información sale de las páginas públicas de la Conselleria de Sanidad (Generalitat Valenciana):
