@@ -131,3 +131,4 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 
 - App publicada en la App Store. En AdMob ya está enlazada con la tienda, pero no se ha podido verificar porque la ficha no tenía web de desarrollador. `app-ads.txt` está bien en `mjtbapps.github.io`. Versión **1.0.1** (`MARKETING_VERSION`) preparada: al enviarla, poner como URL de marketing `https://mjtbapps.github.io/GVA-SALUT/privacidad.html`; cuando esté publicada, pulsar «Buscar actualizaciones» en AdMob.
 - El repo no se renombra de momento (las URL de Pages no redirigen).
+- 26/11/2026: iPhone 1.0.1 (compilación 115) enviada a revisión de Apple. Android: Google aprobó la ficha y la prueba cerrada (ya deja mandar el enlace a los testers); AAB 1010 subido a «Alpha». Se acaba la congelación de Android. Falta: 12 testers durante 14 días y luego pedir producción.
