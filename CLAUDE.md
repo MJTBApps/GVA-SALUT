@@ -142,3 +142,4 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 
 - Primera búsqueda (sin puesto sabido): una sola consulta de lista completa y se busca la fila propia tramo a tramo (`filaMia`, `consultarDep(…, buscar=true)`), contando los tramos anteriores. Si no aparece, se prueba la consulta con nombre como antes. Ahorra una verificación de Cloudflare por departamento.
 - «Actualizado» no cambiaba si no había publicación nueva (se saltaba sin tocar `fecha`): ahora pone `prev.fecha = Date.now()`.
+- 28/11/2026: AdMob sigue sin verificar la iOS. Única diferencia con Chivato/OpoAlert: la URL de marketing apuntaba a un archivo (`…/GVA-SALUT/privacidad.html`). Versión **1.0.2** (`MARKETING_VERSION`) con URL de marketing `https://mjtbapps.github.io/GVA-SALUT/` (nueva `docs/index.html`). La compilación 116 (1.0.1) falló: Apple no acepta más compilaciones de una versión ya aprobada.
