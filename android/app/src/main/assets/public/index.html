@@ -608,7 +608,7 @@ async function irATramo(n, etiqueta) {
 
 // conNombre: filtra por tu nombre (para saber tu puesto). puesto: si se sabe, se pide la lista
 // completa, se salta a tu tramo y se cuentan también los tramos anteriores (todos los de delante).
-async function consultarDep(url, b, dep, etiqueta, conNombre = true, puesto = null) {
+async function consultarDep(url, b, dep, etiqueta, conNombre = true, puesto = null, buscar = false) {
   ov(t('act'), etiqueta);
   paso(etiqueta + ': abriendo la consulta');
   await abrirNav(url);
@@ -630,6 +630,22 @@ async function consultarDep(url, b, dep, etiqueta, conNombre = true, puesto = nu
   if (res && !res.filas && res.captcha) paso('La GVA no aceptó la verificación');
   if (!res || !res.filas) throw new Error(res && (res.error || res.captcha) ? (res.error || res.captcha) : 'La GVA no ha devuelto la lista');
   paso('Lista recibida: ' + res.filas.length + ' filas' + (res.tramo ? ' (tramo ' + res.tramo + ')' : '') + ' · columnas: ' + (res.cab || []).join(', '));
+  if (buscar) {
+    // Primera búsqueda: una sola consulta (lista completa) y se busca tu fila tramo a tramo,
+    // contando a la vez a los de los tramos anteriores. Así no hace falta la consulta con nombre.
+    if (filaMia(res.filas)) return res;
+    const rangos = (await ev('window.__mb.rangos()')) || [];
+    let antes = contar(res.filas);
+    const ini = inicioTramo(res.tramo);
+    for (const r of rangos.filter(r => r[0] > ini)) {
+      paso('Buscándote en el tramo ' + r[0] + '-' + r[1]);
+      const rr = await irATramo(r[0], etiqueta);
+      if (!rr) { res.parcial = true; return res; }
+      if (filaMia(rr.filas)) { rr.antes = antes; rr.tramos = '1-' + r[1]; return rr; }
+      antes = sumar(antes, contar(rr.filas));
+    }
+    return res;
+  }
   if (!puesto) return res;
 
   // Recuentos ya vistos por tramo (el primero que devuelve la GVA suele ser 1-200)
@@ -817,6 +833,12 @@ async function consultarPenalizaciones(lista, terr, enl = lista.pen, nombre = t(
 }
 
 // De la lista solo se guarda TU fila y recuentos: nunca nombres de otras personas
+// ¿Es esta fila la tuya? (solo se compara en el móvil; de las demás filas no se guarda nada)
+const palabras = x => (x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[^A-Z0-9Ñ ]+/g, ' ').split(/\s+/).filter(Boolean);
+function filaMia(filas) {
+  const mias = palabras([perfil.ap1, perfil.ap2, perfil.nombre].join(' '));
+  return mias.length ? filas.find(f => mias.every(w => palabras(f.nom).includes(w))) || null : null;
+}
 function resumir(res, b, puestoSabido = null) {
   const pal = x => (x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z0-9Ñ ]+/g, ' ').split(/\s+/).filter(Boolean);
   const mias = pal([perfil.ap1, perfil.ap2, perfil.nombre].join(' '));
@@ -842,6 +864,11 @@ async function consultarBolsa(lista, b, dep, etiqueta) {
   let sabido = b.puesto || (prev && prev.encontrado && prev.puesto) || null;
   let rA = null;
   if (conNombre && !sabido) {
+    try {
+      const rL = resumir(await consultarDep(lista.url, b, dep, etiqueta, false, null, true), b);
+      if (rL.encontrado) { paso('Tu puesto: ' + rL.puesto); return rL; }
+      paso('No te encuentro en la lista completa: se prueba con tu nombre');
+    } catch (e) { if (cancelado || e.message === 'TIEMPO') throw e; paso('Lista completa: ' + e.message); }
     rA = resumir(await consultarDep(lista.url, b, dep, etiqueta, true), b);
     sabido = rA.puesto;
     paso(sabido ? 'Tu puesto: ' + sabido : 'No apareces con ese nombre');
@@ -886,7 +913,7 @@ async function actualizar(forzar = false) {
       try {
         const k = clave(b, dep), prev = datos[k];
         // La lista es una foto del día de publicación: si ya la tenemos de esta publicación, no se vuelve a pedir
-        if (prev && prev.pub === lista.texto && (prev.encontrado || prev.identificado) && !forzar) { paso(etiqueta + ': sin cambios desde la última publicación'); continue; }
+        if (prev && prev.pub === lista.texto && (prev.encontrado || prev.identificado) && !forzar) { prev.fecha = Date.now(); paso(etiqueta + ': sin cambios desde la última publicación'); continue; }
         limiteDep = Date.now() + 60000;
         const r = await consultarBolsa(lista, b, dep, etiqueta);
         limiteDep = 0;

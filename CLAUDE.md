@@ -132,3 +132,13 @@ App (Android e iPhone, **Capacitor 8**, mismo sistema que La Meua Lliga) que ens
 - App publicada en la App Store. En AdMob ya está enlazada con la tienda, pero no se ha podido verificar porque la ficha no tenía web de desarrollador. `app-ads.txt` está bien en `mjtbapps.github.io`. Versión **1.0.1** (`MARKETING_VERSION`) preparada: al enviarla, poner como URL de marketing `https://mjtbapps.github.io/GVA-SALUT/privacidad.html`; cuando esté publicada, pulsar «Buscar actualizaciones» en AdMob.
 - El repo no se renombra de momento (las URL de Pages no redirigen).
 - 26/11/2026: iPhone 1.0.1 (compilación 115) enviada a revisión de Apple. Android: Google aprobó la ficha y la prueba cerrada (ya deja mandar el enlace a los testers); AAB 1010 subido a «Alpha». Se acaba la congelación de Android. Falta: 12 testers durante 14 días y luego pedir producción.
+
+## AdMob iOS sin verificar (28/11/2026)
+
+- iPhone 1.0.1 publicada con URL de desarrollador `https://mjtbapps.github.io/GVA-SALUT/privacidad.html`; `https://mjtbapps.github.io/app-ads.txt` correcto. Aun así AdMob dice «No hemos podido verificar» (aún no ha leído la ficha nueva; hasta 24 h). Mientras: «Serv. anuncios limit.» y en iPhone casi no salen anuncios. Bloques iOS (apertura/banner/intersticial) coinciden con `ADS` y sin límites.
+- Hacer: pulsar «Buscar actualizaciones» en AdMob → Mi Bolsa Salut (iOS) → Verify app una vez al día; luego AdMob la revisa (1–3 días). Android (`Mi Bolsa Sanidad`): al enlazar tienda elegir «Añadir a una aplicación de AdMob» (no crear otra); solo se verificará en producción.
+
+## Búsqueda más rápida y fecha (28/11/2026)
+
+- Primera búsqueda (sin puesto sabido): una sola consulta de lista completa y se busca la fila propia tramo a tramo (`filaMia`, `consultarDep(…, buscar=true)`), contando los tramos anteriores. Si no aparece, se prueba la consulta con nombre como antes. Ahorra una verificación de Cloudflare por departamento.
+- «Actualizado» no cambiaba si no había publicación nueva (se saltaba sin tocar `fecha`): ahora pone `prev.fecha = Date.now()`.
